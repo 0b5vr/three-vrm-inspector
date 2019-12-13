@@ -1,0 +1,48 @@
+name: Check
+on: [push]
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cache deps
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.os }-yarn-${{ hashFiles( 'yarn.lock' ) }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: Fetch deps
+      shell: bash
+      run: yarn
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cache deps
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.os }-yarn-${{ hashFiles( 'yarn.lock' ) }}
+    - name: Lint
+      shell: bash
+      run: yarn lint
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cache deps
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.os }-yarn-${{ hashFiles( 'yarn.lock' ) }}
+    - name: Build
+      shell: bash
+      run: yarn build && yarn types
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: three-vrm-inspector
+        path: |
+          ./dist
+          ./types
