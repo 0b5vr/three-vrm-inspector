@@ -40,11 +40,9 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles( 'yarn.lock' ) }}
     - name: Build
       shell: bash
-      run: yarn build && yarn types
+      run: yarn build
     - name: Upload artifact
       uses: actions/upload-artifact@v1
       with:
         name: three-vrm-inspector
-        path: |
-          ./dist
-          ./types
+        path: ./dist
