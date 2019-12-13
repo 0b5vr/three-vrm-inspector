@@ -8,6 +8,7 @@
     "lib": ["es2018", "dom"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "noImplicitAny": true,

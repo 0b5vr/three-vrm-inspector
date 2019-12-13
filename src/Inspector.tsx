@@ -1,24 +1,37 @@
 import * as THREE from 'three';
-import { VRM, VRMSchema } from '@pixiv/three-vrm';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { VRM, VRMDebug, VRMSchema } from '@pixiv/three-vrm';
 import CameraControls from 'camera-controls';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import EventEmitter from 'eventemitter3';
 
 CameraControls.install( { THREE } );
 
-export class Inspector {
+export class Inspector extends EventEmitter {
   private _scene: THREE.Scene;
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
   private _controls?: CameraControls;
-  private _vrm?: VRM;
+  private _gltf?: GLTF;
+  private _vrm?: VRMDebug;
   private _loader: GLTFLoader = new GLTFLoader();
   private _canvas?: HTMLCanvasElement;
+  private _layerMode: 'firstPerson' | 'thirdPerson' = 'thirdPerson';
+  private _handleResize?: () => void;
 
   public get scene(): THREE.Scene { return this._scene; }
-  public get vrm(): VRM | undefined { return this._vrm; }
+  public get gltf(): GLTF | undefined { return this._gltf; }
+  public get vrm(): VRMDebug | undefined { return this._vrm; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
+  public get layerMode(): 'firstPerson' | 'thirdPerson' { return this._layerMode; }
+
+  public set layerMode( mode: 'firstPerson' | 'thirdPerson' ) {
+    this._layerMode = mode;
+    this._updateLayerMode();
+  }
 
   public constructor() {
+    super();
+
     // camera
     this._camera = new THREE.PerspectiveCamera(
       30.0,
@@ -44,12 +57,14 @@ export class Inspector {
     this._scene.add( axesHelper );
   }
 
-  public loadVRM( url: string, onProgress?: ( progress: ProgressEvent ) => void ): Promise<VRM> {
+  public loadVRM( url: string ): Promise<VRM> {
     return new Promise<VRM>( ( resolve, reject ) => {
       this._loader.crossOrigin = 'anonymous';
       this._loader.load(
         url,
         ( gltf ) => {
+          this._gltf = gltf;
+
           VRM.from( gltf ).then( ( vrm ) => {
             if ( this._vrm ) {
               this._scene.remove( this._vrm.scene );
@@ -59,16 +74,18 @@ export class Inspector {
             this._vrm = vrm;
             this._scene.add( vrm.scene );
 
+            this._vrm.firstPerson!.setup();
+            this._updateLayerMode();
+
             const hips = vrm.humanoid!.getBoneNode( VRMSchema.HumanoidBoneName.Hips )!;
             hips.rotation.y = Math.PI;
 
-            console.info( vrm );
-
+            this.emit( 'load', vrm );
             resolve( vrm );
           } );
         },
-        onProgress,
-        ( error ) => reject( error )
+        ( progress ) => { this.emit( 'progress', progress ); },
+        ( error ) => { this.emit( 'error', error ); reject( error ); }
       );
     } );
   }
@@ -84,14 +101,21 @@ export class Inspector {
     // camera controls
     this._controls = new CameraControls( this._camera, this._canvas );
     this._controls.setTarget( 0.0, 1.0, 0.0 );
+
+    // resize listener
+    if ( this._handleResize ) {
+      window.removeEventListener( 'resize', this._handleResize );
+    }
+    this._handleResize = () => {
+      this._camera.aspect = window.innerWidth / window.innerHeight;
+      this._camera.updateProjectionMatrix();
+
+      this._renderer!.setSize( window.innerWidth, window.innerHeight );
+    };
+    window.addEventListener( 'resize', this._handleResize );
   }
 
-  public registerDnD(
-    target: HTMLElement,
-    onLoad?: ( vrm: VRM ) => void,
-    onProgress?: ( progress: ProgressEvent ) => void,
-    onError?: ( error: any ) => void
-  ): () => void {
+  public registerDnD( target: HTMLElement ): () => void {
     const handleDragOver = ( event: DragEvent ): void => {
       event.preventDefault();
     };
@@ -106,7 +130,7 @@ export class Inspector {
       if ( !file ) { return; }
       const blob = new Blob( [ file ], { type: 'application/octet-stream' } );
       const url = URL.createObjectURL( blob );
-      this.loadVRM( url, onProgress ).then( onLoad ).catch( onError );
+      this.loadVRM( url );
     };
 
     target.addEventListener( 'dragover', handleDragOver );
@@ -124,6 +148,18 @@ export class Inspector {
 
     if ( this._renderer ) {
       this._renderer.render( this._scene, this._camera );
+    }
+  }
+
+  private _updateLayerMode(): void {
+    if ( !this._vrm ) { throw new Error( 'bazinga' ); }
+
+    if ( this._layerMode === 'firstPerson' ) {
+      this._camera.layers.enable( this._vrm.firstPerson!.firstPersonOnlyLayer );
+      this._camera.layers.disable( this._vrm.firstPerson!.thirdPersonOnlyLayer );
+    } else {
+      this._camera.layers.disable( this._vrm.firstPerson!.firstPersonOnlyLayer );
+      this._camera.layers.enable( this._vrm.firstPerson!.thirdPersonOnlyLayer );
     }
   }
 }

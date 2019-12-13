@@ -1,19 +1,24 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Colors } from '../constants/Colors';
+import { InspectorContext } from '../InspectorContext';
+import { JSONTree } from './JSONTree';
 import { Metrics } from '../constants/Metrics';
+import { ProgressBar } from './ProgressBar';
 
 // == styles =======================================================================================
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900');
-`;
+  @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400');
 
-const Div = styled.div`
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
+  html {
+    font-size: ${ Metrics.rootFontSize };
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 const Canvas = styled.canvas`
@@ -24,38 +29,51 @@ const Canvas = styled.canvas`
   position: absolute;
 `;
 
+const Overlay = styled.div`
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+`;
+
 const Root = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
   position: absolute;
+  overflow: hidden;
   font-family: 'Roboto', sans-serif;
   font-weight: ${ Metrics.fontWeightNormal };
-  font-size: ${ Metrics.rootFontSize };
   color: ${ Colors.fore };
-  user-select: none;
 `;
 
 
 // == element ======================================================================================
-export interface AppProps {
-  onCanvasInit: ( canvas: HTMLCanvasElement ) => void;
-  progress: ProgressEvent | null;
-}
+const OutOfContextApp = (): JSX.Element => {
+  const inspector = useContext( InspectorContext );
 
-export const App = ( { onCanvasInit, progress }: AppProps ): JSX.Element => {
   const canvas = useCallback( ( canvas: HTMLCanvasElement ) => {
     if ( canvas ) {
-      onCanvasInit( canvas );
+      inspector.setup( canvas );
     }
   }, [] );
 
   return <>
-    <GlobalStyle />
     <Root>
       <Canvas ref={ canvas } />
-      <Div>{ progress?.toString() ?? 'yay' }</Div>
+      <Overlay>
+        <ProgressBar />
+        <JSONTree />
+      </Overlay>
     </Root>
   </>;
 };
+
+export const App = (): JSX.Element => <>
+  <GlobalStyle />
+  <OutOfContextApp />
+</>;
