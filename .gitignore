@@ -1,6 +1,5 @@
 /node_modules/
 /dist/
-!/dist/models/
 /docs/
 /lib/
 /types/
