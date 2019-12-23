@@ -1,6 +1,9 @@
 import * as THREE from 'three';
+import { VRMSchema, VRMSpringBoneDebug } from '@pixiv/three-vrm';
 import { Colors } from './constants/Colors';
 import { Inspector } from './Inspector';
+
+const _colorConstant = new THREE.Color( Colors.constant );
 
 const highlightMaterial = new THREE.MeshNormalMaterial( {
   transparent: true,
@@ -12,7 +15,7 @@ const highlightMaterial = new THREE.MeshNormalMaterial( {
 } );
 
 const highlightWireframeMaterial = new THREE.MeshBasicMaterial( {
-  color: Colors.constant,
+  color: _colorConstant,
   transparent: true,
   wireframe: true,
   depthTest: false,
@@ -199,14 +202,39 @@ export function highlight( inspector: Inspector, path: string ): ( () => void ) 
   ) {
 
     const index = parseInt( path.split( '/' ).pop()! );
-    const blendShapeMaster = inspector.gltf!.parser.json.extensions!.VRM.blendShapeMaster;
-    const blendShapeName = blendShapeMaster.blendShapeGroups[ index ].name;
+    const blendShapeMaster: VRMSchema.BlendShape
+      = inspector.gltf!.parser.json.extensions!.VRM.blendShapeMaster!;
+    const blendShapeName = blendShapeMaster.blendShapeGroups![ index ].name!;
 
     const prevValue = inspector.vrm!.blendShapeProxy!.getValue( blendShapeName )!;
     inspector.vrm!.blendShapeProxy!.setValue( blendShapeName, 1.0 );
 
     return () => {
       inspector.vrm!.blendShapeProxy!.setValue( blendShapeName, prevValue );
+    };
+
+  } else if (
+    path.startsWith( '/extensions/VRM/secondaryAnimation/boneGroups/' ) && pathSplit.length === 6
+  ) {
+
+    const index = parseInt( path.split( '/' ).pop()! );
+    const springBoneManager = inspector.vrm!.springBoneManager!;
+    const springBoneGroup = springBoneManager.springBoneGroupList[ index ] as VRMSpringBoneDebug[];
+
+    const gizmoColorMap = new Map<THREE.ArrowHelper, THREE.Color>();
+    springBoneGroup.forEach( ( springBone ) => {
+      const gizmo = springBone.getGizmo();
+      const prevColor = ( gizmo.line.material as THREE.LineBasicMaterial ).color.clone();
+      gizmoColorMap.set( gizmo, prevColor );
+      gizmo.setColor( _colorConstant );
+    } );
+
+    return () => {
+      springBoneGroup.forEach( ( springBone ) => {
+        const gizmo = springBone.getGizmo();
+        const color = gizmoColorMap.get( gizmo )!;
+        gizmo.setColor( color );
+      } );
     };
 
   }

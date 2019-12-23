@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { VRM, VRMDebug, VRMSchema } from '@pixiv/three-vrm';
+import { VRMDebug, VRMSchema } from '@pixiv/three-vrm';
 import CameraControls from 'camera-controls';
 import EventEmitter from 'eventemitter3';
 
@@ -57,15 +57,15 @@ export class Inspector extends EventEmitter {
     this._scene.add( axesHelper );
   }
 
-  public loadVRM( url: string ): Promise<VRM> {
-    return new Promise<VRM>( ( resolve, reject ) => {
+  public loadVRM( url: string ): Promise<VRMDebug> {
+    return new Promise<VRMDebug>( ( resolve, reject ) => {
       this._loader.crossOrigin = 'anonymous';
       this._loader.load(
         url,
         ( gltf ) => {
           this._gltf = gltf;
 
-          VRM.from( gltf ).then( ( vrm ) => {
+          VRMDebug.from( gltf ).then( ( vrm ) => {
             if ( this._vrm ) {
               this._scene.remove( this._vrm.scene );
               this._vrm.dispose();
