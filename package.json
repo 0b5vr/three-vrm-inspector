@@ -9,7 +9,8 @@
     "all": "yarn lint && yarn clean && yarn build",
     "dev": "webpack-dev-server --hot --mode development",
     "clean": "rimraf dist",
-    "build": "ts-node utils/link-models.ts && webpack --mode production",
+    "build": "yarn link-models && webpack --mode production",
+    "link-models": "ts-node utils/link-models.ts",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "gh-pages": "node ./utils/gh-pages.js"
   },
