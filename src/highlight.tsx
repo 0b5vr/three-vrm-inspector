@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { VRMSchema, VRMSpringBoneDebug } from '@pixiv/three-vrm';
+import { GLTFSchema, VRMSchema, VRMSpringBoneDebug } from '@pixiv/three-vrm';
 import { Colors } from './constants/Colors';
 import { Inspector } from './Inspector';
 
@@ -40,7 +40,9 @@ export function highlight( inspector: Inspector, path: string ): ( () => void ) 
 
     const index = parseInt( pathSplit.pop()! );
     let callback: ( () => void ) | undefined;
-    inspector.gltf!.parser.getDependency( 'node', index ).then( ( node ) => {
+
+    const parser = inspector.gltf!.parser;
+    parser.getDependency( 'node', index ).then( ( node ) => {
       const mesh = genGizmo( highlightSphereGeometry );
       node.add( mesh );
 
@@ -60,7 +62,9 @@ export function highlight( inspector: Inspector, path: string ): ( () => void ) 
     const meshMaterialMap: Map<THREE.Mesh, THREE.Material> = new Map();
     const index = parseInt( pathSplit.pop()! );
     let callback: ( () => void ) | undefined;
-    inspector.gltf!.parser.getDependency( 'mesh', index ).then( ( group: THREE.Mesh | THREE.Group ) => {
+
+    const parser = inspector.gltf!.parser;
+    parser.getDependency( 'mesh', index ).then( ( group: THREE.Mesh | THREE.Group ) => {
 
       group.traverse( ( obj ) => {
         if ( ( obj as any ).isMesh ) {
@@ -92,7 +96,8 @@ export function highlight( inspector: Inspector, path: string ): ( () => void ) 
     const primIndex = parseInt( pathSplit[ 4 ] );
     let callback: ( () => void ) | undefined;
 
-    inspector.gltf!.parser.getDependency( 'mesh', meshIndex ).then( ( groupOrMesh: THREE.Mesh | THREE.Group ) => {
+    const parser = inspector.gltf!.parser;
+    parser.getDependency( 'mesh', meshIndex ).then( ( groupOrMesh: THREE.Mesh | THREE.Group ) => {
       if ( groupOrMesh.children.length !== 0 ) {
         groupOrMesh = groupOrMesh.children[ primIndex ] as THREE.Mesh;
       }
@@ -123,8 +128,10 @@ export function highlight( inspector: Inspector, path: string ): ( () => void ) 
     const index = parseInt( pathSplit.pop()! );
     let callback: ( () => void ) | undefined;
 
-    inspector.gltf!.parser.getDependencies( 'mesh' ).then( ( groups: Array<THREE.Mesh | THREE.Group> ) => {
-      inspector.gltf!.parser.json.meshes!.forEach( ( schemaMesh, iMesh ) => {
+    const parser = inspector.gltf!.parser;
+    parser.getDependencies( 'mesh' ).then( ( groups: Array<THREE.Mesh | THREE.Group> ) => {
+      const gltf = parser.json as GLTFSchema.GLTF;
+      gltf.meshes!.forEach( ( schemaMesh, iMesh ) => {
         const primitives = schemaMesh.primitives;
         primitives.forEach( ( schemaPrimitive, iPrimitive ) => {
           if ( index === schemaPrimitive.material ) {
@@ -159,7 +166,11 @@ export function highlight( inspector: Inspector, path: string ): ( () => void ) 
 
     const boneVisMap: Map<THREE.Object3D, THREE.Mesh> = new Map();
     const index = parseInt( path.split( '/' ).pop()! );
-    const boneName = inspector.gltf!.parser.json.extensions!.VRM.humanoid.humanBones[ index ].bone;
+
+    const parser = inspector.gltf!.parser;
+    const gltf = parser.json as GLTFSchema.GLTF;
+    const vrm = gltf.extensions!.VRM as VRMSchema.VRM;
+    const boneName = vrm.humanoid!.humanBones![ index ].bone!;
     const bones = inspector.vrm!.humanoid!.getBoneNodes( boneName );
 
     bones.forEach( ( bone ) => {
@@ -202,8 +213,11 @@ export function highlight( inspector: Inspector, path: string ): ( () => void ) 
   ) {
 
     const index = parseInt( path.split( '/' ).pop()! );
-    const blendShapeMaster: VRMSchema.BlendShape
-      = inspector.gltf!.parser.json.extensions!.VRM.blendShapeMaster!;
+
+    const parser = inspector.gltf!.parser;
+    const gltf = parser.json as GLTFSchema.GLTF;
+    const vrm = gltf.extensions!.VRM as VRMSchema.VRM;
+    const blendShapeMaster: VRMSchema.BlendShape = vrm.blendShapeMaster!;
     const blendShapeName = blendShapeMaster.blendShapeGroups![ index ].name!;
 
     const prevValue = inspector.vrm!.blendShapeProxy!.getValue( blendShapeName )!;
