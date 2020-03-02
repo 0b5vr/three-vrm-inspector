@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { VRMDebug, VRMSchema } from '@pixiv/three-vrm';
+import { VRMDebug, VRMMaterialImporter, VRMSchema } from '@pixiv/three-vrm';
 import CameraControls from 'camera-controls';
 import EventEmitter from 'eventemitter3';
 
@@ -17,6 +17,7 @@ export class Inspector extends EventEmitter {
   private _canvas?: HTMLCanvasElement;
   private _layerMode: 'firstPerson' | 'thirdPerson' = 'thirdPerson';
   private _handleResize?: () => void;
+  private _ongoingRequestEnvMap?: Promise<THREE.CubeTexture>;
 
   public get scene(): THREE.Scene { return this._scene; }
   public get gltf(): GLTF | undefined { return this._gltf; }
@@ -65,7 +66,14 @@ export class Inspector extends EventEmitter {
         ( gltf ) => {
           this._gltf = gltf;
 
-          VRMDebug.from( gltf ).then( ( vrm ) => {
+          VRMDebug.from(
+            gltf,
+            {
+              materialImporter: new VRMMaterialImporter( {
+                requestEnvMap: () => this._requestEnvMap(),
+              } ),
+            }
+          ).then( ( vrm ) => {
             if ( this._vrm ) {
               this._scene.remove( this._vrm.scene );
               this._vrm.dispose();
@@ -149,6 +157,32 @@ export class Inspector extends EventEmitter {
     if ( this._renderer ) {
       this._renderer.render( this._scene, this._camera );
     }
+  }
+
+  private _requestEnvMap(): Promise<THREE.CubeTexture> {
+    // envmap
+    const envMapUrl = [
+      './assets/cubemap/xp.jpg',
+      './assets/cubemap/xn.jpg',
+      './assets/cubemap/yp.jpg',
+      './assets/cubemap/yn.jpg',
+      './assets/cubemap/zp.jpg',
+      './assets/cubemap/zn.jpg',
+    ];
+
+    if ( !this._ongoingRequestEnvMap ) {
+      const loader = new THREE.CubeTextureLoader();
+      this._ongoingRequestEnvMap = new Promise( ( resolve, reject ) => {
+        loader.load(
+          envMapUrl,
+          ( texture ) => resolve( texture ),
+          undefined,
+          ( error ) => reject( error )
+        );
+      } );
+    }
+
+    return this._ongoingRequestEnvMap;
   }
 
   private _updateLayerMode(): void {

@@ -9,8 +9,8 @@
     "all": "yarn lint && yarn clean && yarn build",
     "dev": "webpack-dev-server --hot --mode development",
     "clean": "rimraf dist",
-    "build": "yarn copy-models && webpack --mode production",
-    "copy-models": "ts-node utils/copy-models.ts",
+    "build": "yarn copy-assets && webpack --mode production",
+    "copy-assets": "ts-node utils/copy-models.ts",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "gh-pages": "node ./utils/gh-pages.js"
   },

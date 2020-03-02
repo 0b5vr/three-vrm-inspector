@@ -7,7 +7,7 @@ function handleError( error: any ): void {
 }
 
 const inspector: Inspector = new Inspector();
-inspector.loadVRM( './models/three-vrm-girl.vrm' ).catch( handleError );
+inspector.loadVRM( './assets/models/three-vrm-girl.vrm' ).catch( handleError );
 inspector.registerDnD( document.body );
 
 console.info( inspector );
