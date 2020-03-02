@@ -10,7 +10,7 @@
     "dev": "webpack-dev-server --hot --mode development",
     "clean": "rimraf dist",
     "build": "yarn copy-assets && webpack --mode production",
-    "copy-assets": "ts-node utils/copy-models.ts",
+    "copy-assets": "ts-node utils/copy-assets.ts",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "gh-pages": "node ./utils/gh-pages.js"
   },
