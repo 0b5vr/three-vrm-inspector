@@ -26,16 +26,21 @@ export function debugMaterial( inspector: Inspector, mode: DebugMaterialMode ): 
     mToonDebugMode = MToonMaterialDebugMode.UV;
   }
 
+  const materialSet = new Set<THREE.Material>();
   inspector.scene.traverse( ( object ) => {
     if ( 'isMesh' in object ) {
       const mesh = object as THREE.Mesh;
       if ( Array.isArray( mesh.material ) ) {
         mesh.material.forEach( ( material ) => {
-          setMToonDebugMode( material, mToonDebugMode );
+          materialSet.add( material );
         } );
       } else {
-        setMToonDebugMode( mesh.material, mToonDebugMode );
+        materialSet.add( mesh.material );
       }
     }
   } );
+
+  for ( const material of materialSet ) {
+    setMToonDebugMode( material, mToonDebugMode );
+  }
 }
