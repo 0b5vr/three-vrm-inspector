@@ -3,6 +3,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
 import { JSONTree } from './JSONTree';
+import { MaterialDebugger } from './MaterialDebugger';
 import { Metrics } from '../constants/Metrics';
 import { ProgressBar } from './ProgressBar';
 
@@ -68,6 +69,7 @@ const OutOfContextApp = (): JSX.Element => {
       <Overlay>
         <ProgressBar />
         <JSONTree />
+        <MaterialDebugger />
       </Overlay>
     </Root>
   </>;

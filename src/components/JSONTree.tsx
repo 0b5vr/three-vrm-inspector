@@ -7,6 +7,9 @@ import styled from 'styled-components';
 
 // == styles =======================================================================================
 const Root = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
   margin: 0;
   padding: 0;
   width: ${ Metrics.jsonTreeWidth };
