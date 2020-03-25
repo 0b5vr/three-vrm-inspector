@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
 import { JSONTree } from './JSONTree';
-import { MaterialDebugger } from './MaterialDebugger';
+import { MaterialDebuggerOption } from './MaterialDebuggerOption';
 import { Metrics } from '../constants/Metrics';
 import { ProgressBar } from './ProgressBar';
 
@@ -55,7 +55,7 @@ const Root = styled.div`
 
 // == element ======================================================================================
 const OutOfContextApp = (): JSX.Element => {
-  const inspector = useContext( InspectorContext );
+  const { inspector } = useContext( InspectorContext );
 
   const canvas = useCallback( ( canvas: HTMLCanvasElement ) => {
     if ( canvas ) {
@@ -69,7 +69,7 @@ const OutOfContextApp = (): JSX.Element => {
       <Overlay>
         <ProgressBar />
         <JSONTree />
-        <MaterialDebugger />
+        <MaterialDebuggerOption />
       </Overlay>
     </Root>
   </>;

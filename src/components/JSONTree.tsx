@@ -23,7 +23,7 @@ const Root = styled.div`
 
 // == element ======================================================================================
 export const JSONTree = (): JSX.Element => {
-  const inspector = useContext( InspectorContext );
+  const { inspector } = useContext( InspectorContext );
   const [ root, setRoot ] = useState<any>( undefined );
 
   useEffect( () => {

@@ -27,7 +27,7 @@ const Root = styled.div`
 
 // == element ======================================================================================
 export const ProgressBar = (): JSX.Element => {
-  const inspector = useContext( InspectorContext );
+  const { inspector } = useContext( InspectorContext );
   const [ progress, setProgress ] = useState<ProgressEvent | null>( null );
 
   useEffect( () => {

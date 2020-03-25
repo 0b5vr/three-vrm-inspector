@@ -1,14 +1,20 @@
 import * as THREE from 'three';
-import { Inspector } from './Inspector';
+import { Highlighter } from './inspector/Highlighter';
+import { Inspector } from './inspector/Inspector';
+import { MaterialDebugger } from './inspector/MaterialDebugger';
 import React from 'react';
 
 function handleError( error: any ): void {
   console.error( error );
 }
 
-const inspector: Inspector = new Inspector();
+const inspector = new Inspector();
 inspector.loadVRM( './assets/models/three-vrm-girl.vrm' ).catch( handleError );
 inspector.registerDnD( document.body );
+
+const highlighter = new Highlighter( inspector );
+
+const materialDebugger = new MaterialDebugger( inspector );
 
 console.info( inspector );
 
@@ -22,4 +28,8 @@ function update(): void {
 }
 update();
 
-export const InspectorContext = React.createContext<Inspector>( inspector );
+export const InspectorContext = React.createContext( {
+  inspector,
+  highlighter,
+  materialDebugger
+} );

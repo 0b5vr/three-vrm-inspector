@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
-import { highlight } from '../highlight';
 import styled from 'styled-components';
 
 // == styles =======================================================================================
@@ -48,7 +47,7 @@ export interface JSONValueProps {
 }
 
 export const JSONValue = ( { value, fullPath = '' }: JSONValueProps ): JSX.Element => {
-  const inspector = useContext( InspectorContext );
+  const { highlighter } = useContext( InspectorContext );
   const [ isOpen, setIsOpen ] = useState<boolean>( false );
   const [ isHovering, setIsHovering ] = useState<boolean>( false );
   const [ leaveCallback, setLeaveCallback ]
@@ -58,7 +57,7 @@ export const JSONValue = ( { value, fullPath = '' }: JSONValueProps ): JSX.Eleme
     onClick: () => setIsOpen( !isOpen ),
     onMouseEnter: () => {
       setIsHovering( true );
-      setLeaveCallback( [ highlight( inspector, fullPath ) ] );
+      setLeaveCallback( [ highlighter.highlight( fullPath ) ] );
     },
     onMouseLeave: () => {
       setIsHovering( false );

@@ -1,7 +1,7 @@
-import { DebugMaterialMode, debugMaterial } from '../debugMaterial';
 import React, { useCallback, useContext } from 'react';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
+import { MaterialDebuggerMode } from '../inspector/MaterialDebugger';
 import styled from 'styled-components';
 
 // == styles =======================================================================================
@@ -19,24 +19,25 @@ const Select = styled.select`
 `;
 
 // == element ======================================================================================
-export const MaterialDebugger = (): JSX.Element => {
-  const inspector = useContext( InspectorContext );
+export const MaterialDebuggerOption = (): JSX.Element => {
+  const { materialDebugger } = useContext( InspectorContext );
 
   const handleSelectChange = useCallback(
     ( event: React.ChangeEvent<HTMLSelectElement> ) => {
-      const mode = parseInt( event.target.value ) as DebugMaterialMode;
-      debugMaterial( inspector, mode );
+      const mode = parseInt( event.target.value ) as MaterialDebuggerMode;
+
+      materialDebugger.applyMode( mode );
     },
-    [ inspector ]
+    [ materialDebugger ]
   );
 
   return (
     <Root>
       <Select onChange={handleSelectChange}>
-        <option value={ DebugMaterialMode.None }>None</option>
-        <option value={ DebugMaterialMode.MToonNormal }>MToon Normal</option>
-        <option value={ DebugMaterialMode.MToonLitShadeRate }>MToon LitShadeRate</option>
-        <option value={ DebugMaterialMode.MToonUV }>MToon UV</option>
+        <option value={ MaterialDebuggerMode.None }>None</option>
+        <option value={ MaterialDebuggerMode.MToonNormal }>MToon Normal</option>
+        <option value={ MaterialDebuggerMode.MToonLitShadeRate }>MToon LitShadeRate</option>
+        <option value={ MaterialDebuggerMode.MToonUV }>MToon UV</option>
       </Select>
     </Root>
   );
