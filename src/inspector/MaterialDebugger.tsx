@@ -57,6 +57,7 @@ function isMToonOutline( material: THREE.Material ): boolean {
 
 // == class ========================================================================================
 export class MaterialDebugger {
+  private _currentMode = MaterialDebuggerMode.None;
   private _vrmMaterialsByMesh = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
   private _inspector: Inspector;
 
@@ -79,6 +80,8 @@ export class MaterialDebugger {
     } else if ( mode === MaterialDebuggerMode.UVGrid ) {
       this._applyModeUVGrid();
     }
+
+    this._currentMode = mode;
   }
 
   private _applyModeMToon( mode: MToonMaterialDebugMode ): void {
@@ -129,6 +132,8 @@ export class MaterialDebugger {
         this._addManagedMesh( mesh );
       }
     } );
+
+    this.applyMode( this._currentMode );
   }
 
   private _addManagedMesh( mesh: THREE.Mesh ): void {
