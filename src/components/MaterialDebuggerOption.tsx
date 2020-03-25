@@ -38,6 +38,7 @@ export const MaterialDebuggerOption = (): JSX.Element => {
         <option value={ MaterialDebuggerMode.MToonNormal }>MToon Normal</option>
         <option value={ MaterialDebuggerMode.MToonLitShadeRate }>MToon LitShadeRate</option>
         <option value={ MaterialDebuggerMode.MToonUV }>MToon UV</option>
+        <option value={ MaterialDebuggerMode.UVGrid }>UV Grid</option>
       </Select>
     </Root>
   );

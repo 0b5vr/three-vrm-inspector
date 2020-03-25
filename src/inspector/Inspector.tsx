@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { VRMDebug, VRMMaterialImporter, VRMSchema } from '@pixiv/three-vrm';
+import { VRM, VRMDebug, VRMMaterialImporter, VRMSchema } from '@pixiv/three-vrm';
 import CameraControls from 'camera-controls';
-import EventEmitter from 'eventemitter3';
+import { EventEmittable } from '../utils/EventEmittable';
+import { applyMixins } from '../utils/applyMixins';
 
 CameraControls.install( { THREE } );
 
-export class Inspector extends EventEmitter {
+export class Inspector {
   private _scene: THREE.Scene;
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
@@ -31,8 +32,6 @@ export class Inspector extends EventEmitter {
   }
 
   public constructor() {
-    super();
-
     // camera
     this._camera = new THREE.PerspectiveCamera(
       30.0,
@@ -58,6 +57,14 @@ export class Inspector extends EventEmitter {
     this._scene.add( axesHelper );
   }
 
+  public unloadVRM(): void {
+    if ( this._vrm ) {
+      this._scene.remove( this._vrm.scene );
+      this._vrm.dispose();
+      this._emit( 'unload' );
+    }
+  }
+
   public loadVRM( url: string ): Promise<VRMDebug> {
     return new Promise<VRMDebug>( ( resolve, reject ) => {
       this._loader.crossOrigin = 'anonymous';
@@ -74,10 +81,7 @@ export class Inspector extends EventEmitter {
               } ),
             }
           ).then( ( vrm ) => {
-            if ( this._vrm ) {
-              this._scene.remove( this._vrm.scene );
-              this._vrm.dispose();
-            }
+            this.unloadVRM();
 
             this._vrm = vrm;
             this._scene.add( vrm.scene );
@@ -88,12 +92,12 @@ export class Inspector extends EventEmitter {
             const hips = vrm.humanoid!.getBoneNode( VRMSchema.HumanoidBoneName.Hips )!;
             hips.rotation.y = Math.PI;
 
-            this.emit( 'load', vrm );
+            this._emit( 'load', vrm );
             resolve( vrm );
           } );
         },
-        ( progress ) => { this.emit( 'progress', progress ); },
-        ( error ) => { this.emit( 'error', error ); reject( error ); }
+        ( progress ) => { this._emit( 'progress', progress ); },
+        ( error ) => { this._emit( 'error', error ); reject( error ); }
       );
     } );
   }
@@ -197,3 +201,13 @@ export class Inspector extends EventEmitter {
     }
   }
 }
+
+export interface InspectorEvents {
+  load: VRM;
+  unload: void;
+  progress: ProgressEvent;
+  error: any;
+}
+
+export interface Inspector extends EventEmittable<InspectorEvents> {}
+applyMixins( Inspector, [ EventEmittable ] );
