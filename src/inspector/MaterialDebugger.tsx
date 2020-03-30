@@ -22,6 +22,7 @@ const invisibleMaterial = new THREE.MeshBasicMaterial( {
 const promiseTextureUVGrid = new Promise<THREE.Texture>( ( resolve ) => {
   const loader = new THREE.TextureLoader();
   loader.load( imageUVGrid, ( texture ) => {
+    texture.flipY = false;
     resolve( texture );
   } );
 } );
