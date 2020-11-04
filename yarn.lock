@@ -141,10 +141,10 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@pixiv/three-vrm@^0.3.3":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@pixiv/three-vrm/-/three-vrm-0.3.3.tgz#8226976bd683aea316188208e53541c7c667c3b0"
-  integrity sha512-a029MbrOQDfQsi72xBDr1NJSk/c4hHySRF+unefT+/JGRPA0FrtDdz16/LES4UssUqTVB0wjijwm7UbWyqlskw==
+"@pixiv/three-vrm@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@pixiv/three-vrm/-/three-vrm-0.5.1.tgz#fe8868f8e227d52b946d328c3aa0c6d2690d59c0"
+  integrity sha512-W2mXhlUl3yb4z4n1PgJWrmbl8dKMeArTD0aDV7NicXCOb3wxczVoLa2J/17ho1T+Tou2C/jNaHPPT6wAlfsDEQ==
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
@@ -5947,10 +5947,10 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three@^0.114.0:
-  version "0.114.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.114.0.tgz#754d08467a950ddeef06a0c645a1302b130e455a"
-  integrity sha512-3av45FxJeqYm7Rl02dfGBoqTaf2a934oUB4zMNrN8xjmASoSGeeykYoAr35+UntTdJDY/STw6CY3KuXFBWETig==
+three@^0.122.0:
+  version "0.122.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.122.0.tgz#bd9ed8a8820074856e8ba7b63fe0a65176e01aeb"
+  integrity sha512-bgYMo0WdaQhf7DhLE8OSNN/rVFO5J4K1A2VeeKqoV4MjjuHjfCP6xLpg8Xedhns7NlEnN3sZ6VJROq19Qyl6Sg==
 
 through2@^2.0.0:
   version "2.0.5"
