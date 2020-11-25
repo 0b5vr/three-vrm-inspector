@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 // == styles =======================================================================================
 const Bracket = styled.span<{ isHovering: boolean }>`
-  color: ${ ( { isHovering } ) => ( isHovering ? Colors.constant : Colors.fore ) }
+  color: ${ ( { isHovering } ) => ( isHovering ? Colors.accent : Colors.fore ) };
   user-select: none;
   cursor: pointer;
 `;
@@ -21,15 +21,15 @@ const Value = styled.span`
 `;
 
 const NullValue = styled( Value )`
-  color: ${ Colors.constant }
+  color: ${ Colors.constant };
 `;
 
 const NumValue = styled( Value )`
-  color: ${ Colors.number }
+  color: ${ Colors.number };
 `;
 
 const StrValue = styled( Value )`
-  color: ${ Colors.string }
+  color: ${ Colors.string };
 `;
 
 const Root = styled.span`
@@ -37,6 +37,7 @@ const Root = styled.span`
   padding: 0;
   pointer-events: auto;
   font-family: 'Roboto Mono', monospace;
+  font-size: 14px;
 `;
 
 

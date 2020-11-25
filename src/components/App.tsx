@@ -2,9 +2,8 @@ import React, { useCallback, useContext } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
-import { JSONTree } from './JSONTree';
-import { MaterialDebuggerOption } from './MaterialDebuggerOption';
 import { Metrics } from '../constants/Metrics';
+import { PaneList } from './PaneList';
 import { ProgressBar } from './ProgressBar';
 
 // == styles =======================================================================================
@@ -20,6 +19,10 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+
+  * {
+    box-sizing: border-box;
+  }
 `;
 
 const Canvas = styled.canvas`
@@ -28,16 +31,6 @@ const Canvas = styled.canvas`
   width: 100%;
   height: 100%;
   position: absolute;
-`;
-
-const Overlay = styled.div`
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  overflow: hidden;
-  pointer-events: none;
 `;
 
 const Root = styled.div`
@@ -66,11 +59,8 @@ const OutOfContextApp = (): JSX.Element => {
   return <>
     <Root>
       <Canvas ref={ canvas } />
-      <Overlay>
-        <ProgressBar />
-        <JSONTree />
-        <MaterialDebuggerOption />
-      </Overlay>
+      <PaneList />
+      <ProgressBar />
     </Root>
   </>;
 };

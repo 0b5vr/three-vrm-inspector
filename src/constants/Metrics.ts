@@ -1,6 +1,6 @@
 export const Metrics = {
   rootFontSize: '16px',
-  fontWeightNormal: 300,
+  titleBarHeight: '20px',
 
-  jsonTreeWidth: '30rem'
+  fontWeightNormal: 300,
 };
