@@ -3,13 +3,14 @@ import { Highlighter } from './inspector/Highlighter';
 import { Inspector } from './inspector/Inspector';
 import { MaterialDebugger } from './inspector/MaterialDebugger';
 import React from 'react';
+import threeVrmGirlVrm from './assets/models/three-vrm-girl.vrm';
 
 function handleError( error: any ): void {
   console.error( error );
 }
 
 const inspector = new Inspector();
-inspector.loadVRM( './assets/models/three-vrm-girl.vrm' ).catch( handleError );
+inspector.loadVRM( threeVrmGirlVrm ).catch( handleError );
 inspector.registerDnD( document.body );
 
 const highlighter = new Highlighter( inspector );

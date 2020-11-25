@@ -39,7 +39,7 @@ https://github.com/FMS-Cat/three-vrm-inspector/blob/master/LICENSE`;
           },
         },
         {
-          test: /\.(png|jpe?g|gif)$/i,
+          test: /\.(png|jpe?g|gif|vrm)$/i,
           use: [
             {
               loader: 'file-loader',

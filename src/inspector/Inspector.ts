@@ -4,6 +4,12 @@ import { VRM, VRMDebug, VRMMaterialImporter, VRMSchema } from '@pixiv/three-vrm'
 import CameraControls from 'camera-controls';
 import { EventEmittable } from '../utils/EventEmittable';
 import { applyMixins } from '../utils/applyMixins';
+import cubemapXn from '../assets/cubemap/xn.jpg';
+import cubemapXp from '../assets/cubemap/xp.jpg';
+import cubemapYn from '../assets/cubemap/yn.jpg';
+import cubemapYp from '../assets/cubemap/yp.jpg';
+import cubemapZn from '../assets/cubemap/zn.jpg';
+import cubemapZp from '../assets/cubemap/zp.jpg';
 
 CameraControls.install( { THREE } );
 
@@ -166,12 +172,12 @@ export class Inspector {
   private _requestEnvMap(): Promise<THREE.CubeTexture> {
     // envmap
     const envMapUrl = [
-      './assets/cubemap/xp.jpg',
-      './assets/cubemap/xn.jpg',
-      './assets/cubemap/yp.jpg',
-      './assets/cubemap/yn.jpg',
-      './assets/cubemap/zp.jpg',
-      './assets/cubemap/zn.jpg',
+      cubemapXp,
+      cubemapXn,
+      cubemapYp,
+      cubemapYn,
+      cubemapZp,
+      cubemapZn,
     ];
 
     if ( !this._ongoingRequestEnvMap ) {
