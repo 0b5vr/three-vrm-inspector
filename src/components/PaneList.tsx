@@ -5,6 +5,7 @@ import { BlendShapePane } from './BlendShapePane';
 import { JSONPane } from './JSONPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
+import { StatsPane } from './StatsPane';
 
 // == element ======================================================================================
 const PaneList = (): JSX.Element => {
@@ -12,6 +13,7 @@ const PaneList = (): JSX.Element => {
     'jsonTree',
     'materialDebugger',
     'meta',
+    'stats',
     'blendShape',
   ] );
 
@@ -48,12 +50,19 @@ const PaneList = (): JSX.Element => {
       onClick={ handleClick }
       initPosition={ { left: 0, top: 40 } }
     />,
+    'stats': <StatsPane
+      key="stats"
+      paneKey="stats"
+      title="Stats"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 60 } }
+    />,
     'blendShape': <BlendShapePane
       key="blendShape"
       paneKey="blendShape"
       title="Blend Shape Proxy"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 60 } }
+      initPosition={ { left: 0, top: 80 } }
     />,
   };
 

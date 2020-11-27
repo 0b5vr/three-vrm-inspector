@@ -8,7 +8,7 @@ export const Colors = {
   accent: '#ff0066',
   gray: '#75848f',
 
-  uiBackground: 'rgba( 0, 0, 0, 0.8 )',
+  uiBackground: 'rgba( 25, 26, 31, 0.8 )',
 
   constant: '#ff0066',
   number: '#8a8aff',

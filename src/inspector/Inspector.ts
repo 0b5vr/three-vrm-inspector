@@ -10,6 +10,9 @@ import cubemapYn from '../assets/cubemap/yn.jpg';
 import cubemapYp from '../assets/cubemap/yp.jpg';
 import cubemapZn from '../assets/cubemap/zn.jpg';
 import cubemapZp from '../assets/cubemap/zp.jpg';
+import type { InspectorStats } from './InspectorStats';
+
+const _v3A = new THREE.Vector3();
 
 CameraControls.install( { THREE } );
 
@@ -20,6 +23,7 @@ export class Inspector {
   private _controls?: CameraControls;
   private _gltf?: GLTF;
   private _vrm?: VRMDebug;
+  private _stats: InspectorStats | null = null;
   private _loader: GLTFLoader = new GLTFLoader();
   private _canvas?: HTMLCanvasElement;
   private _layerMode: 'firstPerson' | 'thirdPerson' = 'thirdPerson';
@@ -29,6 +33,7 @@ export class Inspector {
   public get scene(): THREE.Scene { return this._scene; }
   public get gltf(): GLTF | undefined { return this._gltf; }
   public get vrm(): VRMDebug | undefined { return this._vrm; }
+  public get stats(): InspectorStats | null { return this._stats; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
   public get layerMode(): 'firstPerson' | 'thirdPerson' { return this._layerMode; }
 
@@ -97,6 +102,9 @@ export class Inspector {
 
             const hips = vrm.humanoid!.getBoneNode( VRMSchema.HumanoidBoneName.Hips )!;
             hips.rotation.y = Math.PI;
+
+            this._stats = null;
+            this._prepareStats();
 
             this._emit( 'load', vrm );
             resolve( vrm );
@@ -167,6 +175,65 @@ export class Inspector {
     if ( this._renderer ) {
       this._renderer.render( this._scene, this._camera );
     }
+  }
+
+  private async _prepareStats(): Promise<void> {
+    const gltf = this._gltf;
+    const vrm = this._vrm;
+    if ( !gltf || !vrm ) { return; }
+
+    const dimensionBox = new THREE.Box3();
+    const positionBuffers = new Set<THREE.BufferAttribute>();
+    let nMeshes = 0;
+    let nPrimitives = 0;
+    let nPolygons = 0;
+
+    const processMesh = ( mesh: THREE.Mesh ): void => {
+      nPrimitives ++;
+
+      const geometry = mesh.geometry as THREE.BufferGeometry;
+      dimensionBox.expandByObject( mesh );
+      const buffer = geometry.getAttribute( 'position' ) as THREE.BufferAttribute;
+      positionBuffers.add( buffer );
+      nPolygons += ( geometry.index?.count ?? buffer.count ) / 3;
+    };
+
+    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> = await gltf.parser.getDependencies( 'mesh' );
+    meshes.forEach( ( meshOrGroup ) => {
+      nMeshes ++;
+
+      if ( ( meshOrGroup as any ).isMesh ) {
+        processMesh( meshOrGroup as THREE.Mesh );
+      } else {
+        const group = meshOrGroup as THREE.Group;
+        group.children.forEach( ( child ) => {
+          processMesh( child as THREE.Mesh );
+        } );
+      }
+    } );
+
+    let nVertices = 0;
+    for ( const buffer of positionBuffers ) {
+      nVertices += buffer.count;
+    }
+
+    const materials: Array<THREE.Material> = await gltf.parser.getDependencies( 'material' );
+
+    let nSpringBones = 0;
+
+    vrm.springBoneManager?.springBoneGroupList?.forEach( ( group ) => {
+      nSpringBones += group.length;
+    } );
+
+    this._stats = {
+      dimension: dimensionBox.getSize(_v3A).toArray(),
+      vertices: nVertices,
+      polygons: nPolygons,
+      meshes: nMeshes,
+      primitives: nPrimitives,
+      materials: materials.length,
+      springBones: nSpringBones,
+    };
   }
 
   private _requestEnvMap(): Promise<THREE.CubeTexture> {
