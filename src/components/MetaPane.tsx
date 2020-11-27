@@ -21,7 +21,6 @@ const Value = styled.span`
 `;
 
 const Line = styled.div`
-  font-size: 14px;
   line-height: 20px;
 `;
 

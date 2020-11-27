@@ -21,7 +21,6 @@ const ButtonExpand = styled.span`
 const TitleBar = styled.div`
   height: ${ Metrics.titleBarHeight };
   line-height: ${ Metrics.titleBarHeight };
-  font-size: 14px;
   width: 100%;
   background: ${ Colors.titleBarBg };
   cursor: move;

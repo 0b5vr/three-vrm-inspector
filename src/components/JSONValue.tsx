@@ -37,7 +37,6 @@ const Root = styled.span`
   padding: 0;
   pointer-events: auto;
   font-family: 'Roboto Mono', monospace;
-  font-size: 14px;
 `;
 
 

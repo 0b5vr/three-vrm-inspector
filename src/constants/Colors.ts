@@ -6,6 +6,7 @@ export const Colors = {
   fore: '#d0edff',
   titleBarBg: '#30343b',
   accent: '#ff0066',
+  gray: '#75848f',
 
   uiBackground: 'rgba( 0, 0, 0, 0.8 )',
 

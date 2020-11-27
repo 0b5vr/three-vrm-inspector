@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-key */
 
 import React, { useCallback, useState } from 'react';
+import { BlendShapePane } from './BlendShapePane';
 import { JSONPane } from './JSONPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
@@ -11,6 +12,7 @@ const PaneList = (): JSX.Element => {
     'jsonTree',
     'materialDebugger',
     'meta',
+    'blendShape',
   ] );
 
   const handleClick = useCallback(
@@ -45,6 +47,13 @@ const PaneList = (): JSX.Element => {
       title="Meta"
       onClick={ handleClick }
       initPosition={ { left: 0, top: 40 } }
+    />,
+    'blendShape': <BlendShapePane
+      key="blendShape"
+      paneKey="blendShape"
+      title="Blend Shape Proxy"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 60 } }
     />,
   };
 
