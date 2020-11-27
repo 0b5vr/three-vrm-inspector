@@ -70,7 +70,7 @@ https://github.com/FMS-Cat/three-vrm-inspector/blob/master/LICENSE`;
       new HtmlWebpackPlugin( {
         template: './src/index.html'
       } ),
-      ...( isProd ? [] : [ new ForkTsCheckerWebpackPlugin( { checkSyntacticErrors: true } ) ] ),
+      ...( isProd ? [] : [ new ForkTsCheckerWebpackPlugin() ] ),
     ],
     devtool: isProd ? false : 'inline-source-map',
   };
