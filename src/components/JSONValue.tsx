@@ -11,7 +11,7 @@ const Bracket = styled.span<{ isHovering: boolean }>`
 `;
 
 const Children = styled.div`
-  margin-left: 1.23em;
+  margin-left: 1.13em;
 `;
 
 const Entry = styled.div`

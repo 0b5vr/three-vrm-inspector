@@ -6,6 +6,7 @@ import { JSONPane } from './JSONPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
 import { StatsPane } from './StatsPane';
+import { ValidationReportPane } from './ValidationReportPane';
 
 // == element ======================================================================================
 const PaneList = (): JSX.Element => {
@@ -15,6 +16,7 @@ const PaneList = (): JSX.Element => {
     'meta',
     'stats',
     'blendShape',
+    'validationReport',
   ] );
 
   const handleClick = useCallback(
@@ -63,6 +65,13 @@ const PaneList = (): JSX.Element => {
       title="Blend Shape Proxy"
       onClick={ handleClick }
       initPosition={ { left: 0, top: 80 } }
+    />,
+    'validationReport': <ValidationReportPane
+      key="validationReport"
+      paneKey="validationReport"
+      title="Validation Report"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 100 } }
     />,
   };
 

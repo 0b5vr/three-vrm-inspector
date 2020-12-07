@@ -2396,6 +2396,11 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
+gltf-validator@^2.0.0-dev.3.3:
+  version "2.0.0-dev.3.3"
+  resolved "https://registry.yarnpkg.com/gltf-validator/-/gltf-validator-2.0.0-dev.3.3.tgz#4b0207346f822ab190e39539fdac898dbac9e66d"
+  integrity sha512-CQn6XIbK2Uwtrh2fJEcjapS3DM9AvuRREH44fO4HTsH7YI1+VdnBuSOnUMx1+hXX0iMUVYyjPerxGMFtTcXPmQ==
+
 graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4:
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"

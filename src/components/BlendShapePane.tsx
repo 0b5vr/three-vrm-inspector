@@ -1,10 +1,10 @@
 import { Pane, PaneParams } from './Pane';
 import React, { useContext } from 'react';
+import { BlendShapeRow } from './BlendShapeRow';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
-import styled from 'styled-components';
 import { VRMSchema } from '@pixiv/three-vrm';
-import { BlendShapeRow } from './BlendShapeRow';
+import styled from 'styled-components';
 
 // == constants ====================================================================================
 const blendShapePresets: Array<[ VRMSchema.BlendShapePresetName, string ]> = [

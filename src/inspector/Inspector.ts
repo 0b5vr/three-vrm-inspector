@@ -3,6 +3,8 @@ import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { VRM, VRMDebug, VRMMaterialImporter, VRMSchema } from '@pixiv/three-vrm';
 import CameraControls from 'camera-controls';
 import { EventEmittable } from '../utils/EventEmittable';
+import type { InspectorStats } from './InspectorStats';
+import { ValidationReport } from './ValidationReport';
 import { applyMixins } from '../utils/applyMixins';
 import cubemapXn from '../assets/cubemap/xn.jpg';
 import cubemapXp from '../assets/cubemap/xp.jpg';
@@ -10,7 +12,7 @@ import cubemapYn from '../assets/cubemap/yn.jpg';
 import cubemapYp from '../assets/cubemap/yp.jpg';
 import cubemapZn from '../assets/cubemap/zn.jpg';
 import cubemapZp from '../assets/cubemap/zp.jpg';
-import type { InspectorStats } from './InspectorStats';
+import { validateBytes } from 'gltf-validator';
 
 const _v3A = new THREE.Vector3();
 
@@ -22,6 +24,7 @@ export class Inspector {
   private _renderer?: THREE.WebGLRenderer;
   private _controls?: CameraControls;
   private _gltf?: GLTF;
+  private _validationReport?: ValidationReport;
   private _vrm?: VRMDebug;
   private _stats: InspectorStats | null = null;
   private _loader: GLTFLoader = new GLTFLoader();
@@ -32,6 +35,7 @@ export class Inspector {
 
   public get scene(): THREE.Scene { return this._scene; }
   public get gltf(): GLTF | undefined { return this._gltf; }
+  public get validationReport(): ValidationReport | undefined { return this._validationReport; }
   public get vrm(): VRMDebug | undefined { return this._vrm; }
   public get stats(): InspectorStats | null { return this._stats; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
@@ -77,6 +81,15 @@ export class Inspector {
   }
 
   public loadVRM( url: string ): Promise<VRMDebug> {
+    fetch( url )
+      .then( ( res ) => res.arrayBuffer() )
+      .then( ( asset ) => validateBytes( new Uint8Array( asset ) ) )
+      .then( ( report ) => {
+        this._validationReport = report;
+        this._emit( 'validate', report );
+      } )
+      .catch( ( error ) => console.error( 'Validation failed: ', error ) );
+
     return new Promise<VRMDebug>( ( resolve, reject ) => {
       this._loader.crossOrigin = 'anonymous';
       this._loader.load(
@@ -226,7 +239,7 @@ export class Inspector {
     } );
 
     this._stats = {
-      dimension: dimensionBox.getSize(_v3A).toArray(),
+      dimension: dimensionBox.getSize( _v3A ).toArray(),
       vertices: nVertices,
       polygons: nPolygons,
       meshes: nMeshes,
@@ -278,6 +291,7 @@ export class Inspector {
 export interface InspectorEvents {
   load: VRM;
   unload: void;
+  validate: ValidationReport;
   progress: ProgressEvent;
   error: any;
 }

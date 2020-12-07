@@ -23,11 +23,13 @@ const Root = styled.div`
 export const StatsPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
+  const dim = inspector.stats?.dimension.map( ( v ) => v.toFixed( 3 ) );
+
   return (
     <Pane { ...params }>
       <Root>
         <Line>Dimension:{ ' ' }
-          <Value>( { inspector.stats?.dimension[ 0 ].toFixed( 3 ) }, { inspector.stats?.dimension[ 1 ].toFixed( 3 ) }, { inspector.stats?.dimension[ 2 ].toFixed( 3 ) } )</Value>
+          <Value>( { dim?.[ 0 ] ?? 0.0 }, { dim?.[ 1 ] ?? 0.0 }, { dim?.[ 2 ] ?? 0.0 } )</Value>
         </Line>
         <Line>Vertices:{ ' ' }
           <Value>{ inspector.stats?.vertices }</Value>
