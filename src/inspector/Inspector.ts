@@ -25,7 +25,7 @@ export class Inspector {
   private _controls?: CameraControls;
   private _gltf?: GLTF;
   private _validationReport?: ValidationReport;
-  private _vrm?: VRMDebug;
+  private _vrm?: VRMDebug | null;
   private _stats: InspectorStats | null = null;
   private _loader: GLTFLoader = new GLTFLoader();
   private _canvas?: HTMLCanvasElement;
@@ -36,7 +36,7 @@ export class Inspector {
   public get scene(): THREE.Scene { return this._scene; }
   public get gltf(): GLTF | undefined { return this._gltf; }
   public get validationReport(): ValidationReport | undefined { return this._validationReport; }
-  public get vrm(): VRMDebug | undefined { return this._vrm; }
+  public get vrm(): VRMDebug | null | undefined { return this._vrm; }
   public get stats(): InspectorStats | null { return this._stats; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
   public get layerMode(): 'firstPerson' | 'thirdPerson' { return this._layerMode; }
@@ -121,6 +121,18 @@ export class Inspector {
 
             this._emit( 'load', vrm );
             resolve( vrm );
+          } ).catch( () => {
+            console.warn( 'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF' );
+
+            this.unloadVRM();
+
+            this._vrm = null;
+            this._scene.add( gltf.scene );
+
+            this._stats = null;
+            this._prepareStats();
+
+            this._emit( 'load', null );
           } );
         },
         ( progress ) => { this._emit( 'progress', progress ); },
@@ -193,7 +205,8 @@ export class Inspector {
   private async _prepareStats(): Promise<void> {
     const gltf = this._gltf;
     const vrm = this._vrm;
-    if ( !gltf || !vrm ) { return; }
+
+    if ( !gltf ) { return; }
 
     const dimensionBox = new THREE.Box3();
     const positionBuffers = new Set<THREE.BufferAttribute>();
@@ -234,7 +247,7 @@ export class Inspector {
 
     let nSpringBones = 0;
 
-    vrm.springBoneManager?.springBoneGroupList?.forEach( ( group ) => {
+    vrm?.springBoneManager?.springBoneGroupList?.forEach( ( group ) => {
       nSpringBones += group.length;
     } );
 
@@ -289,7 +302,7 @@ export class Inspector {
 }
 
 export interface InspectorEvents {
-  load: VRM;
+  load: VRM | null;
   unload: void;
   validate: ValidationReport;
   progress: ProgressEvent;

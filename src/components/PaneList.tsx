@@ -41,7 +41,7 @@ const PaneList = (): JSX.Element => {
     'materialDebugger': <MaterialDebuggerPane
       key="materialDebugger"
       paneKey="materialDebugger"
-      title="Material Debugger"
+      title="MToon Material Debugger"
       onClick={ handleClick }
       initPosition={ { left: 0, top: 20 } }
     />,

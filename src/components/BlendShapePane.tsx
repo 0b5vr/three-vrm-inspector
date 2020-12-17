@@ -46,28 +46,32 @@ const Root = styled.div`
 export const BlendShapePane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
-  const presetMap = inspector.vrm?.blendShapeProxy?.blendShapePresetMap;
-  const unknowns = inspector.vrm?.blendShapeProxy?.unknownGroupNames;
+  const proxy = inspector.vrm?.blendShapeProxy;
+
+  const presetMap = proxy?.blendShapePresetMap;
+  const unknowns = proxy?.unknownGroupNames;
   const hasUnknowns = ( unknowns?.length ?? 0 ) >= 1;
 
   return (
     <Pane { ...params }>
       <Root>
-        { blendShapePresets.map( ( [ preset, label ] ) => (
-          <BlendShapeRow
-            key={ preset }
-            presetLabel={ label }
-            name={ presetMap?.[ preset ] }
-          />
-        ) ) }
-        <Hr />
-        { unknowns?.map( ( name ) => (
-          <BlendShapeRow
-            key={ name }
-            name={ name }
-          />
-        ) ) }
-        { !hasUnknowns && <TextNoCustomFound>(No custom expressions)</TextNoCustomFound> }
+        { proxy ? <>
+          { blendShapePresets.map( ( [ preset, label ] ) => (
+            <BlendShapeRow
+              key={ preset }
+              presetLabel={ label }
+              name={ presetMap?.[ preset ] }
+            />
+          ) ) }
+          <Hr />
+          { unknowns?.map( ( name ) => (
+            <BlendShapeRow
+              key={ name }
+              name={ name }
+            />
+          ) ) }
+          { !hasUnknowns && <TextNoCustomFound>(No custom expressions)</TextNoCustomFound> }
+        </> : 'No blendShapeProxy detected.' }
       </Root>
     </Pane>
   );

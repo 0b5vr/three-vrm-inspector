@@ -53,45 +53,49 @@ const URLValue = ( { children }: {
 export const MetaPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
+  const meta = inspector.vrm?.meta;
+
   return (
     <Pane { ...params }>
       <Root>
-        <Line>Title:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.title }</Value>
-        </Line>
-        <Line>Author:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.author }</Value>
-        </Line>
-        <Line>Version:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.version }</Value>
-        </Line>
-        <Line>Reference:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.reference }</Value>
-        </Line>
-        <Line>Contact Information:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.contactInformation }</Value>
-        </Line>
-        <Line>Allowed User Name:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.allowedUserName }</Value>
-        </Line>
-        <Line>Violent Ussage Name:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.violentUssageName }</Value>
-        </Line>
-        <Line>Sexual Ussage Name:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.sexualUssageName }</Value>
-        </Line>
-        <Line>Commercial Ussage Name:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.commercialUssageName }</Value>
-        </Line>
-        <Line>Other Permission URL:{ ' ' }
-          <URLValue>{ inspector.vrm?.meta?.otherPermissionUrl }</URLValue>
-        </Line>
-        <Line>License Name:{ ' ' }
-          <Value>{ inspector.vrm?.meta?.licenseName }</Value>
-        </Line>
-        <Line>Other License URL:{ ' ' }
-          <URLValue>{ inspector.vrm?.meta?.otherLicenseUrl }</URLValue>
-        </Line>
+        { meta ? <>
+          <Line>Title:{ ' ' }
+            <Value>{ meta.title }</Value>
+          </Line>
+          <Line>Author:{ ' ' }
+            <Value>{ meta.author }</Value>
+          </Line>
+          <Line>Version:{ ' ' }
+            <Value>{ meta.version }</Value>
+          </Line>
+          <Line>Reference:{ ' ' }
+            <Value>{ meta.reference }</Value>
+          </Line>
+          <Line>Contact Information:{ ' ' }
+            <Value>{ meta.contactInformation }</Value>
+          </Line>
+          <Line>Allowed User Name:{ ' ' }
+            <Value>{ meta.allowedUserName }</Value>
+          </Line>
+          <Line>Violent Ussage Name:{ ' ' }
+            <Value>{ meta.violentUssageName }</Value>
+          </Line>
+          <Line>Sexual Ussage Name:{ ' ' }
+            <Value>{ meta.sexualUssageName }</Value>
+          </Line>
+          <Line>Commercial Ussage Name:{ ' ' }
+            <Value>{ meta.commercialUssageName }</Value>
+          </Line>
+          <Line>Other Permission URL:{ ' ' }
+            <URLValue>{ meta.otherPermissionUrl }</URLValue>
+          </Line>
+          <Line>License Name:{ ' ' }
+            <Value>{ meta.licenseName }</Value>
+          </Line>
+          <Line>Other License URL:{ ' ' }
+            <URLValue>{ meta.otherLicenseUrl }</URLValue>
+          </Line>
+        </> : 'No meta detected.' }
       </Root>
     </Pane>
   );
