@@ -17,6 +17,11 @@ const Hr = styled.div`
   background: ${ Colors.gray };
 `;
 
+const TooManyMessage = styled.div`
+  font-weight: bold;
+  margin: 8px;
+`;
+
 const Value = styled.span`
   font-weight: bold;
 `;
@@ -68,6 +73,9 @@ export const ValidationReportPane = ( params: PaneParams ): JSX.Element => {
           >{ issues?.numHints }</Value>
         </Line>
         <Hr />
+        { issues?.truncated && <TooManyMessage>
+          There are too many issues! Showing only 100 entries.
+        </TooManyMessage> }
         <Issues>
           { issues?.messages.map( ( issue, i ) => (
             <ValidationReportIssue

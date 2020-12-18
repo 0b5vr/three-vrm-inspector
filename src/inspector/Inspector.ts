@@ -19,6 +19,10 @@ const _v3A = new THREE.Vector3();
 CameraControls.install( { THREE } );
 
 export class Inspector {
+  public static get VALIDATOR_MAX_ISSUES(): number {
+    return 100;
+  }
+
   private _scene: THREE.Scene;
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
@@ -83,7 +87,9 @@ export class Inspector {
   public loadVRM( url: string ): Promise<VRMDebug> {
     fetch( url )
       .then( ( res ) => res.arrayBuffer() )
-      .then( ( asset ) => validateBytes( new Uint8Array( asset ) ) )
+      .then( ( asset ) => validateBytes( new Uint8Array( asset ), {
+        maxIssues: Inspector.VALIDATOR_MAX_ISSUES,
+      } ) )
       .then( ( report ) => {
         this._validationReport = report;
         this._emit( 'validate', report );
