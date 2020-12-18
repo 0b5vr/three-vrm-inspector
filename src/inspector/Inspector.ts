@@ -30,6 +30,7 @@ export class Inspector {
   private _gltf?: GLTF;
   private _validationReport?: ValidationReport;
   private _vrm?: VRMDebug | null;
+  private _currentModelScene?: THREE.Group;
   private _stats: InspectorStats | null = null;
   private _loader: GLTFLoader = new GLTFLoader();
   private _canvas?: HTMLCanvasElement;
@@ -77,74 +78,71 @@ export class Inspector {
   }
 
   public unloadVRM(): void {
+    if ( this._currentModelScene ) {
+      this._scene.remove( this._currentModelScene );
+    }
+
     if ( this._vrm ) {
-      this._scene.remove( this._vrm.scene );
       this._vrm.dispose();
       this._emit( 'unload' );
     }
   }
 
-  public loadVRM( url: string ): Promise<VRMDebug> {
-    fetch( url )
-      .then( ( res ) => res.arrayBuffer() )
-      .then( ( asset ) => validateBytes( new Uint8Array( asset ), {
+  public async loadVRM( url: string ): Promise<VRMDebug | null> {
+    const buffer = await fetch( url ).then( ( res ) => res.arrayBuffer() );
+    const validationReport = await validateBytes(
+      new Uint8Array( buffer ),
+      {
         maxIssues: Inspector.VALIDATOR_MAX_ISSUES,
-      } ) )
-      .then( ( report ) => {
-        this._validationReport = report;
-        this._emit( 'validate', report );
-      } )
-      .catch( ( error ) => console.error( 'Validation failed: ', error ) );
+      }
+    ).catch( ( error ) => console.error( 'Validation failed: ', error ) );
 
-    return new Promise<VRMDebug>( ( resolve, reject ) => {
+    this._validationReport = validationReport;
+    this._emit( 'validate', validationReport );
+
+    const gltf = await new Promise<GLTF>( ( resolve, reject ) => {
       this._loader.crossOrigin = 'anonymous';
       this._loader.load(
         url,
-        ( gltf ) => {
-          this._gltf = gltf;
-
-          VRMDebug.from(
-            gltf,
-            {
-              materialImporter: new VRMMaterialImporter( {
-                requestEnvMap: () => this._requestEnvMap(),
-              } ),
-            }
-          ).then( ( vrm ) => {
-            this.unloadVRM();
-
-            this._vrm = vrm;
-            this._scene.add( vrm.scene );
-
-            this._vrm.firstPerson!.setup();
-            this._updateLayerMode();
-
-            const hips = vrm.humanoid!.getBoneNode( VRMSchema.HumanoidBoneName.Hips )!;
-            hips.rotation.y = Math.PI;
-
-            this._stats = null;
-            this._prepareStats();
-
-            this._emit( 'load', vrm );
-            resolve( vrm );
-          } ).catch( () => {
-            console.warn( 'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF' );
-
-            this.unloadVRM();
-
-            this._vrm = null;
-            this._scene.add( gltf.scene );
-
-            this._stats = null;
-            this._prepareStats();
-
-            this._emit( 'load', null );
-          } );
-        },
+        ( gltf ) => { resolve( gltf ); },
         ( progress ) => { this._emit( 'progress', progress ); },
         ( error ) => { this._emit( 'error', error ); reject( error ); }
       );
     } );
+    this._gltf = gltf;
+
+    this.unloadVRM();
+
+    const vrm = await VRMDebug.from(
+      gltf,
+      {
+        materialImporter: new VRMMaterialImporter( {
+          requestEnvMap: () => this._requestEnvMap(),
+        } ),
+      }
+    ).catch( () => {
+      console.warn( 'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF' );
+      return null;
+    } );
+
+    this._stats = await this._prepareStats( gltf, vrm );
+
+    this._vrm = vrm;
+
+    this._currentModelScene = ( vrm?.scene ?? gltf.scene ) as THREE.Group;
+    this._scene.add( this._currentModelScene );
+
+    if ( this._vrm ) {
+      this._vrm.firstPerson!.setup();
+      this._updateLayerMode();
+
+      const hips = this._vrm.humanoid!.getBoneNode( VRMSchema.HumanoidBoneName.Hips )!;
+      hips.rotation.y = Math.PI;
+    }
+
+    this._emit( 'load', vrm );
+
+    return this._vrm;
   }
 
   public setup( canvas: HTMLCanvasElement ): void {
@@ -208,12 +206,7 @@ export class Inspector {
     }
   }
 
-  private async _prepareStats(): Promise<void> {
-    const gltf = this._gltf;
-    const vrm = this._vrm;
-
-    if ( !gltf ) { return; }
-
+  private async _prepareStats( gltf: GLTF, vrm: VRM | null ): Promise<InspectorStats | null> {
     const dimensionBox = new THREE.Box3();
     const positionBuffers = new Set<THREE.BufferAttribute>();
     let nMeshes = 0;
@@ -257,7 +250,7 @@ export class Inspector {
       nSpringBones += group.length;
     } );
 
-    this._stats = {
+    return {
       dimension: dimensionBox.getSize( _v3A ).toArray(),
       vertices: nVertices,
       polygons: nPolygons,
@@ -309,6 +302,7 @@ export class Inspector {
 
 export interface InspectorEvents {
   load: VRM | null;
+  updateStats: InspectorStats;
   unload: void;
   validate: ValidationReport;
   progress: ProgressEvent;
