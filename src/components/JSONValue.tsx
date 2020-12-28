@@ -42,11 +42,12 @@ const Root = styled.span`
 
 // == element ======================================================================================
 export interface JSONValueProps {
+  name?: string;
   value: any;
   fullPath?: string;
 }
 
-export const JSONValue = ( { value, fullPath = '' }: JSONValueProps ): JSX.Element => {
+export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX.Element => {
   const { highlighter } = useContext( InspectorContext );
   const [ isOpen, setIsOpen ] = useState<boolean>( false );
   const [ isHovering, setIsHovering ] = useState<boolean>( false );
@@ -72,14 +73,20 @@ export const JSONValue = ( { value, fullPath = '' }: JSONValueProps ): JSX.Eleme
   const isString = typeof value === 'string';
   const isObject = !isArray && !isNull && !isNumber && !isString;
 
+  const namePrefix = name ? `${ name }: ` : '';
+
   return <>
     <Root>
       { isArray && <>
-        <Bracket { ...bracketProps }>{ '[' }</Bracket>
+        <Bracket { ...bracketProps }>{ namePrefix + '[' }</Bracket>
         { isOpen && <Children>
           { value.map( ( e: any, i: number ) => (
             <Entry key={ i }>
-              <JSONValue value={ e } fullPath={ `${ fullPath }/${ i }` } />
+              <JSONValue
+                name={ i.toString() + ( e?.name ? ` (${ e.name })` : '' ) }
+                value={ e }
+                fullPath={ `${ fullPath }/${ i }` }
+              />
             </Entry>
           ) ) }
         </Children> }
@@ -87,22 +94,32 @@ export const JSONValue = ( { value, fullPath = '' }: JSONValueProps ): JSX.Eleme
       </> }
 
       { isObject && <>
-        <Bracket { ...bracketProps }>{ '{' }</Bracket>
+        <Bracket { ...bracketProps }>{ namePrefix + '{' }</Bracket>
         { isOpen && <Children>
           { Object.keys( value ).map( ( key, i ) => (
             <Entry key={ i }>
-              { key }: <JSONValue value={ value[ key ] } fullPath={ `${ fullPath }/${ key }` } />
+              <JSONValue
+                name={ key }
+                value={ value[ key ] }
+                fullPath={ `${ fullPath }/${ key }` }
+              />
             </Entry>
           ) ) }
         </Children> }
         <Bracket { ...bracketProps }>{ ` ${ isOpen ? '' : Object.keys( value ).join( ', ' ) } }` }</Bracket>
       </> }
 
-      { isNull && <NullValue>{ value }</NullValue> }
+      { isNull && <>
+        { namePrefix }<NullValue>{ namePrefix + value }</NullValue>
+      </> }
 
-      { isNumber && <NumValue>{ value }</NumValue> }
+      { isNumber && <>
+        { namePrefix }<NumValue>{ value }</NumValue>
+      </> }
 
-      { isString && <StrValue>&quot;{ value }&quot;</StrValue> }
+      { isString && <>
+        { namePrefix }<StrValue>&quot;{ value }&quot;</StrValue>
+      </> }
     </Root>
   </>;
 };
