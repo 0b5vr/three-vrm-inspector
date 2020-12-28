@@ -166,6 +166,44 @@ export class Highlighter {
       };
 
     } else if (
+      pathSplit.length === 6
+      && pathSplit[ 1 ] === 'meshes'
+      && pathSplit[ 3 ] === 'extras'
+      && pathSplit[ 4 ] === 'targetNames'
+    ) {
+
+      const meshIndex = parseInt( pathSplit[ 2 ] );
+      const targetIndex = parseInt( pathSplit[ 5 ] );
+      let callback: ( () => void ) | undefined;
+
+      const parser = inspector.gltf!.parser;
+      parser.getDependency( 'mesh', meshIndex ).then( ( groupOrMesh: THREE.Mesh | THREE.Group ) => {
+        groupOrMesh.traverse( ( obj ) => {
+          if ( ( obj as any ).isMesh ) {
+            const mesh = obj as THREE.Mesh;
+            if ( mesh.morphTargetInfluences ) {
+              mesh.morphTargetInfluences[ targetIndex ] = 100.0;
+            }
+          }
+        } );
+
+        callback = () => {
+          groupOrMesh.traverse( ( obj ) => {
+            if ( ( obj as any ).isMesh ) {
+              const mesh = obj as THREE.Mesh;
+              if ( mesh.morphTargetInfluences ) {
+                mesh.morphTargetInfluences[ targetIndex ] = 0.0;
+              }
+            }
+          } );
+        };
+      } );
+
+      return () => {
+        callback && callback();
+      };
+
+    } else if (
       (
         pathSplit.length === 3
         && pathSplit[ 1 ] === 'materials'
