@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFSchema, VRMSchema, VRMSpringBoneDebug } from '@pixiv/three-vrm';
 import { Colors } from '../constants/Colors';
 import { Inspector } from './Inspector';
+import { extractGLTFMesh } from '../utils/extractGLTFMesh';
 
 const colorConstant = new THREE.Color( Colors.constant );
 
@@ -73,16 +74,11 @@ export class Highlighter {
       const index = parseInt( pathSplit.pop()! );
       let callback: ( () => void ) | undefined;
 
-      const parser = inspector.gltf!.parser;
-      parser.getDependency( 'mesh', index ).then( ( group: THREE.Mesh | THREE.Group ) => {
-
-        group.traverse( ( obj ) => {
-          if ( ( obj as any ).isMesh ) {
-            const mesh = obj as THREE.Mesh;
-            if ( Array.isArray( mesh.material ) ) {
-              meshMaterialMap.set( mesh, mesh.material[ 0 ] );
-              mesh.material[ 0 ] = highlightMaterial;
-            }
+      extractGLTFMesh( inspector.gltf!, index ).then( ( meshes: THREE.Mesh[] ) => {
+        meshes.forEach( ( mesh ) => {
+          if ( Array.isArray( mesh.material ) ) {
+            meshMaterialMap.set( mesh, mesh.material[ 0 ] );
+            mesh.material[ 0 ] = highlightMaterial;
           }
         } );
 
@@ -176,24 +172,17 @@ export class Highlighter {
       const targetIndex = parseInt( pathSplit[ 5 ] );
       let callback: ( () => void ) | undefined;
 
-      const parser = inspector.gltf!.parser;
-      parser.getDependency( 'mesh', meshIndex ).then( ( groupOrMesh: THREE.Mesh | THREE.Group ) => {
-        groupOrMesh.traverse( ( obj ) => {
-          if ( ( obj as any ).isMesh ) {
-            const mesh = obj as THREE.Mesh;
-            if ( mesh.morphTargetInfluences ) {
-              mesh.morphTargetInfluences[ targetIndex ] = 1.0;
-            }
+      extractGLTFMesh( inspector.gltf!, meshIndex ).then( ( meshes: THREE.Mesh[] ) => {
+        meshes.forEach( ( mesh ) => {
+          if ( mesh.morphTargetInfluences ) {
+            mesh.morphTargetInfluences[ targetIndex ] = 1.0;
           }
         } );
 
         callback = () => {
-          groupOrMesh.traverse( ( obj ) => {
-            if ( ( obj as any ).isMesh ) {
-              const mesh = obj as THREE.Mesh;
-              if ( mesh.morphTargetInfluences ) {
-                mesh.morphTargetInfluences[ targetIndex ] = 0.0;
-              }
+          meshes.forEach( ( mesh ) => {
+            if ( mesh.morphTargetInfluences ) {
+              mesh.morphTargetInfluences[ targetIndex ] = 0.0;
             }
           } );
         };
