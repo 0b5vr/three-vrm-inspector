@@ -167,9 +167,9 @@
     fastq "^1.6.0"
 
 "@pixiv/three-vrm@^0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@pixiv/three-vrm/-/three-vrm-0.5.5.tgz#eeb34ad02720f5fd7ac98bf3972f682338e41ea8"
-  integrity sha512-x9Fk1jq6/OyyQryKI27ansVa36F/CEu4RFsdzMIFm3mBNLczfnV84kjeM2FtM36VLGCghpwFnrSg62+JC6MkMQ==
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@pixiv/three-vrm/-/three-vrm-0.5.6.tgz#84aa56841387c842d2ab70fdf9fba70255eeba00"
+  integrity sha512-0DGCE9jZYKG/1ZT7shSWuBzf+1W3vTSsDot9vi2lYSbPL6+ZKmrYdqAt8MNhfLkyhZq2x3crfHs103vMSAOBiA==
 
 "@types/anymatch@*":
   version "1.3.1"
