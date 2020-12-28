@@ -151,7 +151,7 @@ export class Highlighter {
         const mesh = groupOrMesh as THREE.Mesh;
 
         if ( mesh.morphTargetInfluences ) {
-          mesh.morphTargetInfluences[ targetIndex ] = 100.0;
+          mesh.morphTargetInfluences[ targetIndex ] = 1.0;
         }
 
         callback = () => {
@@ -182,7 +182,7 @@ export class Highlighter {
           if ( ( obj as any ).isMesh ) {
             const mesh = obj as THREE.Mesh;
             if ( mesh.morphTargetInfluences ) {
-              mesh.morphTargetInfluences[ targetIndex ] = 100.0;
+              mesh.morphTargetInfluences[ targetIndex ] = 1.0;
             }
           }
         } );
