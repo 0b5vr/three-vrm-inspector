@@ -43,7 +43,8 @@ export class Highlighter {
     const pathSplit = path.split( '/' );
 
     if (
-      path.startsWith( '/nodes/' ) && pathSplit.length === 3
+      pathSplit.length === 3
+      && pathSplit[ 1 ] === 'nodes'
     ) {
 
       const index = parseInt( pathSplit.pop()! );
@@ -64,7 +65,8 @@ export class Highlighter {
       };
 
     } else if (
-      path.startsWith( '/meshes/' ) && pathSplit.length === 3
+      pathSplit.length === 3
+      && pathSplit[ 1 ] === 'meshes'
     ) {
 
       const meshMaterialMap: Map<THREE.Mesh, THREE.Material> = new Map();
@@ -96,7 +98,9 @@ export class Highlighter {
       };
 
     } else if (
-      path.startsWith( '/meshes/' ) && path.includes( '/primitives/' ) && pathSplit.length === 5
+      pathSplit.length === 5
+      && pathSplit[ 1 ] === 'meshes'
+      && pathSplit[ 3 ] === 'primitives'
     ) {
 
       const meshMaterialMap: Map<THREE.Mesh, THREE.Material> = new Map();
@@ -128,8 +132,15 @@ export class Highlighter {
       };
 
     } else if (
-      ( path.startsWith( '/materials/' ) && pathSplit.length === 3 ) ||
-      ( path.startsWith( '/extensions/VRM/materialProperties/' ) && pathSplit.length === 5 )
+      (
+        pathSplit.length === 3
+        && pathSplit[ 1 ] === 'materials'
+      ) ||
+      (
+        pathSplit.length === 5
+        && pathSplit[ 2 ] === 'VRM'
+        && pathSplit[ 3 ] === 'materialProperties'
+      )
     ) {
 
       const meshMaterialMap: Map<THREE.Mesh, THREE.Material> = new Map();
@@ -169,7 +180,10 @@ export class Highlighter {
       };
 
     } else if (
-      path.startsWith( '/extensions/VRM/humanoid/humanBones/' ) && pathSplit.length === 6
+      pathSplit.length === 6
+      && pathSplit[ 2 ] === 'VRM'
+      && pathSplit[ 3 ] === 'humanoid'
+      && pathSplit[ 4 ] === 'humanBones'
     ) {
 
       const boneVisMap: Map<THREE.Object3D, THREE.Mesh> = new Map();
@@ -194,7 +208,9 @@ export class Highlighter {
       };
 
     } else if (
-      path.startsWith( '/extensions/VRM/firstPerson' ) && pathSplit.length === 4
+      pathSplit.length === 4
+      && pathSplit[ 2 ] === 'VRM'
+      && pathSplit[ 3 ] === 'firstPerson'
     ) {
 
       const mesh = genGizmo( highlightSphereGeometry );
@@ -207,7 +223,10 @@ export class Highlighter {
       };
 
     } else if (
-      path.startsWith( '/extensions/VRM/firstPerson/meshAnnotations' ) && pathSplit.length === 5
+      pathSplit.length === 5
+      && pathSplit[ 2 ] === 'VRM'
+      && pathSplit[ 3 ] === 'firstPerson'
+      && pathSplit[ 4 ] === 'meshAnnotations'
     ) {
 
       inspector.layerMode = 'firstPerson';
@@ -217,7 +236,10 @@ export class Highlighter {
       };
 
     } else if (
-      path.startsWith( '/extensions/VRM/blendShapeMaster/blendShapeGroups/' ) && pathSplit.length === 6
+      pathSplit.length === 6
+      && pathSplit[ 2 ] === 'VRM'
+      && pathSplit[ 3 ] === 'blendShapeMaster'
+      && pathSplit[ 4 ] === 'blendShapeGroups'
     ) {
 
       const index = parseInt( path.split( '/' ).pop()! );
@@ -236,7 +258,10 @@ export class Highlighter {
       };
 
     } else if (
-      path.startsWith( '/extensions/VRM/secondaryAnimation/boneGroups/' ) && pathSplit.length === 6
+      pathSplit.length === 6
+      && pathSplit[ 2 ] === 'VRM'
+      && pathSplit[ 3 ] === 'secondaryAnimation'
+      && pathSplit[ 4 ] === 'boneGroups'
     ) {
 
       const index = parseInt( path.split( '/' ).pop()! );
