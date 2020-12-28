@@ -1,11 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
 import styled from 'styled-components';
 
 // == styles =======================================================================================
-const Bracket = styled.span<{ isHovering: boolean }>`
-  color: ${ ( { isHovering } ) => ( isHovering ? Colors.accent : Colors.fore ) };
+const Bracket = styled.span`
   user-select: none;
   cursor: pointer;
 `;
@@ -32,9 +31,10 @@ const StrValue = styled( Value )`
   color: ${ Colors.string };
 `;
 
-const Root = styled.span`
+const Root = styled.span<{ isHovering: boolean }>`
   margin: 0;
   padding: 0;
+  color: ${ ( { isHovering } ) => ( isHovering ? Colors.accent : Colors.fore ) };
   pointer-events: auto;
   font-family: 'Roboto Mono', monospace;
 `;
@@ -54,18 +54,30 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
   const [ leaveCallback, setLeaveCallback ]
     = useState<[( () => void ) | undefined]>( [ undefined ] );
 
-  const bracketProps = {
-    onClick: () => setIsOpen( !isOpen ),
-    onMouseEnter: () => {
+  const handleClick = useCallback(
+    ( event: React.MouseEvent ) => {
+      event.stopPropagation();
+
+      setIsOpen( !isOpen );
+    },
+    [ setIsOpen, isOpen ]
+  );
+
+  const handleMouseEnter = useCallback(
+    () => {
       setIsHovering( true );
       setLeaveCallback( [ highlighter.highlight( fullPath ) ] );
     },
-    onMouseLeave: () => {
+    [ setIsHovering, setLeaveCallback, highlighter, fullPath ]
+  );
+
+  const handleMouseLeave = useCallback(
+    () => {
       setIsHovering( false );
-      leaveCallback[ 0 ] && leaveCallback[ 0 ]();
+      leaveCallback[ 0 ]?.();
     },
-    isHovering
-  };
+    [ setIsHovering, leaveCallback ]
+  );
 
   const isArray = Array.isArray( value );
   const isNull = value == null;
@@ -73,12 +85,17 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
   const isString = typeof value === 'string';
   const isObject = !isArray && !isNull && !isNumber && !isString;
 
-  const namePrefix = name ? `${ name }: ` : '';
-
   return <>
-    <Root>
+    <Root
+      onClick={ handleClick }
+      onMouseEnter={ handleMouseEnter }
+      onMouseLeave={ handleMouseLeave }
+      isHovering={ isHovering }
+    >
+      { name ? `${ name }: ` : '' }
+
       { isArray && <>
-        <Bracket { ...bracketProps }>{ namePrefix + '[' }</Bracket>
+        <Bracket>{ '[' }</Bracket>
         { isOpen && <Children>
           { value.map( ( e: any, i: number ) => (
             <Entry key={ i }>
@@ -90,11 +107,11 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
             </Entry>
           ) ) }
         </Children> }
-        <Bracket { ...bracketProps }>{ ` ${isOpen ? '' : value.length } ]` }</Bracket>
+        <Bracket>{ ` ${isOpen ? '' : value.length } ]` }</Bracket>
       </> }
 
       { isObject && <>
-        <Bracket { ...bracketProps }>{ namePrefix + '{' }</Bracket>
+        <Bracket>{ '{' }</Bracket>
         { isOpen && <Children>
           { Object.keys( value ).map( ( key, i ) => (
             <Entry key={ i }>
@@ -106,19 +123,19 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
             </Entry>
           ) ) }
         </Children> }
-        <Bracket { ...bracketProps }>{ ` ${ isOpen ? '' : Object.keys( value ).join( ', ' ) } }` }</Bracket>
+        <Bracket>{ ` ${ isOpen ? '' : Object.keys( value ).join( ', ' ) } }` }</Bracket>
       </> }
 
       { isNull && <>
-        { namePrefix }<NullValue>{ namePrefix + value }</NullValue>
+        <NullValue>{ value }</NullValue>
       </> }
 
       { isNumber && <>
-        { namePrefix }<NumValue>{ value }</NumValue>
+        <NumValue>{ value }</NumValue>
       </> }
 
       { isString && <>
-        { namePrefix }<StrValue>&quot;{ value }&quot;</StrValue>
+        <StrValue>&quot;{ value }&quot;</StrValue>
       </> }
     </Root>
   </>;
