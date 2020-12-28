@@ -9,6 +9,8 @@ export async function extractGLTFMesh( gltf: GLTF, index: number ): Promise<THRE
     meshes.push( groupOrMesh as THREE.Mesh );
   } else {
     const primitivesCount = gltf.parser.json.meshes[ index ].primitives.length;
+
+    // assuming first (primitivesCount) children are its primitives
     for ( let i = 0; i < primitivesCount; i ++ ) {
       meshes.push( groupOrMesh.children[ i ] as THREE.Mesh );
     }
