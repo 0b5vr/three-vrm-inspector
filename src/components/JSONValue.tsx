@@ -13,6 +13,11 @@ const Children = styled.div`
   margin-left: 1.13em;
 `;
 
+const Name = styled.span<{ isHovering: boolean }>`
+  color: ${ ( { isHovering } ) => ( isHovering ? Colors.accent : Colors.fore ) };
+  cursor: pointer;
+`;
+
 const Entry = styled.div`
 `;
 
@@ -31,10 +36,9 @@ const StrValue = styled( Value )`
   color: ${ Colors.string };
 `;
 
-const Root = styled.span<{ isHovering: boolean }>`
+const Root = styled.span`
   margin: 0;
   padding: 0;
-  color: ${ ( { isHovering } ) => ( isHovering ? Colors.accent : Colors.fore ) };
   pointer-events: auto;
   font-family: 'Roboto Mono', monospace;
 `;
@@ -85,17 +89,22 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
   const isString = typeof value === 'string';
   const isObject = !isArray && !isNull && !isNumber && !isString;
 
+  const interactableProps = {
+    onClick: handleClick,
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
+    isHovering: isHovering,
+  };
+
   return <>
-    <Root
-      onClick={ handleClick }
-      onMouseEnter={ handleMouseEnter }
-      onMouseLeave={ handleMouseLeave }
-      isHovering={ isHovering }
-    >
-      { name ? `${ name }: ` : '' }
+    <Root>
+      <Name { ...interactableProps }>
+        { name ? `${ name }: ` : '' }
+      </Name>
 
       { isArray && <>
-        <Bracket>{ '[' }</Bracket>
+        <Bracket { ...interactableProps }>{ '[' }</Bracket>
+
         { isOpen && <Children>
           { value.map( ( e: any, i: number ) => (
             <Entry key={ i }>
@@ -107,11 +116,15 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
             </Entry>
           ) ) }
         </Children> }
-        <Bracket>{ ` ${isOpen ? '' : value.length } ]` }</Bracket>
+
+        <Bracket { ...interactableProps }>
+          { ` ${isOpen ? '' : value.length } ]` }
+        </Bracket>
       </> }
 
       { isObject && <>
-        <Bracket>{ '{' }</Bracket>
+        <Bracket { ...interactableProps }>{ '{' }</Bracket>
+
         { isOpen && <Children>
           { Object.keys( value ).map( ( key, i ) => (
             <Entry key={ i }>
@@ -123,7 +136,10 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
             </Entry>
           ) ) }
         </Children> }
-        <Bracket>{ ` ${ isOpen ? '' : Object.keys( value ).join( ', ' ) } }` }</Bracket>
+
+        <Bracket { ...interactableProps }>
+          { ` ${ isOpen ? '' : Object.keys( value ).join( ', ' ) } }` }
+        </Bracket>
       </> }
 
       { isNull && <>
