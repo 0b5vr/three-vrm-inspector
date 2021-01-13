@@ -120,7 +120,8 @@ export class Inspector {
           requestEnvMap: () => this._requestEnvMap(),
         } ),
       }
-    ).catch( () => {
+    ).catch( ( e ) => {
+      console.warn( e );
       console.warn( 'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF' );
       return null;
     } );
