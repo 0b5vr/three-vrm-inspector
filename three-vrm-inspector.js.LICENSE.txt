@@ -13,6 +13,8 @@ object-assign
 
 /*! (c) 2019 FMS_Cat - https://github.com/FMS-Cat/three-vrm-inspector/blob/master/LICENSE */
 
+/*! (c) 2019-2021 pixiv Inc. - https://github.com/pixiv/three-vrm/blob/release/LICENSE */
+
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
