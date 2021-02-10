@@ -5,7 +5,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "jsx": "react",
-    "lib": ["es2018", "dom"],
+    "lib": ["esnext", "dom"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "downlevelIteration": true,

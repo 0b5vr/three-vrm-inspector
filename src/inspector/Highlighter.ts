@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFSchema, VRMSchema, VRMSpringBoneDebug } from '@pixiv/three-vrm';
 import { Colors } from '../constants/Colors';
 import { Inspector } from './Inspector';
-import { extractGLTFMesh } from '../utils/extractGLTFMesh';
+import { gltfExtractPrimitivesFromNode } from '../utils/gltfExtractPrimitivesFromNode';
 
 const colorConstant = new THREE.Color( Colors.constant );
 
@@ -74,11 +74,24 @@ export class Highlighter {
       const index = parseInt( pathSplit.pop()! );
       let callback: ( () => void ) | undefined;
 
-      extractGLTFMesh( inspector.gltf!, index ).then( ( meshes: THREE.Mesh[] ) => {
-        meshes.forEach( ( mesh ) => {
-          if ( Array.isArray( mesh.material ) ) {
-            meshMaterialMap.set( mesh, mesh.material[ 0 ] );
-            mesh.material[ 0 ] = highlightMaterial;
+      const gltf = inspector.gltf!;
+      const schemaNodes: any[] = gltf.parser.json.nodes;
+      const nodesUsingMesh: number[] = [];
+      schemaNodes.forEach( ( node, nodeIndex ) => {
+        if ( node.mesh === index ) {
+          nodesUsingMesh.push( nodeIndex );
+        }
+      } );
+
+      const promisePrimitives = Promise.all( nodesUsingMesh.map( ( nodeIndex ) => {
+        return gltfExtractPrimitivesFromNode( gltf, nodeIndex ) as Promise<THREE.Mesh[]>;
+      } ) ).then( ( result ) => result.flat() );
+
+      promisePrimitives.then( ( primitives ) => {
+        primitives.forEach( ( primitive ) => {
+          if ( Array.isArray( primitive.material ) ) {
+            meshMaterialMap.set( primitive, primitive.material[ 0 ] );
+            primitive.material[ 0 ] = highlightMaterial;
           }
         } );
 
@@ -172,17 +185,30 @@ export class Highlighter {
       const targetIndex = parseInt( pathSplit[ 5 ] );
       let callback: ( () => void ) | undefined;
 
-      extractGLTFMesh( inspector.gltf!, meshIndex ).then( ( meshes: THREE.Mesh[] ) => {
-        meshes.forEach( ( mesh ) => {
-          if ( mesh.morphTargetInfluences ) {
-            mesh.morphTargetInfluences[ targetIndex ] = 1.0;
+      const gltf = inspector.gltf!;
+      const schemaNodes: any[] = gltf.parser.json.nodes;
+      const nodesUsingMesh: number[] = [];
+      schemaNodes.forEach( ( node, nodeIndex ) => {
+        if ( node.mesh === meshIndex ) {
+          nodesUsingMesh.push( nodeIndex );
+        }
+      } );
+
+      const promisePrimitives = Promise.all( nodesUsingMesh.map( ( nodeIndex ) => {
+        return gltfExtractPrimitivesFromNode( gltf, nodeIndex ) as Promise<THREE.Mesh[]>;
+      } ) ).then( ( result ) => result.flat() );
+
+      promisePrimitives.then( ( primitives ) => {
+        primitives.forEach( ( primitive ) => {
+          if ( primitive.morphTargetInfluences ) {
+            primitive.morphTargetInfluences[ targetIndex ] = 1.0;
           }
         } );
 
         callback = () => {
-          meshes.forEach( ( mesh ) => {
-            if ( mesh.morphTargetInfluences ) {
-              mesh.morphTargetInfluences[ targetIndex ] = 0.0;
+          primitives.forEach( ( primitive ) => {
+            if ( primitive.morphTargetInfluences ) {
+              primitive.morphTargetInfluences[ targetIndex ] = 0.0;
             }
           } );
         };
