@@ -166,10 +166,10 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@pixiv/three-vrm@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@pixiv/three-vrm/-/three-vrm-0.6.1.tgz#7510854428dced064968bccd4b27d09e86357cf4"
-  integrity sha512-YKDnf9NVdDvJWLWc1IWczJOQt8+8tpd1Cj0NfOaVMd0XljZJX3t994cADleY0JAkLj9uquNPGD7tByImRKIOzA==
+"@pixiv/three-vrm@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@pixiv/three-vrm/-/three-vrm-0.6.2.tgz#c95ec3414f2f28baa7a88d2392dc332442756527"
+  integrity sha512-Ruqili+q7U3cW6O6GqFW+xvfDHyTm8PckMS4H3vXArY4bRZWbtNk1r83NRjtX49D9ltjZDudiH1nUTBNB4qjhg==
 
 "@types/anymatch@*":
   version "1.3.1"
