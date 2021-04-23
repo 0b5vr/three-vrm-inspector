@@ -6,6 +6,7 @@ import { EventEmittable } from '../utils/EventEmittable';
 import type { InspectorStats } from './InspectorStats';
 import { ValidationReport } from './ValidationReport';
 import { applyMixins } from '../utils/applyMixins';
+import { createAxisHelpers } from './createAxisHelpers';
 import cubemapXn from '../assets/cubemap/xn.jpg';
 import cubemapXp from '../assets/cubemap/xp.jpg';
 import cubemapYn from '../assets/cubemap/yn.jpg';
@@ -127,6 +128,10 @@ export class Inspector {
     } );
 
     this._stats = await this._prepareStats( gltf, vrm );
+
+    if ( vrm ) {
+      createAxisHelpers( vrm );
+    }
 
     this._vrm = vrm;
 
