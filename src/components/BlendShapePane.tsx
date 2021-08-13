@@ -3,29 +3,31 @@ import React, { useContext } from 'react';
 import { BlendShapeRow } from './BlendShapeRow';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
-import { VRMSchema } from '@pixiv/three-vrm';
+import { VRMExpressionPreset } from '@pixiv/three-vrm';
 import styled from 'styled-components';
 
 // == constants ====================================================================================
-const blendShapePresets: Array<[ VRMSchema.BlendShapePresetName, string ]> = [
-  [ VRMSchema.BlendShapePresetName.Neutral, 'Neutral' ],
-  [ VRMSchema.BlendShapePresetName.Joy, 'Joy' ],
-  [ VRMSchema.BlendShapePresetName.Angry, 'Angry' ],
-  [ VRMSchema.BlendShapePresetName.Sorrow, 'Sorrow' ],
-  [ VRMSchema.BlendShapePresetName.Fun, 'Fun' ],
-  [ VRMSchema.BlendShapePresetName.Blink, 'Blink' ],
-  [ VRMSchema.BlendShapePresetName.BlinkL, 'Blink L' ],
-  [ VRMSchema.BlendShapePresetName.BlinkR, 'Blink R' ],
-  [ VRMSchema.BlendShapePresetName.A, 'A' ],
-  [ VRMSchema.BlendShapePresetName.E, 'E' ],
-  [ VRMSchema.BlendShapePresetName.I, 'I' ],
-  [ VRMSchema.BlendShapePresetName.O, 'O' ],
-  [ VRMSchema.BlendShapePresetName.U, 'U' ],
-  [ VRMSchema.BlendShapePresetName.Lookleft, 'Look Left' ],
-  [ VRMSchema.BlendShapePresetName.Lookright, 'Look Right' ],
-  [ VRMSchema.BlendShapePresetName.Lookdown, 'Look Down' ],
-  [ VRMSchema.BlendShapePresetName.Lookup, 'Look Up' ],
+const presets: VRMExpressionPreset[] = [
+  VRMExpressionPreset.Neutral,
+  VRMExpressionPreset.Happy,
+  VRMExpressionPreset.Angry,
+  VRMExpressionPreset.Sad,
+  VRMExpressionPreset.Relaxed,
+  VRMExpressionPreset.Surprised,
+  VRMExpressionPreset.Blink,
+  VRMExpressionPreset.BlinkLeft,
+  VRMExpressionPreset.BlinkRight,
+  VRMExpressionPreset.Aa,
+  VRMExpressionPreset.Ee,
+  VRMExpressionPreset.Ih,
+  VRMExpressionPreset.Oh,
+  VRMExpressionPreset.Ou,
+  VRMExpressionPreset.LookLeft,
+  VRMExpressionPreset.LookRight,
+  VRMExpressionPreset.LookDown,
+  VRMExpressionPreset.LookUp,
 ];
+const presetSet: Set<string> = new Set( presets );
 
 // == styles =======================================================================================
 const Hr = styled.div`
@@ -49,28 +51,37 @@ const Root = styled.div`
 export const BlendShapePane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
-  const proxy = inspector.vrm?.blendShapeProxy;
+  const expressionManager = inspector.vrm?.expressionManager;
+  const expressionMap = expressionManager?.expressionMap;
 
-  const presetMap = proxy?.blendShapePresetMap;
-  const unknowns = proxy?.unknownGroupNames;
-  const hasUnknowns = ( unknowns?.length ?? 0 ) >= 1;
+  const customNames: string[] = [];
+  if ( expressionMap ) {
+    Array.from( Object.keys( expressionMap ) ).forEach( ( name ) => {
+      if ( !presetSet.has( name ) ) {
+        customNames.push( name );
+      }
+    } );
+  }
+
+  const hasUnknowns = ( customNames?.length ?? 0 ) >= 1;
 
   return (
     <Pane { ...params }>
       <Root>
-        { proxy ? <>
-          { blendShapePresets.map( ( [ preset, label ] ) => (
-            <BlendShapeRow
-              key={ preset }
-              presetLabel={ label }
-              name={ presetMap?.[ preset ] }
-            />
-          ) ) }
-          <Hr />
-          { unknowns?.map( ( name ) => (
+        { expressionManager ? <>
+          { presets.map( ( name ) => (
             <BlendShapeRow
               key={ name }
               name={ name }
+              isAvailable={ expressionManager?.getExpression( name ) != null }
+            />
+          ) ) }
+          <Hr />
+          { customNames?.map( ( name ) => (
+            <BlendShapeRow
+              key={ name }
+              name={ name }
+              isAvailable={ true }
             />
           ) ) }
           { !hasUnknowns && <TextNoCustomFound>(No custom expressions)</TextNoCustomFound> }

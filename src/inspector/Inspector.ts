@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { VRM, VRMDebug, VRMMaterialImporter, VRMSchema } from '@pixiv/three-vrm';
+import { VRM, VRMLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import CameraControls from 'camera-controls';
 import { EventEmittable } from '../utils/EventEmittable';
 import type { InspectorStats } from './InspectorStats';
@@ -13,6 +13,7 @@ import cubemapYn from '../assets/cubemap/yn.jpg';
 import cubemapYp from '../assets/cubemap/yp.jpg';
 import cubemapZn from '../assets/cubemap/zn.jpg';
 import cubemapZp from '../assets/cubemap/zp.jpg';
+import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
 import { validateBytes } from 'gltf-validator';
 
 const _v3A = new THREE.Vector3();
@@ -25,24 +26,32 @@ export class Inspector {
   }
 
   private _scene: THREE.Scene;
+  private _springBoneJointHelperRoot: THREE.Group;
+  private _springBoneColliderHelperRoot: THREE.Group;
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
   private _controls?: CameraControls;
   private _gltf?: GLTF;
   private _validationReport?: ValidationReport;
-  private _vrm?: VRMDebug | null;
+  private _vrm?: VRM | null;
   private _currentModelScene?: THREE.Group;
   private _stats: InspectorStats | null = null;
-  private _loader: GLTFLoader = new GLTFLoader();
+  private _loader: GLTFLoader;
   private _canvas?: HTMLCanvasElement;
   private _layerMode: 'firstPerson' | 'thirdPerson' = 'thirdPerson';
   private _handleResize?: () => void;
   private _ongoingRequestEnvMap?: Promise<THREE.CubeTexture>;
 
   public get scene(): THREE.Scene { return this._scene; }
+  public get springBoneJointHelperRoot(): THREE.Group {
+    return this._springBoneJointHelperRoot;
+  }
+  public get springBoneColliderHelperRoot(): THREE.Group {
+    return this._springBoneColliderHelperRoot;
+  }
   public get gltf(): GLTF | undefined { return this._gltf; }
   public get validationReport(): ValidationReport | undefined { return this._validationReport; }
-  public get vrm(): VRMDebug | null | undefined { return this._vrm; }
+  public get vrm(): VRM | null | undefined { return this._vrm; }
   public get stats(): InspectorStats | null { return this._stats; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
   public get layerMode(): 'firstPerson' | 'thirdPerson' { return this._layerMode; }
@@ -65,6 +74,14 @@ export class Inspector {
     // scene
     this._scene = new THREE.Scene();
 
+    this._springBoneJointHelperRoot = new THREE.Group();
+    this._springBoneJointHelperRoot.renderOrder = 10000;
+    this._scene.add( this._springBoneJointHelperRoot );
+
+    this._springBoneColliderHelperRoot = new THREE.Group();
+    this._springBoneColliderHelperRoot.renderOrder = 10000;
+    this._scene.add( this._springBoneColliderHelperRoot );
+
     // light
     const light = new THREE.DirectionalLight( 0xffffff );
     light.position.set( 1.0, 1.0, 1.0 ).normalize();
@@ -76,6 +93,15 @@ export class Inspector {
 
     const axesHelper = new THREE.AxesHelper( 5 );
     this._scene.add( axesHelper );
+
+    // loader
+    this._loader = new GLTFLoader();
+    this._loader.register( ( parser ) => new VRMLoaderPlugin( parser, {
+      springBonePlugin: new VRMSpringBoneLoaderPlugin( parser, {
+        jointHelperRoot: this._springBoneJointHelperRoot,
+        colliderHelperRoot: this._springBoneColliderHelperRoot,
+      } ),
+    } ) );
   }
 
   public unloadVRM(): void {
@@ -84,12 +110,12 @@ export class Inspector {
     }
 
     if ( this._vrm ) {
-      this._vrm.dispose();
+      VRMUtils.deepDispose( this._vrm.scene );
       this._emit( 'unload' );
     }
   }
 
-  public async loadVRM( url: string ): Promise<VRMDebug | null> {
+  public async loadVRM( url: string ): Promise<VRM | null> {
     const buffer = await fetch( url ).then( ( res ) => res.arrayBuffer() );
     const validationReport = await validateBytes(
       new Uint8Array( buffer ),
@@ -114,18 +140,11 @@ export class Inspector {
 
     this.unloadVRM();
 
-    const vrm = await VRMDebug.from(
-      gltf,
-      {
-        materialImporter: new VRMMaterialImporter( {
-          requestEnvMap: () => this._requestEnvMap(),
-        } ),
-      }
-    ).catch( ( e ) => {
-      console.warn( e );
+    const vrm: VRM | null = this._vrm = gltf.userData.vrm ?? null;
+
+    if ( vrm == null ) {
       console.warn( 'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF' );
-      return null;
-    } );
+    }
 
     this._stats = await this._prepareStats( gltf, vrm );
 
@@ -133,22 +152,29 @@ export class Inspector {
       createAxisHelpers( vrm );
     }
 
-    this._vrm = vrm;
-
     this._currentModelScene = ( vrm?.scene ?? gltf.scene ) as THREE.Group;
     this._scene.add( this._currentModelScene );
 
-    if ( this._vrm ) {
-      this._vrm.firstPerson!.setup();
+    if ( vrm ) {
+      vrm.firstPerson!.setup();
       this._updateLayerMode();
 
-      const hips = this._vrm.humanoid!.getBoneNode( VRMSchema.HumanoidBoneName.Hips )!;
-      hips.rotation.y = Math.PI;
+      vrm.scene.traverse( ( object ) => {
+        if ( 'isMesh' in object ) {
+          forEachMeshMaterials( object as THREE.Mesh, async ( material ) => {
+            if ( 'isMeshStandardMaterial' in material ) {
+              ( material as THREE.MeshStandardMaterial ).envMap = await this._requestEnvMap();
+            }
+          } );
+        }
+      } );
+
+      VRMUtils.rotateVRM0( vrm );
     }
 
     this._emit( 'load', vrm );
 
-    return this._vrm;
+    return vrm;
   }
 
   public setup( canvas: HTMLCanvasElement ): void {
@@ -156,6 +182,7 @@ export class Inspector {
 
     // renderer
     this._renderer = new THREE.WebGLRenderer( { canvas: this._canvas } );
+    this._renderer.outputEncoding = THREE.sRGBEncoding;
     this._renderer.setSize( window.innerWidth, window.innerHeight );
     this._renderer.setPixelRatio( window.devicePixelRatio );
 
@@ -212,7 +239,10 @@ export class Inspector {
     }
   }
 
-  private async _prepareStats( gltf: GLTF, vrm: VRM | null ): Promise<InspectorStats | null> {
+  private async _prepareStats(
+    gltf: GLTF,
+    vrm: VRM | null,
+  ): Promise<InspectorStats | null> {
     const dimensionBox = new THREE.Box3();
     const positionBuffers = new Set<THREE.BufferAttribute>();
     let nMeshes = 0;
@@ -250,11 +280,7 @@ export class Inspector {
 
     const materials: Array<THREE.Material> = await gltf.parser.getDependencies( 'material' );
 
-    let nSpringBones = 0;
-
-    vrm?.springBoneManager?.springBoneGroupList?.forEach( ( group ) => {
-      nSpringBones += group.length;
-    } );
+    const nSpringBones = vrm?.springBoneManager?.springBones?.size ?? 0;
 
     return {
       dimension: dimensionBox.getSize( _v3A ).toArray(),

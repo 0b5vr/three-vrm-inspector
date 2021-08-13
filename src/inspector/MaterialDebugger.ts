@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFMesh, MToonMaterial, MToonMaterialDebugMode } from '@pixiv/three-vrm';
+import { MToonMaterial, MToonMaterialDebugMode } from '@pixiv/three-vrm';
 import { Inspector } from './Inspector';
 import imageUVGrid from '../assets/uv-grid.png';
 
@@ -121,7 +121,7 @@ export class MaterialDebugger {
 
   private async _handleLoad(): Promise<void> {
     const gltfMeshes = await this._inspector.gltf!.parser.getDependencies( 'mesh' );
-    gltfMeshes.forEach( ( gltfMesh: GLTFMesh ) => {
+    gltfMeshes.forEach( ( gltfMesh: THREE.Group | THREE.Mesh ) => {
       if ( 'isGroup' in gltfMesh ) {
         const group = gltfMesh as THREE.Group;
         group.children.forEach( ( object ) => {

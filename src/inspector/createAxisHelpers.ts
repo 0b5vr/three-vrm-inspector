@@ -11,7 +11,7 @@ export function createAxisHelpers( vrm: VRM ): void {
       ( helper.material as THREE.Material ).depthTest = false;
       ( helper.material as THREE.Material ).depthWrite = false;
 
-      bone[ 0 ]?.node.add( helper );
+      bone?.node.add( helper );
     }
   }
 }

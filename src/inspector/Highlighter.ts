@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { GLTFSchema, VRMSchema, VRMSpringBoneDebug } from '@pixiv/three-vrm';
+import * as V0VRM from '@pixiv/types-vrm-0.0';
+import { VRMSpringBoneJoint, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
 import { Colors } from '../constants/Colors';
 import { Inspector } from './Inspector';
 import { gltfExtractPrimitivesFromNode } from '../utils/gltfExtractPrimitivesFromNode';
@@ -236,10 +237,10 @@ export class Highlighter {
 
       const parser = inspector.gltf!.parser;
       parser.getDependencies( 'mesh' ).then( ( groups: Array<THREE.Mesh | THREE.Group> ) => {
-        const gltf = parser.json as GLTFSchema.GLTF;
-        gltf.meshes!.forEach( ( schemaMesh, iMesh ) => {
+        const gltf = parser.json;
+        ( gltf.meshes! as any[] ).forEach( ( schemaMesh, iMesh ) => {
           const primitives = schemaMesh.primitives;
-          primitives.forEach( ( schemaPrimitive, iPrimitive ) => {
+          ( primitives as any[] ).forEach( ( schemaPrimitive, iPrimitive ) => {
             if ( index === schemaPrimitive.material ) {
               let groupOrMesh = groups[ iMesh ];
               if ( groupOrMesh.children.length !== 0 ) {
@@ -277,16 +278,14 @@ export class Highlighter {
       const index = parseInt( path.split( '/' ).pop()! );
 
       const parser = inspector.gltf!.parser;
-      const gltf = parser.json as GLTFSchema.GLTF;
-      const vrm = gltf.extensions!.VRM as VRMSchema.VRM;
+      const gltf = parser.json;
+      const vrm = gltf.extensions!.VRM as V0VRM.VRM;
       const boneName = vrm.humanoid!.humanBones![ index ].bone!;
-      const bones = inspector.vrm!.humanoid!.getBoneNodes( boneName );
+      const bone = inspector.vrm!.humanoid!.getBoneNode( boneName )!;
 
-      bones.forEach( ( bone ) => {
-        const mesh = genGizmo( highlightSphereGeometry );
-        boneVisMap.set( bone, mesh );
-        bone.add( mesh );
-      } );
+      const mesh = genGizmo( highlightSphereGeometry );
+      boneVisMap.set( bone, mesh );
+      bone.add( mesh );
 
       return () => {
         for ( const [ bone, mesh ] of boneVisMap ) {
@@ -301,8 +300,8 @@ export class Highlighter {
     ) {
 
       const mesh = genGizmo( highlightSphereGeometry );
-      const firstPerson = inspector.vrm!.firstPerson!;
-      firstPerson.getFirstPersonWorldPosition( mesh.position );
+      const lookAt = inspector.vrm!.lookAt!;
+      lookAt.getLookAtWorldPosition( mesh.position );
       inspector.scene.add( mesh );
 
       return () => {
@@ -332,16 +331,16 @@ export class Highlighter {
       const index = parseInt( path.split( '/' ).pop()! );
 
       const parser = inspector.gltf!.parser;
-      const gltf = parser.json as GLTFSchema.GLTF;
-      const vrm = gltf.extensions!.VRM as VRMSchema.VRM;
-      const blendShapeMaster: VRMSchema.BlendShape = vrm.blendShapeMaster!;
+      const gltf = parser.json;
+      const vrm = gltf.extensions!.VRM as V0VRM.VRM;
+      const blendShapeMaster = vrm.blendShapeMaster!;
       const blendShapeName = blendShapeMaster.blendShapeGroups![ index ].name!;
 
-      const prevValue = inspector.vrm!.blendShapeProxy!.getValue( blendShapeName )!;
-      inspector.vrm!.blendShapeProxy!.setValue( blendShapeName, 1.0 );
+      const prevValue = inspector.vrm!.expressionManager!.getValue( blendShapeName )!;
+      inspector.vrm!.expressionManager!.setValue( blendShapeName, 1.0 );
 
       return () => {
-        inspector.vrm!.blendShapeProxy!.setValue( blendShapeName, prevValue );
+        inspector.vrm!.expressionManager!.setValue( blendShapeName, prevValue );
       };
 
     } else if (
@@ -352,26 +351,52 @@ export class Highlighter {
     ) {
 
       const index = parseInt( path.split( '/' ).pop()! );
-      const springBoneManager = inspector.vrm!.springBoneManager!;
-      const springBoneGroup
-        = springBoneManager.springBoneGroupList[ index ] as VRMSpringBoneDebug[];
 
-      const gizmoColorMap = new Map<THREE.ArrowHelper, THREE.Color>();
-      springBoneGroup.forEach( ( springBone ) => {
-        const gizmo = springBone.getGizmo();
-        const prevColor = ( gizmo.line.material as THREE.LineBasicMaterial ).color.clone();
-        gizmoColorMap.set( gizmo, prevColor );
-        gizmo.setColor( colorConstant );
+      const parser = inspector.gltf!.parser;
+      const gltf = parser.json;
+      const vrm = gltf.extensions!.VRM as V0VRM.VRM;
+      const secondaryAnimation = vrm.secondaryAnimation;
+      const bones = secondaryAnimation?.boneGroups![ index ].bones;
+
+      const springBoneManager = inspector.vrm!.springBoneManager!;
+      const nodeJointMap = new Map<THREE.Object3D, VRMSpringBoneJoint>();
+      for ( const springBone of springBoneManager.springBones ) {
+        nodeJointMap.set( springBone.bone, springBone );
+      }
+
+      const helperRoot = inspector.springBoneJointHelperRoot;
+      const jointHelperMap = new Map<VRMSpringBoneJoint, VRMSpringBoneJointHelper>();
+      helperRoot.children.forEach( ( child ) => {
+        const helper = child as VRMSpringBoneJointHelper;
+        jointHelperMap.set( helper.springBone, helper );
+      } );
+
+      const callbacks: ( () => void )[] = [];
+
+      const helpers = new Set<VRMSpringBoneJointHelper>();
+      bones!.forEach( ( bone ) => {
+        parser.getDependency( 'node', bone ).then( ( node: THREE.Object3D ) => {
+          node.traverse( ( child ) => {
+            const joint = nodeJointMap.get( child )!;
+            const helper = jointHelperMap.get( joint )!;
+            helpers.add( helper );
+
+            // TODO: setColor
+            const line = helper.children[ 0 ] as THREE.LineSegments;
+            const material = line.material as THREE.LineBasicMaterial;
+            const prevColor = material.color.clone();
+            material.color.copy( colorConstant );
+
+            callbacks.push( () => {
+              material.color.copy( prevColor );
+            } );
+          } );
+        } );
       } );
 
       return () => {
-        springBoneGroup.forEach( ( springBone ) => {
-          const gizmo = springBone.getGizmo();
-          const color = gizmoColorMap.get( gizmo )!;
-          gizmo.setColor( color );
-        } );
+        callbacks.forEach( ( callback ) => callback() );
       };
-
     }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
 import styled from 'styled-components';
@@ -18,29 +18,15 @@ const Root = styled.div`
 `;
 
 // == element ======================================================================================
-export const BlendShapeRow = ( { presetLabel, name }: {
-  presetLabel?: string;
-  name?: string;
+export const BlendShapeRow = ( { name, isAvailable }: {
+  name: string;
+  isAvailable: boolean;
 } ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
-  const isCustom = presetLabel == null;
-  const isLegit = name != null;
-
-  const label = useMemo(
-    () => (
-      isCustom
-        ? name!
-        : isLegit
-          ? `${ presetLabel } (${ name })`
-          : <TextDisabled>{ presetLabel }</TextDisabled>
-    ),
-    [ presetLabel, name ]
-  );
-
   const handleChange = useCallback(
     ( event: React.ChangeEvent<HTMLInputElement> ) => {
-      inspector.vrm?.blendShapeProxy?.setValue( name!, parseFloat( event.target.value ) );
+      inspector.vrm?.expressionManager?.setValue( name, parseFloat( event.target.value ) );
     },
     []
   );
@@ -53,10 +39,10 @@ export const BlendShapeRow = ( { presetLabel, name }: {
         max="1"
         step="0.001"
         defaultValue="0"
-        disabled={ !isLegit }
+        disabled={ !isAvailable }
         onChange={ handleChange }
       />
-      { label }
+      { isAvailable ? name : <TextDisabled>{ name }</TextDisabled> }
     </Root>
   );
 };
