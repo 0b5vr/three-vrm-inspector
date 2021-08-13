@@ -3,35 +3,13 @@ import * as V0VRM from '@pixiv/types-vrm-0.0';
 import { VRMSpringBoneJoint, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
 import { Colors } from '../constants/Colors';
 import { Inspector } from './Inspector';
+import { genGizmo } from './utils/genGizmo';
 import { gltfExtractPrimitivesFromNode } from '../utils/gltfExtractPrimitivesFromNode';
+import { highlightMeshes } from './utils/highlightMeshes';
+import { highlightNodes } from './utils/highlightNodes';
+import { visualizeWeightMaterial } from './utils/visualizeWeightMaterial';
 
 const colorConstant = new THREE.Color( Colors.constant );
-
-const highlightMaterial = new THREE.MeshNormalMaterial( {
-  transparent: true,
-  skinning: true,
-  morphTargets: true,
-  morphNormals: true,
-  depthTest: false,
-  depthWrite: false
-} );
-
-const highlightWireframeMaterial = new THREE.MeshBasicMaterial( {
-  color: colorConstant,
-  transparent: true,
-  wireframe: true,
-  depthTest: false,
-  depthWrite: false
-} );
-
-const highlightSphereGeometry = new THREE.SphereBufferGeometry( 0.2 );
-
-function genGizmo( geom: THREE.BufferGeometry ): THREE.Mesh {
-  const mesh = new THREE.Mesh( geom, highlightWireframeMaterial );
-  mesh.frustumCulled = false;
-  mesh.renderOrder = 10000;
-  return mesh;
-}
 
 export class Highlighter {
   private _inspector: Inspector;
@@ -53,13 +31,8 @@ export class Highlighter {
       let callback: ( () => void ) | undefined;
 
       const parser = inspector.gltf!.parser;
-      parser.getDependency( 'node', index ).then( ( node ) => {
-        const mesh = genGizmo( highlightSphereGeometry );
-        node.add( mesh );
-
-        callback = () => {
-          node.remove( mesh );
-        };
+      parser.getDependency( 'node', index ).then( ( node: THREE.Object3D ) => {
+        callback = highlightNodes( [ node ] );
       } );
 
       return () => {
@@ -71,7 +44,6 @@ export class Highlighter {
       && pathSplit[ 1 ] === 'meshes'
     ) {
 
-      const meshMaterialMap: Map<THREE.Mesh, THREE.Material> = new Map();
       const index = parseInt( pathSplit.pop()! );
       let callback: ( () => void ) | undefined;
 
@@ -89,18 +61,7 @@ export class Highlighter {
       } ) ).then( ( result ) => result.flat() );
 
       promisePrimitives.then( ( primitives ) => {
-        primitives.forEach( ( primitive ) => {
-          if ( Array.isArray( primitive.material ) ) {
-            meshMaterialMap.set( primitive, primitive.material[ 0 ] );
-            primitive.material[ 0 ] = highlightMaterial;
-          }
-        } );
-
-        callback = () => {
-          for ( const [ mesh, mtl ] of meshMaterialMap ) {
-            ( mesh.material as THREE.Material[] )[ 0 ] = mtl;
-          }
-        };
+        callback = highlightMeshes( primitives );
       } );
 
       return () => {
@@ -113,7 +74,6 @@ export class Highlighter {
       && pathSplit[ 3 ] === 'primitives'
     ) {
 
-      const meshMaterialMap: Map<THREE.Mesh, THREE.Material> = new Map();
       const meshIndex = parseInt( pathSplit[ 2 ] );
       const primIndex = parseInt( pathSplit[ 4 ] );
       let callback: ( () => void ) | undefined;
@@ -125,16 +85,7 @@ export class Highlighter {
         }
         const mesh = groupOrMesh as THREE.Mesh;
 
-        if ( Array.isArray( mesh.material ) ) {
-          meshMaterialMap.set( mesh, mesh.material[ 0 ] );
-          mesh.material[ 0 ] = highlightMaterial;
-        }
-
-        callback = () => {
-          for ( const [ mesh, mtl ] of meshMaterialMap ) {
-            ( mesh.material as THREE.Material[] )[ 0 ] = mtl;
-          }
-        };
+        callback = highlightMeshes( [ mesh ] );
       } );
 
       return () => {
@@ -220,6 +171,73 @@ export class Highlighter {
       };
 
     } else if (
+      pathSplit.length === 3
+      && pathSplit[ 1 ] === 'skins'
+    ) {
+
+      const skinIndex = parseInt( pathSplit[ 2 ] );
+      let callback: ( () => void ) | undefined;
+
+      const gltf = inspector.gltf!;
+      const schemaNodes: any[] = gltf.parser.json.nodes;
+      const nodesUsingSkin: number[] = [];
+      schemaNodes.forEach( ( node, nodeIndex ) => {
+        if ( node.skin === skinIndex ) {
+          nodesUsingSkin.push( nodeIndex );
+        }
+      } );
+
+      const promisePrimitives = Promise.all( nodesUsingSkin.map( ( nodeIndex ) => {
+        return gltfExtractPrimitivesFromNode( gltf, nodeIndex ) as Promise<THREE.Mesh[]>;
+      } ) ).then( ( result ) => result.flat() );
+
+      promisePrimitives.then( ( primitives ) => {
+        callback = highlightMeshes( primitives );
+      } );
+
+      return () => {
+        callback && callback();
+      };
+
+    } else if (
+      pathSplit.length === 5
+      && pathSplit[ 1 ] === 'skins'
+      && pathSplit[ 3 ] === 'joints'
+    ) {
+
+      const skinIndex = parseInt( pathSplit[ 2 ] );
+      const jointIndex = parseInt( pathSplit[ 4 ] );
+      const callbacks: ( () => void )[] = [];
+
+      const gltf = inspector.gltf!;
+
+      const jointNodeIndex: any = gltf.parser.json.skins[ skinIndex ].joints[ jointIndex ];
+      gltf.parser.getDependency( 'node', jointNodeIndex ).then( ( node: THREE.Object3D ) => {
+        callbacks.push( highlightNodes( [ node ] ) );
+      } );
+
+      const schemaNodes: any[] = gltf.parser.json.nodes;
+      const nodesUsingSkin: number[] = [];
+      schemaNodes.forEach( ( node, nodeIndex ) => {
+        if ( node.skin === skinIndex ) {
+          nodesUsingSkin.push( nodeIndex );
+        }
+      } );
+
+      const promisePrimitives = Promise.all( nodesUsingSkin.map( ( nodeIndex ) => {
+        return gltfExtractPrimitivesFromNode( gltf, nodeIndex ) as Promise<THREE.Mesh[]>;
+      } ) ).then( ( result ) => result.flat() );
+
+      promisePrimitives.then( ( primitives ) => {
+        callbacks.push( highlightMeshes( primitives, visualizeWeightMaterial ) );
+        visualizeWeightMaterial.skinIndexVisualize = jointIndex;
+      } );
+
+      return () => {
+        callbacks.forEach( ( c ) => c() );
+      };
+
+    } else if (
       (
         pathSplit.length === 3
         && pathSplit[ 1 ] === 'materials'
@@ -231,12 +249,13 @@ export class Highlighter {
       )
     ) {
 
-      const meshMaterialMap: Map<THREE.Mesh, THREE.Material> = new Map();
       const index = parseInt( pathSplit.pop()! );
       let callback: ( () => void ) | undefined;
 
       const parser = inspector.gltf!.parser;
       parser.getDependencies( 'mesh' ).then( ( groups: Array<THREE.Mesh | THREE.Group> ) => {
+        const meshes: THREE.Mesh[] = [];
+
         const gltf = parser.json;
         ( gltf.meshes! as any[] ).forEach( ( schemaMesh, iMesh ) => {
           const primitives = schemaMesh.primitives;
@@ -248,19 +267,12 @@ export class Highlighter {
               }
               const mesh = groupOrMesh as THREE.Mesh;
 
-              if ( Array.isArray( mesh.material ) ) {
-                meshMaterialMap.set( mesh, mesh.material[ 0 ] );
-                mesh.material[ 0 ] = highlightMaterial;
-              }
+              meshes.push( mesh );
             }
           } );
         } );
 
-        callback = () => {
-          for ( const [ mesh, mtl ] of meshMaterialMap ) {
-            ( mesh.material as THREE.Material[] )[ 0 ] = mtl;
-          }
-        };
+        callback = highlightMeshes( meshes );
       } );
 
       return () => {
@@ -274,7 +286,6 @@ export class Highlighter {
       && pathSplit[ 4 ] === 'humanBones'
     ) {
 
-      const boneVisMap: Map<THREE.Object3D, THREE.Mesh> = new Map();
       const index = parseInt( path.split( '/' ).pop()! );
 
       const parser = inspector.gltf!.parser;
@@ -283,15 +294,7 @@ export class Highlighter {
       const boneName = vrm.humanoid!.humanBones![ index ].bone!;
       const bone = inspector.vrm!.humanoid!.getBoneNode( boneName )!;
 
-      const mesh = genGizmo( highlightSphereGeometry );
-      boneVisMap.set( bone, mesh );
-      bone.add( mesh );
-
-      return () => {
-        for ( const [ bone, mesh ] of boneVisMap ) {
-          bone.remove( mesh );
-        }
-      };
+      return highlightNodes( [ bone ] );
 
     } else if (
       pathSplit.length === 4
@@ -299,7 +302,7 @@ export class Highlighter {
       && pathSplit[ 3 ] === 'firstPerson'
     ) {
 
-      const mesh = genGizmo( highlightSphereGeometry );
+      const mesh = genGizmo();
       const lookAt = inspector.vrm!.lookAt!;
       lookAt.getLookAtWorldPosition( mesh.position );
       inspector.scene.add( mesh );

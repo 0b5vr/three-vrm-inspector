@@ -143,15 +143,15 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
       </> }
 
       { isNull && <>
-        <NullValue>{ value }</NullValue>
+        <NullValue { ...interactableProps }>{ value }</NullValue>
       </> }
 
       { isNumber && <>
-        <NumValue>{ value }</NumValue>
+        <NumValue { ...interactableProps }>{ value }</NumValue>
       </> }
 
       { isString && <>
-        <StrValue>&quot;{ value }&quot;</StrValue>
+        <StrValue { ...interactableProps }>&quot;{ value }&quot;</StrValue>
       </> }
     </Root>
   </>;
