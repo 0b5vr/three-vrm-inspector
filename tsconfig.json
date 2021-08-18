@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "target": "es5",
-    "module": "commonjs",
+    "target": "es6",
+    "module": "es6",
     "moduleResolution": "node",
     "jsx": "react",
     "lib": ["esnext", "dom"],

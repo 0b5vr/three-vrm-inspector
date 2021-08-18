@@ -1,11 +1,11 @@
 /* eslint-env node */
 
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import path from 'path';
-import webpack from 'webpack';
+const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
+const path = require( 'path' );
+const webpack = require( 'webpack' );
 
-export default ( env: any, argv: any ): webpack.Configuration => {
+module.exports = ( env, argv ) => {
   const isProd = argv.mode === 'production';
 
   const banner = isProd
