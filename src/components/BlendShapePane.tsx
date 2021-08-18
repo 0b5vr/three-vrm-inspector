@@ -3,29 +3,29 @@ import React, { useContext } from 'react';
 import { BlendShapeRow } from './BlendShapeRow';
 import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
-import { VRMExpressionPreset } from '@pixiv/three-vrm';
+import { VRMExpressionPresetName } from '@pixiv/three-vrm';
 import styled from 'styled-components';
 
 // == constants ====================================================================================
-const presets: VRMExpressionPreset[] = [
-  VRMExpressionPreset.Neutral,
-  VRMExpressionPreset.Happy,
-  VRMExpressionPreset.Angry,
-  VRMExpressionPreset.Sad,
-  VRMExpressionPreset.Relaxed,
-  VRMExpressionPreset.Surprised,
-  VRMExpressionPreset.Blink,
-  VRMExpressionPreset.BlinkLeft,
-  VRMExpressionPreset.BlinkRight,
-  VRMExpressionPreset.Aa,
-  VRMExpressionPreset.Ee,
-  VRMExpressionPreset.Ih,
-  VRMExpressionPreset.Oh,
-  VRMExpressionPreset.Ou,
-  VRMExpressionPreset.LookLeft,
-  VRMExpressionPreset.LookRight,
-  VRMExpressionPreset.LookDown,
-  VRMExpressionPreset.LookUp,
+const presets: VRMExpressionPresetName[] = [
+  VRMExpressionPresetName.Neutral,
+  VRMExpressionPresetName.Happy,
+  VRMExpressionPresetName.Angry,
+  VRMExpressionPresetName.Sad,
+  VRMExpressionPresetName.Relaxed,
+  VRMExpressionPresetName.Surprised,
+  VRMExpressionPresetName.Blink,
+  VRMExpressionPresetName.BlinkLeft,
+  VRMExpressionPresetName.BlinkRight,
+  VRMExpressionPresetName.Aa,
+  VRMExpressionPresetName.Ee,
+  VRMExpressionPresetName.Ih,
+  VRMExpressionPresetName.Oh,
+  VRMExpressionPresetName.Ou,
+  VRMExpressionPresetName.LookLeft,
+  VRMExpressionPresetName.LookRight,
+  VRMExpressionPresetName.LookDown,
+  VRMExpressionPresetName.LookUp,
 ];
 const presetSet: Set<string> = new Set( presets );
 
