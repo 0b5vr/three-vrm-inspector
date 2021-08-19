@@ -5,6 +5,7 @@ import { BlendShapePane } from './BlendShapePane';
 import { JSONPane } from './JSONPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
+import { SampleModelsPane } from './SampleModelsPane';
 import { StatsPane } from './StatsPane';
 import { ValidationReportPane } from './ValidationReportPane';
 
@@ -17,6 +18,7 @@ const PaneList = (): JSX.Element => {
     'stats',
     'blendShape',
     'validationReport',
+    'sampleModels',
   ] );
 
   const handleClick = useCallback(
@@ -72,6 +74,13 @@ const PaneList = (): JSX.Element => {
       title="Validation Report"
       onClick={ handleClick }
       initPosition={ { left: 0, top: 100 } }
+    />,
+    'sampleModels': <SampleModelsPane
+      key="sampleModels"
+      paneKey="sampleModels"
+      title="Sample Models"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 120 } }
     />,
   };
 
