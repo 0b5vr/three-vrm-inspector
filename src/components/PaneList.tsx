@@ -2,6 +2,7 @@
 
 import React, { useCallback, useState } from 'react';
 import { BlendShapePane } from './BlendShapePane';
+import { HelpersPane } from './HelpersPane';
 import { JSONPane } from './JSONPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
@@ -19,6 +20,7 @@ const PaneList = (): JSX.Element => {
     'blendShape',
     'validationReport',
     'sampleModels',
+    'helpers',
   ] );
 
   const handleClick = useCallback(
@@ -81,6 +83,13 @@ const PaneList = (): JSX.Element => {
       title="Sample Models"
       onClick={ handleClick }
       initPosition={ { left: 0, top: 120 } }
+    />,
+    'helpers': <HelpersPane
+      key="helpers"
+      paneKey="helpers"
+      title="Helpers"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 140 } }
     />,
   };
 
