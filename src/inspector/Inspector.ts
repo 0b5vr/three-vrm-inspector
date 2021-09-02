@@ -156,7 +156,7 @@ export class Inspector {
     this._scene.add( this._currentModelScene );
 
     if ( vrm ) {
-      vrm.firstPerson!.setup();
+      vrm.firstPerson?.setup();
       this._updateLayerMode();
 
       vrm.scene.traverse( ( object ) => {
@@ -320,14 +320,16 @@ export class Inspector {
   }
 
   private _updateLayerMode(): void {
-    if ( !this._vrm ) { throw new Error( 'bazinga' ); }
+    const firstPerson = this._vrm?.firstPerson;
+
+    if ( !firstPerson ) { return; }
 
     if ( this._layerMode === 'firstPerson' ) {
-      this._camera.layers.enable( this._vrm.firstPerson!.firstPersonOnlyLayer );
-      this._camera.layers.disable( this._vrm.firstPerson!.thirdPersonOnlyLayer );
+      this._camera.layers.enable( firstPerson.firstPersonOnlyLayer );
+      this._camera.layers.disable( firstPerson.thirdPersonOnlyLayer );
     } else {
-      this._camera.layers.disable( this._vrm.firstPerson!.firstPersonOnlyLayer );
-      this._camera.layers.enable( this._vrm.firstPerson!.thirdPersonOnlyLayer );
+      this._camera.layers.disable( firstPerson.firstPersonOnlyLayer );
+      this._camera.layers.enable( firstPerson.thirdPersonOnlyLayer );
     }
   }
 }
