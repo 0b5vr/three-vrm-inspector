@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { VRM, VRMLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+import { VRM, VRMLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import CameraControls from 'camera-controls';
 import { EventEmittable } from '../utils/EventEmittable';
 import type { InspectorStats } from './InspectorStats';
@@ -113,6 +113,16 @@ export class Inspector {
       VRMUtils.deepDispose( this._vrm.scene );
       this._emit( 'unload' );
     }
+
+    this._springBoneJointHelperRoot.children.concat().forEach( ( helper ) => {
+      this._springBoneJointHelperRoot.remove( helper );
+      ( helper as VRMSpringBoneJointHelper ).dispose();
+    } );
+
+    this._springBoneColliderHelperRoot.children.concat().forEach( ( helper ) => {
+      this._springBoneColliderHelperRoot.remove( helper );
+      ( helper as VRMSpringBoneColliderHelper ).dispose();
+    } );
   }
 
   public async loadVRM( url: string ): Promise<VRM | null> {
@@ -127,6 +137,8 @@ export class Inspector {
     this._validationReport = validationReport;
     this._emit( 'validate', validationReport );
 
+    this.unloadVRM();
+
     const gltf = await new Promise<GLTF>( ( resolve, reject ) => {
       this._loader.crossOrigin = 'anonymous';
       this._loader.load(
@@ -137,8 +149,6 @@ export class Inspector {
       );
     } );
     this._gltf = gltf;
-
-    this.unloadVRM();
 
     const vrm: VRM | null = this._vrm = gltf.userData.vrm ?? null;
 
