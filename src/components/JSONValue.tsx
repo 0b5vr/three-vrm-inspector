@@ -32,6 +32,10 @@ const NumValue = styled( Value )`
   color: ${ Colors.number };
 `;
 
+const BoolValue = styled( Value )`
+  color: ${ Colors.number };
+`;
+
 const StrValue = styled( Value )`
   color: ${ Colors.string };
 `;
@@ -86,8 +90,9 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
   const isArray = Array.isArray( value );
   const isNull = value == null;
   const isNumber = typeof value === 'number';
+  const isBoolean = typeof value === 'boolean';
   const isString = typeof value === 'string';
-  const isObject = !isArray && !isNull && !isNumber && !isString;
+  const isObject = !isArray && !isNull && !isNumber && !isBoolean && !isString;
 
   const interactableProps = {
     onClick: handleClick,
@@ -148,6 +153,10 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
 
       { isNumber && <>
         <NumValue { ...interactableProps }>{ value }</NumValue>
+      </> }
+
+      { isBoolean && <>
+        <BoolValue { ...interactableProps }>{ String( value ) }</BoolValue>
       </> }
 
       { isString && <>
