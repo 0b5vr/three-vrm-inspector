@@ -2,6 +2,7 @@
 
 import React, { useCallback, useState } from 'react';
 import { BlendShapePane } from './BlendShapePane';
+import { ExportBufferViewPane } from './ExportBufferViewPane';
 import { HelpersPane } from './HelpersPane';
 import { JSONPane } from './JSONPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
@@ -21,6 +22,7 @@ const PaneList = (): JSX.Element => {
     'validationReport',
     'sampleModels',
     'helpers',
+    'exportBufferView'
   ] );
 
   const handleClick = useCallback(
@@ -90,6 +92,13 @@ const PaneList = (): JSX.Element => {
       title="Helpers"
       onClick={ handleClick }
       initPosition={ { left: 0, top: 140 } }
+    />,
+    'exportBufferView': <ExportBufferViewPane
+      key="exportBufferView"
+      paneKey="exportBufferView"
+      title="Export Buffer View"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 160 } }
     />,
   };
 

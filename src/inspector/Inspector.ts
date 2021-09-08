@@ -187,6 +187,21 @@ export class Inspector {
     return vrm;
   }
 
+  public async exportBufferView( index: number ): Promise<void> {
+    const gltf = this._gltf;
+    if ( gltf == null ) { return; }
+
+    const bufferView = await gltf.parser.getDependency( 'bufferView', index );
+    const blob = new Blob( [ bufferView ] );
+    const url = URL.createObjectURL( blob );
+
+    const a = document.createElement( 'a' );
+    a.href = url;
+    a.download = `${ index }.bin`;
+    a.click();
+    URL.revokeObjectURL( url );
+  }
+
   public setup( canvas: HTMLCanvasElement ): void {
     this._canvas = canvas;
 
