@@ -12,9 +12,9 @@
     "gh-pages": "node ./utils/gh-pages.js"
   },
   "devDependencies": {
-    "@pixiv/three-vrm": "^1.0.0-beta.2",
-    "@pixiv/types-vrm-0.0": "^1.0.0-beta.2",
-    "@pixiv/types-vrmc-vrm-1.0": "^1.0.0-beta.2",
+    "@pixiv/three-vrm": "^1.0.0-beta.3",
+    "@pixiv/types-vrm-0.0": "^1.0.0-beta.3",
+    "@pixiv/types-vrmc-vrm-1.0": "^1.0.0-beta.3",
     "@types/fs-extra": "^9.0.4",
     "@types/html-webpack-plugin": "^3.2.4",
     "@types/react": "^17.0.0",
