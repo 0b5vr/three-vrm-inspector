@@ -65,6 +65,13 @@ object-assign
  * Released under the MIT License.
  */
 
+/*!
+fflate - fast JavaScript compression/decompression
+<https://101arrowz.github.io/fflate>
+Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
+version 0.6.9
+*/
+
 /*! (c) 2019 FMS_Cat - https://github.com/FMS-Cat/three-vrm-inspector/blob/master/LICENSE */
 
 /*! (c) 2019-2021 pixiv Inc. - https://github.com/pixiv/three-vrm/blob/release/LICENSE */
