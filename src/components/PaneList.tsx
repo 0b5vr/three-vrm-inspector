@@ -7,6 +7,7 @@ import { HelpersPane } from './HelpersPane';
 import { JSONPane } from './JSONPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
+import { MixamoAnimationsPane } from './MixamoAnimationsPane';
 import { SampleModelsPane } from './SampleModelsPane';
 import { StatsPane } from './StatsPane';
 import { ValidationReportPane } from './ValidationReportPane';
@@ -22,7 +23,8 @@ const PaneList = (): JSX.Element => {
     'validationReport',
     'sampleModels',
     'helpers',
-    'exportBufferView'
+    'exportBufferView',
+    'mixamoAnimations',
   ] );
 
   const handleClick = useCallback(
@@ -99,6 +101,13 @@ const PaneList = (): JSX.Element => {
       title="Export Buffer View"
       onClick={ handleClick }
       initPosition={ { left: 0, top: 160 } }
+    />,
+    'mixamoAnimations': <MixamoAnimationsPane
+      key="mixamoAnimations"
+      paneKey="mixamoAnimations"
+      title="Mixamo Animations"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 180 } }
     />,
   };
 

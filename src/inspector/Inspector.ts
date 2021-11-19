@@ -14,6 +14,7 @@ import cubemapYp from '../assets/cubemap/yp.jpg';
 import cubemapZn from '../assets/cubemap/zn.jpg';
 import cubemapZp from '../assets/cubemap/zp.jpg';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
+import { loadMixamoAnimation } from './loadMixamoAnimation';
 import { validateBytes } from 'gltf-validator';
 
 const _v3A = new THREE.Vector3();
@@ -35,6 +36,9 @@ export class Inspector {
   private _validationReport?: ValidationReport;
   private _vrm?: VRM | null;
   private _currentModelScene?: THREE.Group;
+  private _animationMixer?: THREE.AnimationMixer | null;
+  private _currentAnimationAction?: THREE.AnimationAction | null;
+  private _currentAnimationURL?: string | null;
   private _stats: InspectorStats | null = null;
   private _loader: GLTFLoader;
   private _canvas?: HTMLCanvasElement;
@@ -114,6 +118,9 @@ export class Inspector {
       this._emit( 'unload' );
     }
 
+    this._animationMixer = null;
+    this._currentAnimationAction = null;
+
     this._springBoneJointHelperRoot.children.concat().forEach( ( helper ) => {
       this._springBoneJointHelperRoot.remove( helper );
       ( helper as VRMSpringBoneJointHelper ).dispose();
@@ -180,6 +187,12 @@ export class Inspector {
       } );
 
       VRMUtils.rotateVRM0( vrm );
+
+      this._animationMixer = new THREE.AnimationMixer( vrm.scene );
+
+      if ( this._currentAnimationURL != null ) {
+        this.loadMixamoAnimation( this._currentAnimationURL );
+      }
     }
 
     this._emit( 'load', vrm );
@@ -255,8 +268,39 @@ export class Inspector {
     };
   }
 
+  public loadMixamoAnimation( url: string ): void {
+    const vrm = this._vrm;
+    const mixer = this._animationMixer;
+    if ( !vrm || !mixer ) { return; }
+
+    if ( this._currentAnimationAction ) {
+      this.clearMixamoAnimation();
+    }
+
+    loadMixamoAnimation( url, vrm ).then( ( clip ) => {
+      if ( clip ) {
+        this._currentAnimationURL = url;
+        this._currentAnimationAction = mixer.clipAction( clip );
+        this._currentAnimationAction.play();
+      }
+    } );
+  }
+
+  public clearMixamoAnimation(): void {
+    const vrm = this._vrm;
+    const action = this._currentAnimationAction;
+    if ( !vrm || !action ) { return; }
+
+    this._currentAnimationURL = null;
+    action.stop();
+    this._currentAnimationAction = null;
+
+    vrm.humanoid?.resetPose();
+  }
+
   public update( delta: number ): void {
     if ( this._controls ) { this._controls.update( delta ); }
+    if ( this._animationMixer ) { this._animationMixer.update( delta ); }
     if ( this._vrm ) { this._vrm.update( delta ); }
 
     if ( this._renderer ) {
