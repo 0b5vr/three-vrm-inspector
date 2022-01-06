@@ -1,13 +1,10 @@
 import { Pane, PaneParams } from './Pane';
 import React from 'react';
+import { Link } from './Link';
 import { Colors } from '../constants/Colors';
 import styled from 'styled-components';
 
 // == styles =======================================================================================
-const Anchor = styled.a`
-  color: ${ Colors.accent };
-`;
-
 const Line = styled.div`
   line-height: 20px;
 `;
@@ -18,11 +15,6 @@ const Root = styled.div`
   backdrop-filter: blur( 5px );
 `;
 
-// == microcomponents ==============================================================================
-const Link = ( { link }: { link: string } ): JSX.Element => {
-  return <Anchor href={ link } target="_blank" rel="noreferrer">{ link }</Anchor>;
-};
-
 // == element ======================================================================================
 export const AboutPane = ( params: PaneParams ): JSX.Element => {
   return (
@@ -30,7 +22,7 @@ export const AboutPane = ( params: PaneParams ): JSX.Element => {
       <Root>
         <Line>three-vrm-inspector</Line>
         <Line>Three.js based VRM inspector</Line>
-        <Line>Source: <Link link="https://github.com/0b5vr/three-vrm-inspector" /></Line>
+        <Line>Source: <Link href="https://github.com/0b5vr/three-vrm-inspector" /></Line>
       </Root>
     </Pane>
   );
