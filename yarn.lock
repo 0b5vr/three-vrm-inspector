@@ -5036,6 +5036,11 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
+webgl-memory@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/webgl-memory/-/webgl-memory-1.0.7.tgz#42738c82d4e8c81f0d746f07d7b7b0e76352f7e9"
+  integrity sha512-UM39h/Gp+BQf2c8CXTr+3w3NSYh3i3jNqi7N6Ct4twCjsiif8zDghactRwXqSlKLK8mK22796DzfuJF8A4uAoQ==
+
 webpack-cli@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-4.2.0.tgz#10a09030ad2bd4d8b0f78322fba6ea43ec56aaaa"

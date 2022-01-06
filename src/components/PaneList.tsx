@@ -12,6 +12,7 @@ import { MixamoAnimationsPane } from './MixamoAnimationsPane';
 import { SampleModelsPane } from './SampleModelsPane';
 import { StatsPane } from './StatsPane';
 import { ValidationReportPane } from './ValidationReportPane';
+import { WebGLMemoryPane } from './WebGLMemoryPane';
 
 // == element ======================================================================================
 const PaneList = (): JSX.Element => {
@@ -20,6 +21,7 @@ const PaneList = (): JSX.Element => {
     'materialDebugger',
     'meta',
     'stats',
+    'webglMemory',
     'blendShape',
     'validationReport',
     'sampleModels',
@@ -69,54 +71,61 @@ const PaneList = (): JSX.Element => {
       onClick={ handleClick }
       initPosition={ { left: 0, top: 60 } }
     />,
+    'webglMemory': <WebGLMemoryPane
+      key="webglMemory"
+      paneKey="webglMemory"
+      title="WebGL Memory"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 80 } }
+    />,
     'blendShape': <BlendShapePane
       key="blendShape"
       paneKey="blendShape"
       title="Blend Shape Proxy"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 80 } }
+      initPosition={ { left: 0, top: 100 } }
     />,
     'validationReport': <ValidationReportPane
       key="validationReport"
       paneKey="validationReport"
       title="Validation Report"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 100 } }
+      initPosition={ { left: 0, top: 120 } }
     />,
     'sampleModels': <SampleModelsPane
       key="sampleModels"
       paneKey="sampleModels"
       title="Sample Models"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 120 } }
+      initPosition={ { left: 0, top: 140 } }
     />,
     'helpers': <HelpersPane
       key="helpers"
       paneKey="helpers"
       title="Helpers"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 140 } }
+      initPosition={ { left: 0, top: 160 } }
     />,
     'exportBufferView': <ExportBufferViewPane
       key="exportBufferView"
       paneKey="exportBufferView"
       title="Export Buffer View"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 160 } }
+      initPosition={ { left: 0, top: 180 } }
     />,
     'mixamoAnimations': <MixamoAnimationsPane
       key="mixamoAnimations"
       paneKey="mixamoAnimations"
       title="Mixamo Animations"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 180 } }
+      initPosition={ { left: 0, top: 200 } }
     />,
     'about': <AboutPane
       key="about"
       paneKey="about"
       title="About"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 200 } }
+      initPosition={ { left: 0, top: 220 } }
     />,
   };
 

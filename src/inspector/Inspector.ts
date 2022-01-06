@@ -16,6 +16,9 @@ import cubemapZp from '../assets/cubemap/zp.jpg';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
 import { loadMixamoAnimation } from './loadMixamoAnimation';
 import { validateBytes } from 'gltf-validator';
+import { WebGLMemoryInfo } from './WebGLMemoryInfo';
+import { WebGLMemoryExtension } from './WebGLMemoryExtension';
+import 'webgl-memory';
 
 const _v3A = new THREE.Vector3();
 
@@ -40,6 +43,8 @@ export class Inspector {
   private _currentAnimationAction?: THREE.AnimationAction | null;
   private _currentAnimationURL?: string | null;
   private _stats: InspectorStats | null = null;
+  private _webglMemory: WebGLMemoryExtension | null = null;
+  private _webglMemoryInfo: WebGLMemoryInfo | null = null;
   private _loader: GLTFLoader;
   private _canvas?: HTMLCanvasElement;
   private _layerMode: 'firstPerson' | 'thirdPerson' = 'thirdPerson';
@@ -57,6 +62,7 @@ export class Inspector {
   public get validationReport(): ValidationReport | undefined { return this._validationReport; }
   public get vrm(): VRM | null | undefined { return this._vrm; }
   public get stats(): InspectorStats | null { return this._stats; }
+  public get webglMemoryInfo(): WebGLMemoryInfo | null { return this._webglMemoryInfo; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
   public get layerMode(): 'firstPerson' | 'thirdPerson' { return this._layerMode; }
 
@@ -242,6 +248,10 @@ export class Inspector {
       this._renderer!.setSize( window.innerWidth, window.innerHeight );
     };
     window.addEventListener( 'resize', this._handleResize );
+
+    // webgl-memory
+    this._webglMemory = this._renderer.getContext().getExtension( 'GMAN_webgl_memory' ) as WebGLMemoryExtension;
+    console.log(this._webglMemory);
   }
 
   public registerDnD( target: HTMLElement ): () => void {
@@ -308,6 +318,10 @@ export class Inspector {
 
     if ( this._renderer ) {
       this._renderer.render( this._scene, this._camera );
+    }
+
+    if ( this._webglMemory ) {
+      this._webglMemoryInfo = this._webglMemory.getMemoryInfo();
     }
   }
 
