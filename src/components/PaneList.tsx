@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-key */
 
 import React, { useCallback, useState } from 'react';
+import { AboutPane } from './AboutPane';
 import { BlendShapePane } from './BlendShapePane';
 import { ExportBufferViewPane } from './ExportBufferViewPane';
 import { HelpersPane } from './HelpersPane';
@@ -25,6 +26,7 @@ const PaneList = (): JSX.Element => {
     'helpers',
     'exportBufferView',
     'mixamoAnimations',
+    'about',
   ] );
 
   const handleClick = useCallback(
@@ -108,6 +110,13 @@ const PaneList = (): JSX.Element => {
       title="Mixamo Animations"
       onClick={ handleClick }
       initPosition={ { left: 0, top: 180 } }
+    />,
+    'about': <AboutPane
+      key="about"
+      paneKey="about"
+      title="About"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 200 } }
     />,
   };
 
