@@ -16,6 +16,10 @@ const Root = styled.div`
 export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
+  const handleChangeLookAt = useCallback( ( checked ) => {
+    inspector.lookAtHelperRoot.visible = checked;
+  }, [ inspector ] );
+
   const handleChangeSpringBones = useCallback( ( checked ) => {
     inspector.springBoneJointHelperRoot.visible = checked;
   }, [ inspector ] );
@@ -27,6 +31,10 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   return (
     <Pane { ...params }>
       <Root>
+        <HelpersPaneCheckbox
+          callback={ handleChangeLookAt }
+          label="LookAt"
+        />
         <HelpersPaneCheckbox
           callback={ handleChangeSpringBones }
           label="Spring Bones"

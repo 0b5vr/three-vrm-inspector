@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { VRM, VRMLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+import { VRM, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import CameraControls from 'camera-controls';
 import { EventEmittable } from '../utils/EventEmittable';
 import type { InspectorStats } from './InspectorStats';
@@ -30,6 +30,7 @@ export class Inspector {
   }
 
   private _scene: THREE.Scene;
+  private _lookAtHelperRoot: THREE.Group;
   private _springBoneJointHelperRoot: THREE.Group;
   private _springBoneColliderHelperRoot: THREE.Group;
   private _camera: THREE.PerspectiveCamera;
@@ -52,6 +53,9 @@ export class Inspector {
   private _ongoingRequestEnvMap?: Promise<THREE.CubeTexture>;
 
   public get scene(): THREE.Scene { return this._scene; }
+  public get lookAtHelperRoot(): THREE.Group {
+    return this._lookAtHelperRoot;
+  }
   public get springBoneJointHelperRoot(): THREE.Group {
     return this._springBoneJointHelperRoot;
   }
@@ -84,6 +88,10 @@ export class Inspector {
     // scene
     this._scene = new THREE.Scene();
 
+    this._lookAtHelperRoot = new THREE.Group();
+    this._lookAtHelperRoot.renderOrder = 10000;
+    this._scene.add( this._lookAtHelperRoot );
+
     this._springBoneJointHelperRoot = new THREE.Group();
     this._springBoneJointHelperRoot.renderOrder = 10000;
     this._scene.add( this._springBoneJointHelperRoot );
@@ -107,6 +115,9 @@ export class Inspector {
     // loader
     this._loader = new GLTFLoader();
     this._loader.register( ( parser ) => new VRMLoaderPlugin( parser, {
+      lookAtPlugin: new VRMLookAtLoaderPlugin( parser, {
+        helperRoot: this._lookAtHelperRoot,
+      } ),
       springBonePlugin: new VRMSpringBoneLoaderPlugin( parser, {
         jointHelperRoot: this._springBoneJointHelperRoot,
         colliderHelperRoot: this._springBoneColliderHelperRoot,
