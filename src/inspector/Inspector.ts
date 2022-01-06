@@ -157,6 +157,9 @@ export class Inspector {
     } );
     this._gltf = gltf;
 
+    VRMUtils.removeUnnecessaryVertices( gltf.scene );
+    VRMUtils.removeUnnecessaryJoints( gltf.scene );
+
     const vrm: VRM | null = this._vrm = gltf.userData.vrm ?? null;
 
     if ( vrm == null ) {
