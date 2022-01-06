@@ -15,8 +15,6 @@ export enum MaterialDebuggerMode {
 // == override materials ===========================================================================
 const invisibleMaterial = new THREE.MeshBasicMaterial( {
   visible: false,
-  skinning: true,
-  morphTargets: true,
 } );
 
 const promiseTextureUVGrid = new Promise<THREE.Texture>( ( resolve ) => {
@@ -29,8 +27,6 @@ const promiseTextureUVGrid = new Promise<THREE.Texture>( ( resolve ) => {
 
 function createMaterialUVGrid( original: THREE.Material ): THREE.Material {
   const material = new THREE.MeshBasicMaterial( {
-    skinning: ( original as any ).skinning,
-    morphTargets: ( original as any ).morphTargets,
     color: 0xff00ff,
   } );
 

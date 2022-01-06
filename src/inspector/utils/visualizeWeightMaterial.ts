@@ -71,9 +71,6 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
 
 export const visualizeWeightMaterial = new MeshVisualizeWeightMaterial( {
   transparent: true,
-  skinning: true,
-  morphTargets: true,
-  morphNormals: true,
   depthTest: false,
   depthWrite: false,
 } );

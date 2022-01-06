@@ -2,9 +2,6 @@ import * as THREE from 'three';
 
 const highlightMaterial = new THREE.MeshNormalMaterial( {
   transparent: true,
-  skinning: true,
-  morphTargets: true,
-  morphNormals: true,
   depthTest: false,
   depthWrite: false,
 } );
