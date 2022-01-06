@@ -5,7 +5,7 @@ object-assign
 */
 
 /*!
- * @pixiv/three-vrm-core v1.0.0-beta.5
+ * @pixiv/three-vrm-core v1.0.0-beta.7
  * The implementation of core features of VRM, for @pixiv/three-vrm
  *
  * Copyright (c) 2020-2021 pixiv Inc.
@@ -14,7 +14,7 @@ object-assign
  */
 
 /*!
- * @pixiv/three-vrm-materials-hdr-emissive-multiplier v1.0.0-beta.5
+ * @pixiv/three-vrm-materials-hdr-emissive-multiplier v1.0.0-beta.7
  * Support VRMC_hdr_emissiveMultiplier for @pixiv/three-vrm
  *
  * Copyright (c) 2020-2021 pixiv Inc.
@@ -23,7 +23,7 @@ object-assign
  */
 
 /*!
- * @pixiv/three-vrm-materials-mtoon v1.0.0-beta.5
+ * @pixiv/three-vrm-materials-mtoon v1.0.0-beta.7
  * MToon (toon material) module for @pixiv/three-vrm
  *
  * Copyright (c) 2020-2021 pixiv Inc.
@@ -32,7 +32,7 @@ object-assign
  */
 
 /*!
- * @pixiv/three-vrm-materials-v0compat v1.0.0-beta.5
+ * @pixiv/three-vrm-materials-v0compat v1.0.0-beta.7
  * VRM0.0 materials compatibility layer plugin for @pixiv/three-vrm
  *
  * Copyright (c) 2020-2021 pixiv Inc.
@@ -41,7 +41,7 @@ object-assign
  */
 
 /*!
- * @pixiv/three-vrm-node-constraint v1.0.0-beta.5
+ * @pixiv/three-vrm-node-constraint v1.0.0-beta.7
  * Node constraint module for @pixiv/three-vrm
  *
  * Copyright (c) 2020-2021 pixiv Inc.
@@ -50,7 +50,7 @@ object-assign
  */
 
 /*!
- * @pixiv/three-vrm-springbone v1.0.0-beta.5
+ * @pixiv/three-vrm-springbone v1.0.0-beta.7
  * Spring bone module for @pixiv/three-vrm
  *
  * Copyright (c) 2020-2021 pixiv Inc.
