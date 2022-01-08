@@ -10,7 +10,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "gh-pages": "node ./utils/gh-pages.js"
+    "gh-pages": "node ./utils/gh-pages.js",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "react": "^17.0.2",
@@ -31,6 +32,7 @@
     "eventemitter3": "^4.0.7",
     "gh-pages": "^3.1.0",
     "gltf-validator": "^2.0.0-dev.3.3",
+    "patch-package": "^6.4.7",
     "rimraf": "^3.0.2",
     "styled-components": "^5.3.3",
     "three": "^0.136.0",
