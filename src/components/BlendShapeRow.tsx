@@ -1,5 +1,5 @@
-import React, { useCallback, useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
+import React, { useCallback, useContext } from 'react';
 
 export const BlendShapeRow = ( { name, isAvailable }: {
   name: string;

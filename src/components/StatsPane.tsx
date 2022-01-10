@@ -1,8 +1,8 @@
-import { Pane, PaneParams } from './Pane';
-import { useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import { NameValueEntry } from './NameValueEntry';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import { useContext } from 'react';
 
 // == element ======================================================================================
 export const StatsPane = ( params: PaneParams ): JSX.Element => {

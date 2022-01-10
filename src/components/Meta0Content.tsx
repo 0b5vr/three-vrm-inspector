@@ -1,5 +1,5 @@
-import { VRM0Meta } from '@pixiv/three-vrm';
 import { NameValueEntry } from './NameValueEntry';
+import { VRM0Meta } from '@pixiv/three-vrm';
 
 export const Meta0Content: React.FC<{ meta: VRM0Meta }> = ( { meta } ) => {
   return <>

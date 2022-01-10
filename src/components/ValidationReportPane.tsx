@@ -1,10 +1,10 @@
-import { Pane, PaneParams } from './Pane';
-import React, { useContext } from 'react';
-import { InspectorContext } from '../InspectorContext';
-import { ValidationReportIssue } from './ValidationReportIssue';
-import { NameValueEntry } from './NameValueEntry';
 import { Hr } from './Hr';
+import { InspectorContext } from '../InspectorContext';
+import { NameValueEntry } from './NameValueEntry';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import { ValidationReportIssue } from './ValidationReportIssue';
+import React, { useContext } from 'react';
 
 // == microcomponents ==============================================================================
 const ReportCount: React.FC<{

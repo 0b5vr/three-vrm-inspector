@@ -1,12 +1,12 @@
-import { Pane, PaneParams } from './Pane';
-import { useCallback, useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
+import { Pane, PaneParams } from './Pane';
+import { PaneRoot } from './PaneRoot';
+import { useCallback, useContext } from 'react';
 import dancingFbx from '../assets/motions/dancing.fbx';
 import gangnamStyleFbx from '../assets/motions/gangnam-style.fbx';
 import jumpFbx from '../assets/motions/jump.fbx';
 import runningFbx from '../assets/motions/running.fbx';
 import walkingFbx from '../assets/motions/walking.fbx';
-import { PaneRoot } from './PaneRoot';
 
 // == animations ===================================================================================
 const animations = [

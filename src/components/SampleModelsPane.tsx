@@ -1,8 +1,8 @@
 import { Pane, PaneParams } from './Pane';
+import { PaneRoot } from './PaneRoot';
 import { SampleModelsPaneButton } from './SampleModelsPaneButton';
 import threeVrmGirlVrm from '../assets/models/three-vrm-girl.vrm';
 import threeVrmGirlVrm00Vrm from '../assets/models/three-vrm-girl-vrm0.0.vrm';
-import { PaneRoot } from './PaneRoot';
 
 // == models =======================================================================================
 const models = [

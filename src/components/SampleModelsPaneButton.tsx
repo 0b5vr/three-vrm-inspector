@@ -1,5 +1,5 @@
-import { useCallback, useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
+import { useCallback, useContext } from 'react';
 
 export const SampleModelsPaneButton = ( { name, url }: {
   name: string;

@@ -1,8 +1,8 @@
-import { Pane, PaneParams } from './Pane';
-import { useContext, useEffect, useState } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import { JSONValue } from './JSONValue';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import { useContext, useEffect, useState } from 'react';
 
 const JSONPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );

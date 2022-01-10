@@ -1,5 +1,5 @@
-import React from 'react';
 import { Link } from './Link';
+import React from 'react';
 
 export const NameValueEntry: React.FC<{
   name: string;
@@ -7,7 +7,7 @@ export const NameValueEntry: React.FC<{
   href?: string | undefined;
 }> = ( { name, value, href } ) => (
   <div>{ name }:{ ' ' }
-    { value && <span className="font-bold">{ value }</span> }
+    { value != null && <span className="font-bold">{ value }</span> }
     { href && <Link href={ href } /> }
   </div>
 );

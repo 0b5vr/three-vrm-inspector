@@ -1,5 +1,5 @@
-import { VRM1Meta } from '@pixiv/three-vrm';
 import { NameValueEntry } from './NameValueEntry';
+import { VRM1Meta } from '@pixiv/three-vrm';
 
 // == element ======================================================================================
 export const Meta1Content: React.FC<{ meta: VRM1Meta }> = ( { meta } ) => {

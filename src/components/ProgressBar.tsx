@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
 import { InspectorContext } from '../InspectorContext';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 export const ProgressBar = (): JSX.Element => {
   const { inspector } = useContext( InspectorContext );

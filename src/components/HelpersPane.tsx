@@ -1,8 +1,8 @@
-import { Pane, PaneParams } from './Pane';
-import { useCallback, useContext } from 'react';
 import { HelpersPaneCheckbox } from './HelpersPaneCheckbox';
 import { InspectorContext } from '../InspectorContext';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import { useCallback, useContext } from 'react';
 
 export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );

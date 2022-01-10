@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
 import { registerMouseEvent } from '../utils/registerMouseEvent';
+import { useCallback, useState } from 'react';
 import { useDoubleClick } from '../utils/useDoubleClick';
 
 // == params =======================================================================================

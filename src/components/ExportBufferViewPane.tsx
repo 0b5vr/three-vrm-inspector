@@ -1,7 +1,7 @@
-import { Pane, PaneParams } from './Pane';
-import React, { useCallback, useContext, useRef } from 'react';
 import { InspectorContext } from '../InspectorContext';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import React, { useCallback, useContext, useRef } from 'react';
 
 export const ExportBufferViewPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );

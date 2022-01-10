@@ -1,8 +1,8 @@
-import { Pane, PaneParams } from './Pane';
-import { useCallback, useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import { MaterialDebuggerMode } from '../inspector/MaterialDebugger';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import { useCallback, useContext } from 'react';
 
 export const MaterialDebuggerPane = ( params: PaneParams ): JSX.Element => {
   const { materialDebugger } = useContext( InspectorContext );

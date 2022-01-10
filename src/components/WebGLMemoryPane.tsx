@@ -1,9 +1,9 @@
-import { Pane, PaneParams } from './Pane';
-import { useContext } from 'react';
+import { Hr } from './Hr';
 import { InspectorContext } from '../InspectorContext';
 import { NameValueEntry } from './NameValueEntry';
-import { Hr } from './Hr';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import { useContext } from 'react';
 
 // == functions ====================================================================================
 const bytesToDisplayBytes = ( bytes: number ): string => {

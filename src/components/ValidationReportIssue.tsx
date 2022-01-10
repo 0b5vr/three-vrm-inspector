@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
 import { Colors } from '../constants/Colors';
+import React, { useCallback, useState } from 'react';
 
 // == microcomponents ==============================================================================
 const Message: React.FC = ( { children } ) => (

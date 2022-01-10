@@ -1,5 +1,5 @@
-import { Pane, PaneParams } from './Pane';
 import { Link } from './Link';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 
 export const AboutPane = ( params: PaneParams ): JSX.Element => {

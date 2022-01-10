@@ -1,7 +1,7 @@
-import { useCallback, useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import { PaneList } from './PaneList';
 import { ProgressBar } from './ProgressBar';
+import { useCallback, useContext } from 'react';
 
 // == element ======================================================================================
 const OutOfContextApp = (): JSX.Element => {

@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useState } from 'react';
 import { InspectorContext } from '../InspectorContext';
+import React, { useCallback, useContext, useState } from 'react';
 
 // == microcomponents ==============================================================================
 const Bracket: React.FC<{

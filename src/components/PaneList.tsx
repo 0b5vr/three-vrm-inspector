@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-key */
 
-import React, { useCallback, useState } from 'react';
 import { AboutPane } from './AboutPane';
 import { BlendShapePane } from './BlendShapePane';
 import { ExportBufferViewPane } from './ExportBufferViewPane';
@@ -13,6 +12,7 @@ import { SampleModelsPane } from './SampleModelsPane';
 import { StatsPane } from './StatsPane';
 import { ValidationReportPane } from './ValidationReportPane';
 import { WebGLMemoryPane } from './WebGLMemoryPane';
+import React, { useCallback, useState } from 'react';
 
 // == element ======================================================================================
 const PaneList = (): JSX.Element => {

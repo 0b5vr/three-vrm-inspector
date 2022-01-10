@@ -1,9 +1,9 @@
-import { Pane, PaneParams } from './Pane';
-import { useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import { Meta0Content } from './Meta0Content';
 import { Meta1Content } from './Meta1Content';
+import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import { useContext } from 'react';
 
 export const MetaPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );

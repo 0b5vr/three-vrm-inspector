@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import * as V0VRM from '@pixiv/types-vrm-0.0';
-import { VRMSpringBoneJoint, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
 import { Colors } from '../constants/Colors';
 import { Inspector } from './Inspector';
+import { VRMSpringBoneJoint, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
 import { genGizmo } from './utils/genGizmo';
 import { gltfExtractPrimitivesFromNode } from '../utils/gltfExtractPrimitivesFromNode';
 import { highlightMeshes } from './utils/highlightMeshes';
