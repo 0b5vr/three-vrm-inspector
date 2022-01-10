@@ -1,13 +1,6 @@
-import React, { useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
-import styled from 'styled-components';
 
-// == styles =======================================================================================
-const Button = styled.button`
-  display: block;
-`;
-
-// == element ======================================================================================
 export const SampleModelsPaneButton = ( { name, url }: {
   name: string;
   url: string;
@@ -18,5 +11,7 @@ export const SampleModelsPaneButton = ( { name, url }: {
     inspector.loadVRM( url );
   }, [ inspector ] );
 
-  return <Button value={ name } onClick={ load }>{ name }</Button>;
+  return <button value={ name } className="bg-gray-800 border border-gray-500 px-1 py-0 block" onClick={ load }>
+    { name }
+  </button>;
 };

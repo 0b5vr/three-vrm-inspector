@@ -1,15 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import styled from 'styled-components';
+import { useCallback, useState } from 'react';
 
-// == styles =======================================================================================
-const Checkbox = styled.input`
-`;
-
-const Line = styled.div`
-  line-height: 20px;
-`;
-
-// == element ======================================================================================
 export const HelpersPaneCheckbox = ( { callback, label }: {
   callback: ( checked: boolean ) => void,
   label: string,
@@ -22,13 +12,13 @@ export const HelpersPaneCheckbox = ( { callback, label }: {
   }, [ callback ] );
 
   return (
-    <Line>
-      <Checkbox
+    <div>
+      <input
         type="checkbox"
         checked={ isChecked }
         onChange={ handleChange }
       />
       { label }
-    </Line>
+    </div>
   );
 };

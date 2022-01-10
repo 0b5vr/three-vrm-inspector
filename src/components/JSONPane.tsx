@@ -1,25 +1,9 @@
 import { Pane, PaneParams } from './Pane';
-import React, { useContext, useEffect, useState } from 'react';
-import { Colors } from '../constants/Colors';
+import { useContext, useEffect, useState } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import { JSONValue } from './JSONValue';
-import styled from 'styled-components';
+import { PaneRoot } from './PaneRoot';
 
-// == styles =======================================================================================
-const Root = styled.div`
-  margin: 0;
-  padding: 0;
-  width: 480px;
-  height: 320px;
-  overflow: scroll;
-  white-space: nowrap;
-  background: ${ Colors.uiBackground };
-  backdrop-filter: blur( 5px );
-  pointer-events: auto;
-  resize: both;
-`;
-
-// == element ======================================================================================
 const JSONPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
   const [ root, setRoot ] = useState<any>( undefined );
@@ -38,9 +22,12 @@ const JSONPane = ( params: PaneParams ): JSX.Element => {
 
   return (
     <Pane { ...params }>
-      <Root>
+      <PaneRoot
+        className="w-120 h-80 overflow-scroll whitespace-nowrap resize font-mono text-xs leading-tight"
+        paddingClass="p-0"
+      >
         <JSONValue value={ root } />
-      </Root>
+      </PaneRoot>
     </Pane>
   );
 };

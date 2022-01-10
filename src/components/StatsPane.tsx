@@ -1,55 +1,27 @@
 import { Pane, PaneParams } from './Pane';
-import React, { useContext } from 'react';
-import { Colors } from '../constants/Colors';
+import { useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
-import styled from 'styled-components';
-
-// == styles =======================================================================================
-const Value = styled.span`
-  font-weight: bold;
-`;
-
-const Line = styled.div`
-  line-height: 20px;
-`;
-
-const Root = styled.div`
-  padding: 8px;
-  background: ${ Colors.uiBackground };
-  backdrop-filter: blur( 5px );
-`;
+import { NameValueEntry } from './NameValueEntry';
+import { PaneRoot } from './PaneRoot';
 
 // == element ======================================================================================
 export const StatsPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
   const dim = inspector.stats?.dimension.map( ( v ) => v.toFixed( 3 ) );
+  const dimText = `( ${ dim?.[ 0 ] ?? 0.0 }, ${ dim?.[ 1 ] ?? 0.0 }, ${ dim?.[ 2 ] ?? 0.0 } )`;
 
   return (
     <Pane { ...params }>
-      <Root>
-        <Line>Dimension:{ ' ' }
-          <Value>( { dim?.[ 0 ] ?? 0.0 }, { dim?.[ 1 ] ?? 0.0 }, { dim?.[ 2 ] ?? 0.0 } )</Value>
-        </Line>
-        <Line>Vertices:{ ' ' }
-          <Value>{ inspector.stats?.vertices }</Value>
-        </Line>
-        <Line>Polygons:{ ' ' }
-          <Value>{ inspector.stats?.polygons }</Value>
-        </Line>
-        <Line>Meshes:{ ' ' }
-          <Value>{ inspector.stats?.meshes }</Value>
-        </Line>
-        <Line>Primitives:{ ' ' }
-          <Value>{ inspector.stats?.primitives }</Value>
-        </Line>
-        <Line>Materials:{ ' ' }
-          <Value>{ inspector.stats?.materials }</Value>
-        </Line>
-        <Line>Spring Bones:{ ' ' }
-          <Value>{ inspector.stats?.springBones }</Value>
-        </Line>
-      </Root>
+      <PaneRoot>
+        <NameValueEntry name="Dimension" value={ dimText } />
+        <NameValueEntry name="Vertices" value={ inspector.stats?.vertices } />
+        <NameValueEntry name="Polygons" value={ inspector.stats?.polygons } />
+        <NameValueEntry name="Meshes" value={ inspector.stats?.meshes } />
+        <NameValueEntry name="Primitives" value={ inspector.stats?.primitives } />
+        <NameValueEntry name="Materials" value={ inspector.stats?.materials } />
+        <NameValueEntry name="Spring Bones" value={ inspector.stats?.springBones } />
+      </PaneRoot>
     </Pane>
   );
 };

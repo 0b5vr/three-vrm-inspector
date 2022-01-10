@@ -1,18 +1,9 @@
 import { Pane, PaneParams } from './Pane';
-import React, { useCallback, useContext } from 'react';
-import { Colors } from '../constants/Colors';
+import { useCallback, useContext } from 'react';
 import { HelpersPaneCheckbox } from './HelpersPaneCheckbox';
 import { InspectorContext } from '../InspectorContext';
-import styled from 'styled-components';
+import { PaneRoot } from './PaneRoot';
 
-// == styles =======================================================================================
-const Root = styled.div`
-  padding: 8px;
-  background: ${ Colors.uiBackground };
-  backdrop-filter: blur( 5px );
-`;
-
-// == element ======================================================================================
 export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
@@ -30,7 +21,7 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
 
   return (
     <Pane { ...params }>
-      <Root>
+      <PaneRoot>
         <HelpersPaneCheckbox
           callback={ handleChangeLookAt }
           label="LookAt"
@@ -43,7 +34,7 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
           callback={ handleChangeSpringBoneColliders }
           label="Spring Bone Colliders"
         />
-      </Root>
+      </PaneRoot>
     </Pane>
   );
 };

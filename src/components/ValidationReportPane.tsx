@@ -1,45 +1,18 @@
 import { Pane, PaneParams } from './Pane';
 import React, { useContext } from 'react';
-import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
 import { ValidationReportIssue } from './ValidationReportIssue';
-import styled from 'styled-components';
+import { NameValueEntry } from './NameValueEntry';
+import { Hr } from './Hr';
+import { PaneRoot } from './PaneRoot';
 
-// == styles =======================================================================================
-const Issues = styled.div`
-  width: 100%;
-`;
-
-const Hr = styled.div`
-  width: 100%;
-  height: 2px;
-  margin: 8px 0;
-  background: ${ Colors.gray };
-`;
-
-const TooManyMessage = styled.div`
-  font-weight: bold;
-  margin: 8px;
-`;
-
-const Value = styled.span`
-  font-weight: bold;
-`;
-
-const Line = styled.div`
-  line-height: 20px;
-`;
-
-const Root = styled.div`
-  padding: 8px;
-  width: 480px;
-  height: 320px;
-  overflow-y: scroll;
-  background: ${ Colors.uiBackground };
-  backdrop-filter: blur( 5px );
-  pointer-events: auto;
-  resize: both;
-`;
+// == microcomponents ==============================================================================
+const ReportCount: React.FC<{
+  count: number | undefined;
+  colorClass: string;
+}> = ( { count, colorClass } ) => <span
+  className={ count ? colorClass : 'text-gray-500' }
+>{ count }</span>;
 
 // == element ======================================================================================
 export const ValidationReportPane = ( params: PaneParams ): JSX.Element => {
@@ -48,35 +21,32 @@ export const ValidationReportPane = ( params: PaneParams ): JSX.Element => {
 
   return (
     <Pane { ...params }>
-      <Root>
-        <Line>Validator Version:{ ' ' }
-          <Value>{ inspector.validationReport?.validatorVersion }</Value>
-        </Line>
-        <Line>Errors:{ ' ' }
-          <Value
-            style={ { color: issues?.numErrors ? Colors.error : Colors.gray } }
-          >{ issues?.numErrors }</Value>
-        </Line>
-        <Line>Warnings:{ ' ' }
-          <Value
-            style={ { color: issues?.numWarnings ? Colors.warning : Colors.gray } }
-          >{ issues?.numWarnings }</Value>
-        </Line>
-        <Line>Infos:{ ' ' }
-          <Value
-            style={ { color: issues?.numInfos ? Colors.severityInfo : Colors.gray } }
-          >{ issues?.numInfos }</Value>
-        </Line>
-        <Line>Hints:{ ' ' }
-          <Value
-            style={ { color: issues?.numHints ? Colors.severityInfo : Colors.gray } }
-          >{ issues?.numHints }</Value>
-        </Line>
+      <PaneRoot className="w-120 h-80 resize overflow-y-scroll">
+        <NameValueEntry
+          name="Validator Version"
+          value={ inspector.validationReport?.validatorVersion }
+        />
+        <NameValueEntry
+          name="Errors"
+          value={ <ReportCount count={ issues?.numErrors } colorClass="text-red-500" /> }
+        />
+        <NameValueEntry
+          name="Warnings"
+          value={ <ReportCount count={ issues?.numWarnings } colorClass="text-yellow-300" /> }
+        />
+        <NameValueEntry
+          name="Infos"
+          value={ <ReportCount count={ issues?.numInfos } colorClass="text-sky-500" /> }
+        />
+        <NameValueEntry
+          name="Hints"
+          value={ <ReportCount count={ issues?.numHints } colorClass="text-sky-500" /> }
+        />
         <Hr />
-        { issues?.truncated && <TooManyMessage>
+        { issues?.truncated && <div className="m-1 font-bold">
           There are too many issues! Showing only 100 entries.
-        </TooManyMessage> }
-        <Issues>
+        </div> }
+        <div className="w-full font-mono leading-tight text-xs">
           { issues?.messages.map( ( issue, i ) => (
             <ValidationReportIssue
               key={ i }
@@ -86,8 +56,8 @@ export const ValidationReportPane = ( params: PaneParams ): JSX.Element => {
               pointer={ issue.pointer }
             />
           ) ) }
-        </Issues>
-      </Root>
+        </div>
+      </PaneRoot>
     </Pane>
   );
 };

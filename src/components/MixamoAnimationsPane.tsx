@@ -1,13 +1,12 @@
 import { Pane, PaneParams } from './Pane';
-import React, { useCallback, useContext } from 'react';
-import { Colors } from '../constants/Colors';
+import { useCallback, useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import dancingFbx from '../assets/motions/dancing.fbx';
 import gangnamStyleFbx from '../assets/motions/gangnam-style.fbx';
 import jumpFbx from '../assets/motions/jump.fbx';
 import runningFbx from '../assets/motions/running.fbx';
-import styled from 'styled-components';
 import walkingFbx from '../assets/motions/walking.fbx';
+import { PaneRoot } from './PaneRoot';
 
 // == animations ===================================================================================
 const animations = [
@@ -18,16 +17,6 @@ const animations = [
   { name: 'Dancing', url: dancingFbx },
   { name: 'Gangnam Style', url: gangnamStyleFbx },
 ];
-
-// == styles =======================================================================================
-const Select = styled.select`
-  width: 100%;
-`;
-const Root = styled.div`
-  padding: 8px;
-  background: ${ Colors.uiBackground };
-  backdrop-filter: blur( 5px );
-`;
 
 // == element ======================================================================================
 export const MixamoAnimationsPane = ( params: PaneParams ): JSX.Element => {
@@ -47,15 +36,15 @@ export const MixamoAnimationsPane = ( params: PaneParams ): JSX.Element => {
 
   return (
     <Pane { ...params }>
-      <Root>
-        <Select onChange={ handleSelectChange }>
+      <PaneRoot>
+        <select className="bg-gray-800 border border-gray-500 w-full" onChange={ handleSelectChange }>
           {
             animations.map( ( { name, url } ) => (
               <option key={ url } value={ url }>{ name }</option>
             ) )
           }
-        </Select>
-      </Root>
+        </select>
+      </PaneRoot>
     </Pane>
   );
 };
