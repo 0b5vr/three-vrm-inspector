@@ -1,23 +1,6 @@
-import React, { useCallback, useContext } from 'react';
-import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
-import styled from 'styled-components';
+import React, { useCallback, useContext } from 'react';
 
-// == styles =======================================================================================
-const Input = styled.input`
-  margin-right: 8px;
-`;
-
-const TextDisabled = styled.span`
-  color: ${ Colors.gray };
-`;
-
-const Root = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-// == element ======================================================================================
 export const BlendShapeRow = ( { name, isAvailable }: {
   name: string;
   isAvailable: boolean;
@@ -32,8 +15,9 @@ export const BlendShapeRow = ( { name, isAvailable }: {
   );
 
   return (
-    <Root>
-      <Input
+    <div className="flex items-center">
+      <input
+        className="mr-2"
         type="range"
         min="0"
         max="1"
@@ -42,7 +26,10 @@ export const BlendShapeRow = ( { name, isAvailable }: {
         disabled={ !isAvailable }
         onChange={ handleChange }
       />
-      { isAvailable ? name : <TextDisabled>{ name }</TextDisabled> }
-    </Root>
+      { isAvailable
+        ? name
+        : <span className="text-gray-500">{ name }</span>
+      }
+    </div>
   );
 };

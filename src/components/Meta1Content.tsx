@@ -1,73 +1,26 @@
-import React from 'react';
+import { NameValueEntry } from './NameValueEntry';
 import { VRM1Meta } from '@pixiv/three-vrm';
-import styled from 'styled-components';
-import { Link } from './Link';
-
-// == styles =======================================================================================
-const Value = styled.span`
-  font-weight: bold;
-`;
-
-const Line = styled.div`
-  line-height: 20px;
-`;
 
 // == element ======================================================================================
-export const Meta1Content = ( { meta }: { meta: VRM1Meta } ): JSX.Element => {
+export const Meta1Content: React.FC<{ meta: VRM1Meta }> = ( { meta } ) => {
   return <>
-    <Line>Name:{ ' ' }
-      <Value>{ meta.name }</Value>
-    </Line>
-    <Line>Version:{ ' ' }
-      <Value>{ meta.version }</Value>
-    </Line>
-    <Line>Authors:{ ' ' }
-      <Value>{ meta.authors.join( ', ' ) }</Value>
-    </Line>
-    <Line>Copyright Information:{ ' ' }
-      <Value>{ meta.copyrightInformation }</Value>
-    </Line>
-    <Line>Contact Information:{ ' ' }
-      <Value>{ meta.contactInformation }</Value>
-    </Line>
-    <Line>References:{ ' ' }
-      <Value>{ meta.references?.join( ', ' ) }</Value>
-    </Line>
-    <Line>Third Party Licenses:{ ' ' }
-      <Value>{ meta.thirdPartyLicenses }</Value>
-    </Line>
-    <Line>License URL:{ ' ' }
-      <Link href={ meta.licenseUrl } />
-    </Line>
-    <Line>Avatar Permission:{ ' ' }
-      <Value>{ meta.avatarPermission }</Value>
-    </Line>
-    <Line>Allow Excessively Violent Usage:{ ' ' }
-      <Value>{ String( meta.allowExcessivelyViolentUsage ) }</Value>
-    </Line>
-    <Line>Allow Excessively Sexual Usage:{ ' ' }
-      <Value>{ String( meta.allowExcessivelySexualUsage ) }</Value>
-    </Line>
-    <Line>Commercial Usage Name:{ ' ' }
-      <Value>{ meta.commercialUsage }</Value>
-    </Line>
-    <Line>Allow Political or Religious Usage:{ ' ' }
-      <Value>{ String( meta.allowPoliticalOrReligiousUsage ) }</Value>
-    </Line>
-    <Line>Allow Antisocial or Hate Usage:{ ' ' }
-      <Value>{ String( meta.allowAntisocialOrHateUsage ) }</Value>
-    </Line>
-    <Line>Credit Notation:{ ' ' }
-      <Value>{ meta.creditNotation }</Value>
-    </Line>
-    <Line>Allow Redistribution:{ ' ' }
-      <Value>{ String( meta.allowRedistribution ) }</Value>
-    </Line>
-    <Line>Modification:{ ' ' }
-      <Value>{ meta.modification }</Value>
-    </Line>
-    <Line>Other License URL:{ ' ' }
-      <Link href={ meta.otherLicenseUrl } />
-    </Line>
+    <NameValueEntry name="Name" value={ meta.name } />
+    <NameValueEntry name="Version" value={ meta.version } />
+    <NameValueEntry name="Authors" value={ meta.authors.join( ', ' ) } />
+    <NameValueEntry name="Copyright Information" value={ meta.copyrightInformation } />
+    <NameValueEntry name="Contact Information" value={ meta.contactInformation } />
+    <NameValueEntry name="References" value={ meta.references?.join( ', ' ) } />
+    <NameValueEntry name="Third Party Licenses" value={ meta.thirdPartyLicenses } />
+    <NameValueEntry name="License URL" href={ meta.licenseUrl } />
+    <NameValueEntry name="Avatar Permission" value={ meta.avatarPermission } />
+    <NameValueEntry name="Allow Excessively Violent Usage" value={ String( meta.allowExcessivelyViolentUsage ) } />
+    <NameValueEntry name="Allow Excessively Sexual Usage" value={ String( meta.allowExcessivelySexualUsage ) } />
+    <NameValueEntry name="Commercial Usage Name" value={ meta.commercialUsage } />
+    <NameValueEntry name="Allow Political or Religious Usage" value={ String( meta.allowPoliticalOrReligiousUsage ) } />
+    <NameValueEntry name="Allow Antisocial or Hate Usage" value={ String( meta.allowAntisocialOrHateUsage ) } />
+    <NameValueEntry name="Credit Notation" value={ meta.creditNotation } />
+    <NameValueEntry name="Allow Redistribution" value={ String( meta.allowRedistribution ) } />
+    <NameValueEntry name="Modification" value={ meta.modification } />
+    <NameValueEntry name="Other License URL" href={ meta.otherLicenseUrl } />
   </>;
 };

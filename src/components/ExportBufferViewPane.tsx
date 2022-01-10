@@ -1,21 +1,8 @@
-import { Pane, PaneParams } from './Pane';
-import React, { useCallback, useContext, useRef } from 'react';
-import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
-import styled from 'styled-components';
+import { Pane, PaneParams } from './Pane';
+import { PaneRoot } from './PaneRoot';
+import React, { useCallback, useContext, useRef } from 'react';
 
-// == styles =======================================================================================
-const InputNumber = styled.input`
-  width: 6em;
-`;
-
-const Root = styled.div`
-  padding: 8px;
-  background: ${ Colors.uiBackground };
-  backdrop-filter: blur( 5px );
-`;
-
-// == element ======================================================================================
 export const ExportBufferViewPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
@@ -34,12 +21,12 @@ export const ExportBufferViewPane = ( params: PaneParams ): JSX.Element => {
 
   return (
     <Pane { ...params }>
-      <Root>
-        <form onSubmit={ handleSubmit }>
-          <InputNumber type="number" ref={ refInput } defaultValue={ 0 } required />
-          <input type="submit" value="Export" />
+      <PaneRoot>
+        <form onSubmit={ handleSubmit } >
+          <input type="number" ref={ refInput } defaultValue={ 0 } className="w-24 px-1 bg-gray-800 border border-gray-500" required />
+          <input type="submit" className="ml-1 px-1 bg-gray-800 border border-gray-500" value="Export" />
         </form>
-      </Root>
+      </PaneRoot>
     </Pane>
   );
 };

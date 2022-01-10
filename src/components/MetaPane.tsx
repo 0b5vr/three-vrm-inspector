@@ -1,19 +1,10 @@
-import { Pane, PaneParams } from './Pane';
-import React, { useContext } from 'react';
-import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
 import { Meta0Content } from './Meta0Content';
 import { Meta1Content } from './Meta1Content';
-import styled from 'styled-components';
+import { Pane, PaneParams } from './Pane';
+import { PaneRoot } from './PaneRoot';
+import { useContext } from 'react';
 
-// == styles =======================================================================================
-const Root = styled.div`
-  padding: 8px;
-  background: ${ Colors.uiBackground };
-  backdrop-filter: blur( 5px );
-`;
-
-// == element ======================================================================================
 export const MetaPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
@@ -29,9 +20,9 @@ export const MetaPane = ( params: PaneParams ): JSX.Element => {
 
   return (
     <Pane { ...params }>
-      <Root>
+      <PaneRoot>
         { content }
-      </Root>
+      </PaneRoot>
     </Pane>
   );
 };

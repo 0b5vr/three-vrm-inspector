@@ -1,11 +1,11 @@
+import './index.css';
 import { App } from './components/App';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const uiContainer = document.createElement( 'div' );
-document.body.appendChild( uiContainer );
-
 ReactDOM.render(
-  <App />,
-  uiContainer
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById( 'root' )
 );

@@ -1,10 +1,10 @@
-import { Pane, PaneParams } from './Pane';
-import React, { useContext } from 'react';
 import { BlendShapeRow } from './BlendShapeRow';
-import { Colors } from '../constants/Colors';
+import { Hr } from './Hr';
 import { InspectorContext } from '../InspectorContext';
+import { Pane, PaneParams } from './Pane';
+import { PaneRoot } from './PaneRoot';
 import { VRMExpressionPresetName } from '@pixiv/three-vrm';
-import styled from 'styled-components';
+import { useContext } from 'react';
 
 // == constants ====================================================================================
 const presets: VRMExpressionPresetName[] = [
@@ -29,24 +29,6 @@ const presets: VRMExpressionPresetName[] = [
 ];
 const presetSet: Set<string> = new Set( presets );
 
-// == styles =======================================================================================
-const Hr = styled.div`
-  width: 100%;
-  height: 2px;
-  margin: 8px 0;
-  background: ${ Colors.gray };
-`;
-
-const TextNoCustomFound = styled.div`
-  color: ${ Colors.gray };
-`;
-
-const Root = styled.div`
-  padding: 8px;
-  background: ${ Colors.uiBackground };
-  backdrop-filter: blur( 5px );
-`;
-
 // == element ======================================================================================
 export const BlendShapePane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
@@ -67,7 +49,7 @@ export const BlendShapePane = ( params: PaneParams ): JSX.Element => {
 
   return (
     <Pane { ...params }>
-      <Root>
+      <PaneRoot>
         { expressionManager ? <>
           { presets.map( ( name ) => (
             <BlendShapeRow
@@ -84,9 +66,9 @@ export const BlendShapePane = ( params: PaneParams ): JSX.Element => {
               isAvailable={ true }
             />
           ) ) }
-          { !hasUnknowns && <TextNoCustomFound>(No custom expressions)</TextNoCustomFound> }
+          { !hasUnknowns && <span className="text-gray-500">(No custom expressions)</span> }
         </> : 'No blendShapeProxy detected.' }
-      </Root>
+      </PaneRoot>
     </Pane>
   );
 };

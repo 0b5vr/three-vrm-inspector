@@ -1,52 +1,23 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { Colors } from '../constants/Colors';
 import { InspectorContext } from '../InspectorContext';
-import styled from 'styled-components';
+import React, { useCallback, useContext, useState } from 'react';
 
-// == styles =======================================================================================
-const Bracket = styled.span`
-  user-select: none;
-  cursor: pointer;
-`;
+// == microcomponents ==============================================================================
+const Bracket: React.FC<{
+  onClick?: React.MouseEventHandler<HTMLSpanElement>;
+  onMouseEnter?: React.MouseEventHandler<HTMLSpanElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLSpanElement>;
+}> = ( { children, onClick, onMouseEnter, onMouseLeave } ) => (
+  <span
+    className="select-none cursor-pointer"
+    onClick={ onClick }
+    onMouseEnter={ onMouseEnter }
+    onMouseLeave={ onMouseLeave }
+  >{ children }</span>
+);
 
-const Children = styled.div`
-  margin-left: 1.13em;
-`;
-
-const Name = styled.span<{ isHovering: boolean }>`
-  color: ${ ( { isHovering } ) => ( isHovering ? Colors.accent : Colors.fore ) };
-  cursor: pointer;
-`;
-
-const Entry = styled.div`
-`;
-
-const Value = styled.span`
-`;
-
-const NullValue = styled( Value )`
-  color: ${ Colors.constant };
-`;
-
-const NumValue = styled( Value )`
-  color: ${ Colors.number };
-`;
-
-const BoolValue = styled( Value )`
-  color: ${ Colors.number };
-`;
-
-const StrValue = styled( Value )`
-  color: ${ Colors.string };
-`;
-
-const Root = styled.span`
-  margin: 0;
-  padding: 0;
-  pointer-events: auto;
-  font-family: 'Roboto Mono', monospace;
-`;
-
+const Children: React.FC = ( { children } ) => (
+  <div style={ { marginLeft: '1.13em' } }>{ children }</div>
+);
 
 // == element ======================================================================================
 export interface JSONValueProps {
@@ -101,24 +72,27 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
     isHovering: isHovering,
   };
 
-  return <>
-    <Root>
-      <Name { ...interactableProps }>
+  return (
+    <div className="select-auto">
+      <span
+        className={ `cursor-pointer ${ isHovering && 'text-sky-500' }` }
+        { ...interactableProps }
+      >
         { name ? `${ name }: ` : '' }
-      </Name>
+      </span>
 
       { isArray && <>
         <Bracket { ...interactableProps }>{ '[' }</Bracket>
 
         { isOpen && <Children>
           { value.map( ( e: any, i: number ) => (
-            <Entry key={ i }>
+            <div key={ i }>
               <JSONValue
                 name={ i.toString() + ( e?.name ? ` (${ e.name })` : '' ) }
                 value={ e }
                 fullPath={ `${ fullPath }/${ i }` }
               />
-            </Entry>
+            </div>
           ) ) }
         </Children> }
 
@@ -132,13 +106,13 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
 
         { isOpen && <Children>
           { Object.keys( value ).map( ( key, i ) => (
-            <Entry key={ i }>
+            <div key={ i }>
               <JSONValue
                 name={ key }
                 value={ value[ key ] }
                 fullPath={ `${ fullPath }/${ key }` }
               />
-            </Entry>
+            </div>
           ) ) }
         </Children> }
 
@@ -148,20 +122,20 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
       </> }
 
       { isNull && <>
-        <NullValue { ...interactableProps }>{ value }</NullValue>
+        <span className="text-pink-500" { ...interactableProps }>{ value }</span>
       </> }
 
       { isNumber && <>
-        <NumValue { ...interactableProps }>{ value }</NumValue>
+        <span className="text-indigo-400" { ...interactableProps }>{ value }</span>
       </> }
 
       { isBoolean && <>
-        <BoolValue { ...interactableProps }>{ String( value ) }</BoolValue>
+        <span className="text-indigo-400" { ...interactableProps }>{ String( value ) }</span>
       </> }
 
       { isString && <>
-        <StrValue { ...interactableProps }>&quot;{ value }&quot;</StrValue>
+        <span className="text-yellow-300" { ...interactableProps }>&quot;{ value }&quot;</span>
       </> }
-    </Root>
-  </>;
+    </div>
+  );
 };

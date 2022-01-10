@@ -1,7 +1,10 @@
 module.exports = {
   "root": true,
 
-  "plugins": [ "@typescript-eslint" ],
+  "plugins": [
+    "sort-imports-es6-autofix",
+    "@typescript-eslint",
+  ],
 
   "env": {
     "browser": true,
@@ -13,10 +16,16 @@ module.exports = {
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
   ],
 
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
 
   "rules": {
     // basics
@@ -33,7 +42,7 @@ module.exports = {
       "ignoreTemplateLiterals": true, // templates are also okay
       "ignoreRegExpLiterals": true, // regexs are also okay too
     } ],
-    "sort-imports": [ "error" ], // imports have to be ordered
+    "sort-imports-es6-autofix/sort-imports-es6": [ "error" ], // imports have to be ordered
     "eol-last": [ "error", "always" ], // eof newline is cool
 
     // variables
@@ -62,6 +71,7 @@ module.exports = {
     "space-infix-ops": [ "error" ], // it kills val1+val2
     "space-unary-ops": [ "error", { "words": true, "nonwords": false, "overrides": { "++": true, "--": true } } ], // it kills `val++`
     "spaced-comment": [ "error", "always", {
+      "line": { "markers": [ "/" ] },
       "block": { "markers": [ "!" ], "balanced": true }
     } ], // it kills `//this is comment`
 
@@ -75,6 +85,9 @@ module.exports = {
     "no-eval": [ "error" ], // I don't think we're going to use the eval
     "no-implied-eval": [ "warn" ], // ok don't
     "no-console": [ "error", { allow: [ "info", "warn", "error" ] } ], // don't forget to remove `console.log` !
+
+    // react
+    "react/prop-types": "off", // I'm not sure about this rule,,,
 
     // typescript-specifics
     "@typescript-eslint/no-explicit-any": [ "off" ], // Three.js sometimes forces us to deal with anys

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { MToonMaterial, MToonMaterialDebugMode } from '@pixiv/three-vrm';
 import { Inspector } from './Inspector';
+import { MToonMaterial, MToonMaterialDebugMode } from '@pixiv/three-vrm';
 import imageUVGrid from '../assets/uv-grid.png';
 
 export enum MaterialDebuggerMode {
@@ -25,7 +25,7 @@ const promiseTextureUVGrid = new Promise<THREE.Texture>( ( resolve ) => {
   } );
 } );
 
-function createMaterialUVGrid( original: THREE.Material ): THREE.Material {
+function createMaterialUVGrid(): THREE.Material {
   const material = new THREE.MeshBasicMaterial( {
     color: 0xff00ff,
   } );
@@ -102,14 +102,14 @@ export class MaterialDebugger {
           if ( isMToonOutline( material ) ) {
             ( mesh.material as THREE.Material[] )[ iMaterial ] = invisibleMaterial;
           } else {
-            ( mesh.material as THREE.Material[] )[ iMaterial ] = createMaterialUVGrid( material );
+            ( mesh.material as THREE.Material[] )[ iMaterial ] = createMaterialUVGrid();
           }
         } );
       } else {
         if ( isMToonOutline( materialOrMaterials ) ) {
           ( mesh.material as THREE.Material ) = invisibleMaterial;
         } else {
-          ( mesh.material as THREE.Material ) = createMaterialUVGrid( materialOrMaterials );
+          ( mesh.material as THREE.Material ) = createMaterialUVGrid();
         }
       }
     }

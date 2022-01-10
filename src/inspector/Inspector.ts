@@ -1,24 +1,24 @@
+import 'webgl-memory';
 import * as THREE from 'three';
+import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { VRM, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
-import CameraControls from 'camera-controls';
-import { EventEmittable } from '../utils/EventEmittable';
-import type { InspectorStats } from './InspectorStats';
 import { ValidationReport } from './ValidationReport';
+import { WebGLMemoryExtension } from './WebGLMemoryExtension';
+import { WebGLMemoryInfo } from './WebGLMemoryInfo';
 import { applyMixins } from '../utils/applyMixins';
 import { createAxisHelpers } from './createAxisHelpers';
+import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
+import { loadMixamoAnimation } from './loadMixamoAnimation';
+import { validateBytes } from 'gltf-validator';
+import CameraControls from 'camera-controls';
 import cubemapXn from '../assets/cubemap/xn.jpg';
 import cubemapXp from '../assets/cubemap/xp.jpg';
 import cubemapYn from '../assets/cubemap/yn.jpg';
 import cubemapYp from '../assets/cubemap/yp.jpg';
 import cubemapZn from '../assets/cubemap/zn.jpg';
 import cubemapZp from '../assets/cubemap/zp.jpg';
-import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
-import { loadMixamoAnimation } from './loadMixamoAnimation';
-import { validateBytes } from 'gltf-validator';
-import { WebGLMemoryInfo } from './WebGLMemoryInfo';
-import { WebGLMemoryExtension } from './WebGLMemoryExtension';
-import 'webgl-memory';
+import type { InspectorStats } from './InspectorStats';
 
 const _v3A = new THREE.Vector3();
 
@@ -262,7 +262,6 @@ export class Inspector {
 
     // webgl-memory
     this._webglMemory = this._renderer.getContext().getExtension( 'GMAN_webgl_memory' ) as WebGLMemoryExtension;
-    console.log(this._webglMemory);
   }
 
   public registerDnD( target: HTMLElement ): () => void {

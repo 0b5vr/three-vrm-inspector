@@ -1,30 +1,10 @@
-import React, { useCallback, useState } from 'react';
 import { Colors } from '../constants/Colors';
-import styled from 'styled-components';
+import React, { useCallback, useState } from 'react';
 
-// == styles =======================================================================================
-const Plus = styled.span`
-`;
-
-const Code = styled.span`
-`;
-
-const Pointer = styled.span`
-  color: ${ Colors.gray };
-`;
-
-const Message = styled.div`
-  margin-left: 1.13em;
-`;
-
-const Root = styled.div`
-  font-family: 'Roboto Mono', monospace;
-  cursor: pointer;
-
-  &:hover ${ Plus } {
-    color: ${ Colors.accent };
-  }
-`;
+// == microcomponents ==============================================================================
+const Message: React.FC = ( { children } ) => (
+  <div style={ { marginLeft: '1.13em' } }>{ children }</div>
+);
 
 // == element ======================================================================================
 export const ValidationReportIssue = ( props: {
@@ -49,11 +29,11 @@ export const ValidationReportIssue = ( props: {
   );
 
   return (
-    <Root onClick={ handleClick }>
-      <Plus>{ isOpening ? '- ' : '+ ' }</Plus>
-      <Code style={ { color } }>{ props.code }</Code>
-      <Pointer>{ ' - ' + props.pointer }</Pointer>
+    <div className="group cursor-pointer" onClick={ handleClick }>
+      <span className="group-hover:text-sky-500">{ isOpening ? '- ' : '+ ' }</span>
+      <span style={ { color } }>{ props.code }</span>
+      <span className="text-gray-500">{ ' - ' + props.pointer }</span>
       { isOpening && <Message>{ props.message }</Message> }
-    </Root>
+    </div>
   );
 };

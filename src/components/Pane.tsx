@@ -1,36 +1,6 @@
-import React, { useCallback, useState } from 'react';
-import { Colors } from '../constants/Colors';
-import { Metrics } from '../constants/Metrics';
 import { registerMouseEvent } from '../utils/registerMouseEvent';
-import styled from 'styled-components';
+import { useCallback, useState } from 'react';
 import { useDoubleClick } from '../utils/useDoubleClick';
-
-// == styles =======================================================================================
-const ButtonExpand = styled.span`
-  display: inline-block;
-  width: ${ Metrics.titleBarHeight };
-  height: ${ Metrics.titleBarHeight };
-  text-align: center;
-  cursor: pointer;
-
-  &:hover {
-    color: ${ Colors.accent };
-  }
-`;
-
-const TitleBar = styled.div`
-  height: ${ Metrics.titleBarHeight };
-  line-height: ${ Metrics.titleBarHeight };
-  width: 100%;
-  background: ${ Colors.titleBarBg };
-  cursor: move;
-`;
-
-const Root = styled.div`
-  position: absolute;
-  min-width: 240px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 1.0);
-`;
 
 // == params =======================================================================================
 export interface PaneParams {
@@ -44,7 +14,7 @@ export interface PaneParams {
 }
 
 // == element ======================================================================================
-const Pane = ( params: PaneParams ): JSX.Element => {
+const Pane: React.FC<PaneParams> = ( params ) => {
   const [ position, setPosition ] = useState( params.initPosition ?? {
     left: 0,
     top: 0,
@@ -97,26 +67,30 @@ const Pane = ( params: PaneParams ): JSX.Element => {
   );
 
   return (
-    <Root
+    <div
       style={{
         left: position.left,
         top: position.top,
+        minWidth: '15rem',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 1.0)'
       }}
-      className={ params.className }
+      className={ `absolute shadow ${ params.className }` }
       onMouseDown={ handleMouseDown }
     >
-      <TitleBar
+      <div // title bar
+        className="h-5 leading-5 w-full bg-gray-700 cursor-move"
         onMouseDown={ handleMouseDownTitleBar }
       >
-        <ButtonExpand
+        <div // plus
+          className="inline-block w-5 h-5 text-center cursor-pointer hover:text-sky-500"
           onMouseDown={ handleMouseDownExpand }
         >
           { isOpening ? '-' : '+' }
-        </ButtonExpand>
+        </div>
         { params.title }
-      </TitleBar>
+      </div>
       { isOpening && ( params.children ?? null ) }
-    </Root>
+    </div>
   );
 };
 
