@@ -11,8 +11,7 @@
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint-fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
-    "gh-pages": "node ./utils/gh-pages.js",
-    "postinstall": "patch-package"
+    "gh-pages": "node ./utils/gh-pages.js"
   },
   "dependencies": {
     "react": "^17.0.2",
