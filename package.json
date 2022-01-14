@@ -10,8 +10,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "lint-fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
-    "gh-pages": "node ./utils/gh-pages.js"
+    "lint-fix": "eslint \"src/**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
     "react": "^17.0.2",
@@ -33,7 +32,6 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
     "eventemitter3": "^4.0.7",
-    "gh-pages": "^3.1.0",
     "gltf-validator": "^2.0.0-dev.3.3",
     "postcss": "^8.4.5",
     "rimraf": "^3.0.2",
