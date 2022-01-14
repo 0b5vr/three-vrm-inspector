@@ -6,6 +6,7 @@ import dancingFbx from '../assets/motions/dancing.fbx';
 import gangnamStyleFbx from '../assets/motions/gangnam-style.fbx';
 import jumpFbx from '../assets/motions/jump.fbx';
 import runningFbx from '../assets/motions/running.fbx';
+import standingClapFbx from '../assets/motions/standing-clap.fbx';
 import walkingFbx from '../assets/motions/walking.fbx';
 
 // == animations ===================================================================================
@@ -15,6 +16,7 @@ const animations = [
   { name: 'Running', url: runningFbx },
   { name: 'Jump', url: jumpFbx },
   { name: 'Dancing', url: dancingFbx },
+  { name: 'Standing Clap', url: standingClapFbx },
   { name: 'Gangnam Style', url: gangnamStyleFbx },
 ];
 
