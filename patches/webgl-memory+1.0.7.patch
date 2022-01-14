@@ -1,4 +1,0 @@
-diff --git a/node_modules/webgl-memory/webgl-memory.js b/node_modules/webgl-memory/src/webgl-memory.js
-similarity index 100%
-rename from node_modules/webgl-memory/webgl-memory.js
-rename to node_modules/webgl-memory/src/webgl-memory.js
