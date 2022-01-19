@@ -8,6 +8,7 @@ import { gltfExtractPrimitivesFromNode } from '../utils/gltfExtractPrimitivesFro
 import { highlightMeshes } from './utils/highlightMeshes';
 import { highlightNodes } from './utils/highlightNodes';
 import { visualizeWeightMaterial } from './utils/visualizeWeightMaterial';
+import type { GLTF as GLTFSchema } from '@gltf-transform/core';
 
 const colorConstant = new THREE.Color( Colors.constant );
 
@@ -22,6 +23,10 @@ export class Highlighter {
     const inspector = this._inspector;
     const pathSplit = path.split( '/' );
 
+    const gltf = inspector.gltf!;
+    const parser = gltf.parser;
+    const json = parser.json as GLTFSchema.IGLTF;
+
     if (
       pathSplit.length === 3
       && pathSplit[ 1 ] === 'nodes'
@@ -30,7 +35,6 @@ export class Highlighter {
       const index = parseInt( pathSplit.pop()! );
       let callback: ( () => void ) | undefined;
 
-      const parser = inspector.gltf!.parser;
       parser.getDependency( 'node', index ).then( ( node: THREE.Object3D ) => {
         callback = highlightNodes( [ node ] );
       } );
@@ -47,10 +51,9 @@ export class Highlighter {
       const index = parseInt( pathSplit.pop()! );
       let callback: ( () => void ) | undefined;
 
-      const gltf = inspector.gltf!;
-      const schemaNodes: any[] = gltf.parser.json.nodes;
+      const schemaNodes = json.nodes;
       const nodesUsingMesh: number[] = [];
-      schemaNodes.forEach( ( node, nodeIndex ) => {
+      schemaNodes?.forEach( ( node, nodeIndex ) => {
         if ( node.mesh === index ) {
           nodesUsingMesh.push( nodeIndex );
         }
@@ -78,7 +81,6 @@ export class Highlighter {
       const primIndex = parseInt( pathSplit[ 4 ] );
       let callback: ( () => void ) | undefined;
 
-      const parser = inspector.gltf!.parser;
       parser.getDependency( 'mesh', meshIndex ).then( ( groupOrMesh: THREE.Mesh | THREE.Group ) => {
         if ( groupOrMesh.children.length !== 0 ) {
           groupOrMesh = groupOrMesh.children[ primIndex ] as THREE.Mesh;
@@ -104,7 +106,6 @@ export class Highlighter {
       const targetIndex = parseInt( pathSplit[ 6 ] );
       let callback: ( () => void ) | undefined;
 
-      const parser = inspector.gltf!.parser;
       parser.getDependency( 'mesh', meshIndex ).then( ( groupOrMesh: THREE.Mesh | THREE.Group ) => {
         if ( groupOrMesh.children.length !== 0 ) {
           groupOrMesh = groupOrMesh.children[ primIndex ] as THREE.Mesh;
@@ -137,10 +138,9 @@ export class Highlighter {
       const targetIndex = parseInt( pathSplit[ 5 ] );
       let callback: ( () => void ) | undefined;
 
-      const gltf = inspector.gltf!;
-      const schemaNodes: any[] = gltf.parser.json.nodes;
+      const schemaNodes = json.nodes;
       const nodesUsingMesh: number[] = [];
-      schemaNodes.forEach( ( node, nodeIndex ) => {
+      schemaNodes?.forEach( ( node, nodeIndex ) => {
         if ( node.mesh === meshIndex ) {
           nodesUsingMesh.push( nodeIndex );
         }
@@ -178,10 +178,9 @@ export class Highlighter {
       const skinIndex = parseInt( pathSplit[ 2 ] );
       let callback: ( () => void ) | undefined;
 
-      const gltf = inspector.gltf!;
-      const schemaNodes: any[] = gltf.parser.json.nodes;
+      const schemaNodes = json.nodes;
       const nodesUsingSkin: number[] = [];
-      schemaNodes.forEach( ( node, nodeIndex ) => {
+      schemaNodes?.forEach( ( node, nodeIndex ) => {
         if ( node.skin === skinIndex ) {
           nodesUsingSkin.push( nodeIndex );
         }
@@ -209,16 +208,14 @@ export class Highlighter {
       const jointIndex = parseInt( pathSplit[ 4 ] );
       const callbacks: ( () => void )[] = [];
 
-      const gltf = inspector.gltf!;
-
-      const jointNodeIndex: any = gltf.parser.json.skins[ skinIndex ].joints[ jointIndex ];
-      gltf.parser.getDependency( 'node', jointNodeIndex ).then( ( node: THREE.Object3D ) => {
+      const jointNodeIndex = json.skins![ skinIndex ].joints[ jointIndex ];
+      parser.getDependency( 'node', jointNodeIndex ).then( ( node: THREE.Object3D ) => {
         callbacks.push( highlightNodes( [ node ] ) );
       } );
 
-      const schemaNodes: any[] = gltf.parser.json.nodes;
+      const schemaNodes = json.nodes;
       const nodesUsingSkin: number[] = [];
-      schemaNodes.forEach( ( node, nodeIndex ) => {
+      schemaNodes?.forEach( ( node, nodeIndex ) => {
         if ( node.skin === skinIndex ) {
           nodesUsingSkin.push( nodeIndex );
         }
@@ -252,14 +249,12 @@ export class Highlighter {
       const index = parseInt( pathSplit.pop()! );
       let callback: ( () => void ) | undefined;
 
-      const parser = inspector.gltf!.parser;
       parser.getDependencies( 'mesh' ).then( ( groups: Array<THREE.Mesh | THREE.Group> ) => {
         const meshes: THREE.Mesh[] = [];
 
-        const gltf = parser.json;
-        ( gltf.meshes! as any[] ).forEach( ( schemaMesh, iMesh ) => {
+        json.meshes!.forEach( ( schemaMesh, iMesh ) => {
           const primitives = schemaMesh.primitives;
-          ( primitives as any[] ).forEach( ( schemaPrimitive, iPrimitive ) => {
+          primitives.forEach( ( schemaPrimitive, iPrimitive ) => {
             if ( index === schemaPrimitive.material ) {
               let groupOrMesh = groups[ iMesh ];
               if ( groupOrMesh.children.length !== 0 ) {
@@ -288,9 +283,7 @@ export class Highlighter {
 
       const index = parseInt( path.split( '/' ).pop()! );
 
-      const parser = inspector.gltf!.parser;
-      const gltf = parser.json;
-      const vrm = gltf.extensions!.VRM as V0VRM.VRM;
+      const vrm = json.extensions!.VRM as V0VRM.VRM;
       const boneName = vrm.humanoid!.humanBones![ index ].bone!;
       const bone = inspector.vrm!.humanoid!.getBoneNode( boneName )!;
 
@@ -333,9 +326,7 @@ export class Highlighter {
 
       const index = parseInt( path.split( '/' ).pop()! );
 
-      const parser = inspector.gltf!.parser;
-      const gltf = parser.json;
-      const vrm = gltf.extensions!.VRM as V0VRM.VRM;
+      const vrm = json.extensions!.VRM as V0VRM.VRM;
       const blendShapeMaster = vrm.blendShapeMaster!;
       const blendShapeName = blendShapeMaster.blendShapeGroups![ index ].name!;
 
@@ -355,9 +346,7 @@ export class Highlighter {
 
       const index = parseInt( path.split( '/' ).pop()! );
 
-      const parser = inspector.gltf!.parser;
-      const gltf = parser.json;
-      const vrm = gltf.extensions!.VRM as V0VRM.VRM;
+      const vrm = json.extensions!.VRM as V0VRM.VRM;
       const secondaryAnimation = vrm.secondaryAnimation;
       const bones = secondaryAnimation?.boneGroups![ index ].bones;
 

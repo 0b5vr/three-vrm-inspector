@@ -272,6 +272,13 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@gltf-transform/core@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@gltf-transform/core/-/core-1.2.4.tgz#676d23224fc5cdaf27f733c71ac36d829fa8e071"
+  integrity sha512-XAq++xwQg7ZPxHzRACf1uTuYntqJ7DTiE4IOWJa+ATvSk4hoHRCAFsMB0ziTKgEUObcKVrNvBwctxx5ABVrktA==
+  dependencies:
+    gl-matrix "~3.4.3"
+
 "@humanwhocodes/config-array@^0.9.2":
   version "0.9.2"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.9.2.tgz#68be55c737023009dfc5fe245d51181bb6476914"
@@ -1397,6 +1404,11 @@ get-symbol-description@^1.0.0:
   dependencies:
     call-bind "^1.0.2"
     get-intrinsic "^1.1.1"
+
+gl-matrix@~3.4.3:
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/gl-matrix/-/gl-matrix-3.4.3.tgz#fc1191e8320009fd4d20e9339595c6041ddc22c9"
+  integrity sha512-wcCp8vu8FT22BnvKVPjXa/ICBWRq/zjFfdofZy1WSpQZpphblv12/bOQLBC1rMM7SGOFS9ltVmKOHil5+Ml7gA==
 
 glob-parent@^5.1.2, glob-parent@~5.1.2:
   version "5.1.2"
