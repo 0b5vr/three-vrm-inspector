@@ -23,7 +23,7 @@ export class Highlighter {
     const inspector = this._inspector;
     const pathSplit = path.split( '/' );
 
-    const gltf = inspector.gltf!;
+    const gltf = inspector.model!.gltf;
     const parser = gltf.parser;
     const json = parser.json as GLTFSchema.IGLTF;
 
@@ -285,7 +285,7 @@ export class Highlighter {
 
       const vrm = json.extensions!.VRM as V0VRM.VRM;
       const boneName = vrm.humanoid!.humanBones![ index ].bone!;
-      const bone = inspector.vrm!.humanoid!.getBoneNode( boneName )!;
+      const bone = inspector.model!.vrm!.humanoid!.getBoneNode( boneName )!;
 
       return highlightNodes( [ bone ] );
 
@@ -296,7 +296,7 @@ export class Highlighter {
     ) {
 
       const mesh = genGizmo();
-      const lookAt = inspector.vrm!.lookAt!;
+      const lookAt = inspector.model!.vrm!.lookAt!;
       lookAt.getLookAtWorldPosition( mesh.position );
       inspector.scene.add( mesh );
 
@@ -330,11 +330,11 @@ export class Highlighter {
       const blendShapeMaster = vrm.blendShapeMaster!;
       const blendShapeName = blendShapeMaster.blendShapeGroups![ index ].name!;
 
-      const prevValue = inspector.vrm!.expressionManager!.getValue( blendShapeName )!;
-      inspector.vrm!.expressionManager!.setValue( blendShapeName, 1.0 );
+      const prevValue = inspector.model!.vrm!.expressionManager!.getValue( blendShapeName )!;
+      inspector.model!.vrm!.expressionManager!.setValue( blendShapeName, 1.0 );
 
       return () => {
-        inspector.vrm!.expressionManager!.setValue( blendShapeName, prevValue );
+        inspector.model!.vrm!.expressionManager!.setValue( blendShapeName, prevValue );
       };
 
     } else if (
@@ -350,7 +350,7 @@ export class Highlighter {
       const secondaryAnimation = vrm.secondaryAnimation;
       const bones = secondaryAnimation?.boneGroups![ index ].bones;
 
-      const springBoneManager = inspector.vrm!.springBoneManager!;
+      const springBoneManager = inspector.model!.vrm!.springBoneManager!;
       const nodeJointMap = new Map<THREE.Object3D, VRMSpringBoneJoint>();
       for ( const springBone of springBoneManager.springBones ) {
         nodeJointMap.set( springBone.bone, springBone );

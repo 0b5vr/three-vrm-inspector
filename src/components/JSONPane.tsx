@@ -10,7 +10,7 @@ const JSONPane = ( params: PaneParams ): JSX.Element => {
 
   useEffect( () => {
     const handleLoad = (): void => {
-      setRoot( inspector.originalGLTFJSON );
+      setRoot( inspector.model?.originalGLTFJSON );
     };
 
     inspector.on( 'load', handleLoad );

@@ -8,7 +8,7 @@ import { useContext } from 'react';
 export const MetaPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
-  const meta = inspector.vrm?.meta;
+  const meta = inspector.model?.vrm?.meta;
 
   let content: JSX.Element = <>No meta detected.</>;
 

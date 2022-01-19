@@ -116,7 +116,7 @@ export class MaterialDebugger {
   }
 
   private async _handleLoad(): Promise<void> {
-    const gltfMeshes = await this._inspector.gltf!.parser.getDependencies( 'mesh' );
+    const gltfMeshes = await this._inspector.model!.gltf!.parser.getDependencies( 'mesh' );
     gltfMeshes.forEach( ( gltfMesh: THREE.Group | THREE.Mesh ) => {
       if ( 'isGroup' in gltfMesh ) {
         const group = gltfMesh as THREE.Group;

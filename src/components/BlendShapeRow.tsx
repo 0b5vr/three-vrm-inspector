@@ -9,7 +9,7 @@ export const BlendShapeRow = ( { name, isAvailable }: {
 
   const handleChange = useCallback(
     ( event: React.ChangeEvent<HTMLInputElement> ) => {
-      inspector.vrm?.expressionManager?.setValue( name, parseFloat( event.target.value ) );
+      inspector.model?.vrm?.expressionManager?.setValue( name, parseFloat( event.target.value ) );
     },
     []
   );

@@ -17,14 +17,14 @@ const ReportCount: React.FC<{
 // == element ======================================================================================
 export const ValidationReportPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
-  const issues = inspector.validationReport?.issues;
+  const issues = inspector.model?.validationReport?.issues;
 
   return (
     <Pane { ...params }>
       <PaneRoot className="w-120 h-80 resize overflow-y-scroll">
         <NameValueEntry
           name="Validator Version"
-          value={ inspector.validationReport?.validatorVersion }
+          value={ inspector.model?.validationReport?.validatorVersion }
         />
         <NameValueEntry
           name="Errors"

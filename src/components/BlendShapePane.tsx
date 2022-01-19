@@ -33,7 +33,7 @@ const presetSet: Set<string> = new Set( presets );
 export const BlendShapePane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
-  const expressionManager = inspector.vrm?.expressionManager;
+  const expressionManager = inspector.model?.vrm?.expressionManager;
   const expressionMap = expressionManager?.expressionMap;
 
   const customNames: string[] = [];

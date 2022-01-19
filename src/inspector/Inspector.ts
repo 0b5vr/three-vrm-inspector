@@ -2,6 +2,7 @@ import 'webgl-memory';
 import * as THREE from 'three';
 import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { InspectorModel } from './InspectorModel';
 import { VRM, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { ValidationReport } from './ValidationReport';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
@@ -19,7 +20,6 @@ import cubemapYn from '../assets/cubemap/yn.jpg';
 import cubemapYp from '../assets/cubemap/yp.jpg';
 import cubemapZn from '../assets/cubemap/zn.jpg';
 import cubemapZp from '../assets/cubemap/zp.jpg';
-import type { GLTF as GLTFSchema } from '@gltf-transform/core';
 import type { InspectorStats } from './InspectorStats';
 
 const _v3A = new THREE.Vector3();
@@ -38,12 +38,7 @@ export class Inspector {
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
   private _controls?: CameraControls;
-  private _gltf?: GLTF;
-  private _validationReport?: ValidationReport;
-  private _originalGLTFJSON?: GLTFSchema.IGLTF;
-  private _vrm?: VRM | null;
-  private _currentModelScene?: THREE.Group;
-  private _animationMixer?: THREE.AnimationMixer | null;
+  private _model?: InspectorModel | null;
   private _currentAnimationAction?: THREE.AnimationAction | null;
   private _currentAnimationURL?: string | null;
   private _stats: InspectorStats | null = null;
@@ -65,10 +60,7 @@ export class Inspector {
   public get springBoneColliderHelperRoot(): THREE.Group {
     return this._springBoneColliderHelperRoot;
   }
-  public get gltf(): GLTF | undefined { return this._gltf; }
-  public get validationReport(): ValidationReport | undefined { return this._validationReport; }
-  public get originalGLTFJSON(): any | undefined { return this._originalGLTFJSON; }
-  public get vrm(): VRM | null | undefined { return this._vrm; }
+  public get model(): InspectorModel | null { return this._model ?? null; }
   public get stats(): InspectorStats | null { return this._stats; }
   public get webglMemoryInfo(): WebGLMemoryInfo | null { return this._webglMemoryInfo; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
@@ -130,16 +122,14 @@ export class Inspector {
   }
 
   public unloadVRM(): void {
-    if ( this._currentModelScene ) {
-      this._scene.remove( this._currentModelScene );
-    }
+    const model = this._model;
 
-    if ( this._vrm ) {
-      VRMUtils.deepDispose( this._vrm.scene );
+    if ( model ) {
+      this._scene.remove( model.scene );
+      VRMUtils.deepDispose( model.scene );
       this._emit( 'unload' );
     }
 
-    this._animationMixer = null;
     this._currentAnimationAction = null;
 
     this._springBoneJointHelperRoot.children.concat().forEach( ( helper ) => {
@@ -151,9 +141,11 @@ export class Inspector {
       this._springBoneColliderHelperRoot.remove( helper );
       ( helper as VRMSpringBoneColliderHelper ).dispose();
     } );
+
+    this._model = null;
   }
 
-  public async loadVRM( url: string ): Promise<VRM | null> {
+  public async loadVRM( url: string ): Promise<InspectorModel | null> {
     const buffer = await fetch( url ).then( ( res ) => res.arrayBuffer() );
     const validationReport = await validateBytes(
       new Uint8Array( buffer ),
@@ -162,13 +154,12 @@ export class Inspector {
       }
     ).catch( ( error ) => console.error( 'Validation failed: ', error ) );
 
-    this._validationReport = validationReport;
     this._emit( 'validate', validationReport );
 
     this.unloadVRM();
 
     const webIO = new WebIO( { credentials: 'include' } );
-    this._originalGLTFJSON = webIO.binaryToJSON( buffer ).json;
+    const originalGLTFJSON = webIO.binaryToJSON( buffer ).json;
 
     const gltf = await new Promise<GLTF>( ( resolve, reject ) => {
       this._loader.crossOrigin = 'anonymous';
@@ -179,12 +170,11 @@ export class Inspector {
         ( error ) => { this._emit( 'error', error ); reject( error ); }
       );
     } );
-    this._gltf = gltf;
 
     VRMUtils.removeUnnecessaryVertices( gltf.scene );
     VRMUtils.removeUnnecessaryJoints( gltf.scene );
 
-    const vrm: VRM | null = this._vrm = gltf.userData.vrm ?? null;
+    const vrm: VRM | null = gltf.userData.vrm ?? null;
 
     if ( vrm == null ) {
       console.warn( 'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF' );
@@ -196,8 +186,19 @@ export class Inspector {
       createAxisHelpers( vrm );
     }
 
-    this._currentModelScene = ( vrm?.scene ?? gltf.scene ) as THREE.Group;
-    this._scene.add( this._currentModelScene );
+    const scene = ( vrm?.scene ?? gltf.scene ) as THREE.Group;
+    this._scene.add( scene );
+
+    const model: InspectorModel = {
+      gltf,
+      validationReport,
+      originalGLTFJSON,
+      vrm,
+      scene,
+      animationMixer: null,
+    };
+
+    this._model = model;
 
     if ( vrm ) {
       vrm.firstPerson?.setup();
@@ -215,20 +216,20 @@ export class Inspector {
 
       VRMUtils.rotateVRM0( vrm );
 
-      this._animationMixer = new THREE.AnimationMixer( vrm.scene );
+      model.animationMixer = new THREE.AnimationMixer( vrm.scene );
 
       if ( this._currentAnimationURL != null ) {
         this.loadMixamoAnimation( this._currentAnimationURL );
       }
     }
 
-    this._emit( 'load', vrm );
+    this._emit( 'load', model );
 
-    return vrm;
+    return model;
   }
 
   public async exportBufferView( index: number ): Promise<void> {
-    const gltf = this._gltf;
+    const gltf = this._model?.gltf;
     if ( gltf == null ) { return; }
 
     const bufferView = await gltf.parser.getDependency( 'bufferView', index );
@@ -299,8 +300,8 @@ export class Inspector {
   }
 
   public loadMixamoAnimation( url: string ): void {
-    const vrm = this._vrm;
-    const mixer = this._animationMixer;
+    const vrm = this._model?.vrm;
+    const mixer = this._model?.animationMixer;
     if ( !vrm || !mixer ) { return; }
 
     if ( this._currentAnimationAction ) {
@@ -317,7 +318,7 @@ export class Inspector {
   }
 
   public clearMixamoAnimation(): void {
-    const vrm = this._vrm;
+    const vrm = this._model?.vrm;
     const action = this._currentAnimationAction;
     if ( !vrm || !action ) { return; }
 
@@ -330,8 +331,8 @@ export class Inspector {
 
   public update( delta: number ): void {
     if ( this._controls ) { this._controls.update( delta ); }
-    if ( this._animationMixer ) { this._animationMixer.update( delta ); }
-    if ( this._vrm ) { this._vrm.update( delta ); }
+    if ( this._model?.animationMixer ) { this._model.animationMixer.update( delta ); }
+    if ( this._model?.vrm ) { this._model.vrm.update( delta ); }
 
     if ( this._renderer ) {
       this._renderer.render( this._scene, this._camera );
@@ -423,7 +424,7 @@ export class Inspector {
   }
 
   private _updateLayerMode(): void {
-    const firstPerson = this._vrm?.firstPerson;
+    const firstPerson = this._model?.vrm?.firstPerson;
 
     if ( !firstPerson ) { return; }
 
@@ -438,7 +439,7 @@ export class Inspector {
 }
 
 export interface InspectorEvents {
-  load: VRM | null;
+  load: InspectorModel | null;
   updateStats: InspectorStats;
   unload: void;
   validate: ValidationReport;
