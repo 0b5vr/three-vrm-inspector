@@ -6,6 +6,7 @@ import { VRM, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelpe
 import { ValidationReport } from './ValidationReport';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
 import { WebGLMemoryInfo } from './WebGLMemoryInfo';
+import { WebIO } from '@gltf-transform/core';
 import { applyMixins } from '../utils/applyMixins';
 import { createAxisHelpers } from './createAxisHelpers';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
@@ -18,6 +19,7 @@ import cubemapYn from '../assets/cubemap/yn.jpg';
 import cubemapYp from '../assets/cubemap/yp.jpg';
 import cubemapZn from '../assets/cubemap/zn.jpg';
 import cubemapZp from '../assets/cubemap/zp.jpg';
+import type { GLTF as GLTFSchema } from '@gltf-transform/core';
 import type { InspectorStats } from './InspectorStats';
 
 const _v3A = new THREE.Vector3();
@@ -38,6 +40,7 @@ export class Inspector {
   private _controls?: CameraControls;
   private _gltf?: GLTF;
   private _validationReport?: ValidationReport;
+  private _originalGLTFJSON?: GLTFSchema.IGLTF;
   private _vrm?: VRM | null;
   private _currentModelScene?: THREE.Group;
   private _animationMixer?: THREE.AnimationMixer | null;
@@ -64,6 +67,7 @@ export class Inspector {
   }
   public get gltf(): GLTF | undefined { return this._gltf; }
   public get validationReport(): ValidationReport | undefined { return this._validationReport; }
+  public get originalGLTFJSON(): any | undefined { return this._originalGLTFJSON; }
   public get vrm(): VRM | null | undefined { return this._vrm; }
   public get stats(): InspectorStats | null { return this._stats; }
   public get webglMemoryInfo(): WebGLMemoryInfo | null { return this._webglMemoryInfo; }
@@ -162,6 +166,9 @@ export class Inspector {
     this._emit( 'validate', validationReport );
 
     this.unloadVRM();
+
+    const webIO = new WebIO( { credentials: 'include' } );
+    this._originalGLTFJSON = webIO.binaryToJSON( buffer ).json;
 
     const gltf = await new Promise<GLTF>( ( resolve, reject ) => {
       this._loader.crossOrigin = 'anonymous';
