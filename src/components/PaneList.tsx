@@ -4,6 +4,7 @@ import { AboutPane } from './AboutPane';
 import { BlendShapePane } from './BlendShapePane';
 import { ExportBufferViewPane } from './ExportBufferViewPane';
 import { HelpersPane } from './HelpersPane';
+import { JSEditorPane } from './JSEditorPane';
 import { JSONPane } from './JSONPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
@@ -28,6 +29,7 @@ const PaneList = (): JSX.Element => {
     'helpers',
     'exportBufferView',
     'mixamoAnimations',
+    'jsEditor',
     'about',
   ] );
 
@@ -120,12 +122,19 @@ const PaneList = (): JSX.Element => {
       onClick={ handleClick }
       initPosition={ { left: 0, top: 200 } }
     />,
+    'jsEditor': <JSEditorPane
+      key="jsEditor"
+      paneKey="jsEditor"
+      title="JavaScript Editor"
+      onClick={ handleClick }
+      initPosition={ { left: 0, top: 220 } }
+    />,
     'about': <AboutPane
       key="about"
       paneKey="about"
       title="About"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 220 } }
+      initPosition={ { left: 0, top: 240 } }
     />,
   };
 
