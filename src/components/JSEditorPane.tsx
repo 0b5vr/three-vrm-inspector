@@ -3,6 +3,7 @@ import 'codemirror/addon/comment/comment';
 import 'codemirror/keymap/sublime';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/javascript/javascript';
+import * as THREE from 'three';
 import { InspectorContext } from '../InspectorContext';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
@@ -13,7 +14,7 @@ import CodeMirror from 'codemirror';
 const defaultCode = `// Press Ctrl+S or Ctrl+R to apply
 // The api will be changed without notice! Use at your own risk
 
-export default ( inspector ) => {
+export default ( { inspector, THREE } ) => {
   let isUnmounted = false;
 
   const vrm = inspector.model.vrm;
@@ -68,7 +69,7 @@ export const JSEditorPane = ( params: PaneParams ): JSX.Element => {
       const url = URL.createObjectURL( blob );
 
       import( url ).then( ( mod ) => {
-        refLastUnmount.current = mod.default( inspector );
+        refLastUnmount.current = mod.default( { inspector, THREE } );
         URL.revokeObjectURL( url );
       } );
     },
