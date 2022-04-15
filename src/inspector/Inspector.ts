@@ -2,8 +2,11 @@ import 'webgl-memory';
 import * as THREE from 'three';
 import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { InspectorCameraControlsPlugin } from './InspectorCameraControlsPlugin';
+import { InspectorLookAtPlugin } from './InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
-import { VRM, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+import { InspectorPlugin } from './InspectorPlugin';
+import { VRM, VRMLoaderPlugin, VRMLookAtHelper, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { ValidationReport } from './ValidationReport';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
 import { WebGLMemoryInfo } from './WebGLMemoryInfo';
@@ -31,13 +34,15 @@ export class Inspector {
     return 100;
   }
 
+  public readonly cameraControlsPlugin: InspectorCameraControlsPlugin;
+  public readonly lookAtPlugin: InspectorLookAtPlugin;
+
   private _scene: THREE.Scene;
   private _lookAtHelperRoot: THREE.Group;
   private _springBoneJointHelperRoot: THREE.Group;
   private _springBoneColliderHelperRoot: THREE.Group;
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
-  private _controls?: CameraControls;
   private _model?: InspectorModel | null;
   private _currentAnimationAction?: THREE.AnimationAction | null;
   private _currentAnimationURL?: string | null;
@@ -49,8 +54,10 @@ export class Inspector {
   private _layerMode: 'firstPerson' | 'thirdPerson' = 'thirdPerson';
   private _handleResize?: () => void;
   private _ongoingRequestEnvMap?: Promise<THREE.CubeTexture>;
+  private _plugins: InspectorPlugin[];
 
   public get scene(): THREE.Scene { return this._scene; }
+  public get camera(): THREE.PerspectiveCamera { return this._camera; }
   public get lookAtHelperRoot(): THREE.Group {
     return this._lookAtHelperRoot;
   }
@@ -119,6 +126,15 @@ export class Inspector {
         colliderHelperRoot: this._springBoneColliderHelperRoot,
       } ),
     } ) );
+
+    // plugins
+    this.cameraControlsPlugin = new InspectorCameraControlsPlugin( this );
+    this.lookAtPlugin = new InspectorLookAtPlugin( this );
+
+    this._plugins = [
+      this.cameraControlsPlugin,
+      this.lookAtPlugin,
+    ];
   }
 
   public unloadVRM(): void {
@@ -130,6 +146,9 @@ export class Inspector {
       this._emit( 'unload' );
     }
 
+    // plugins
+    this._plugins.forEach( ( plugin ) => plugin.handleAfterUnload?.() );
+
     this._currentAnimationAction = null;
 
     this._springBoneJointHelperRoot.children.concat().forEach( ( helper ) => {
@@ -140,6 +159,11 @@ export class Inspector {
     this._springBoneColliderHelperRoot.children.concat().forEach( ( helper ) => {
       this._springBoneColliderHelperRoot.remove( helper );
       ( helper as VRMSpringBoneColliderHelper ).dispose();
+    } );
+
+    this._lookAtHelperRoot.children.concat().forEach( ( helper ) => {
+      this._lookAtHelperRoot.remove( helper );
+      ( helper as VRMLookAtHelper ).dispose();
     } );
 
     this._model = null;
@@ -200,6 +224,9 @@ export class Inspector {
 
     this._model = model;
 
+    // plugins
+    this._plugins.forEach( ( plugin ) => plugin.handleAfterLoad?.() );
+
     if ( vrm ) {
       vrm.firstPerson?.setup();
       this._updateLayerMode();
@@ -252,10 +279,6 @@ export class Inspector {
     this._renderer.setSize( window.innerWidth, window.innerHeight );
     this._renderer.setPixelRatio( window.devicePixelRatio );
 
-    // camera controls
-    this._controls = new CameraControls( this._camera, this._canvas );
-    this._controls.setTarget( 0.0, 1.0, 0.0 );
-
     // resize listener
     if ( this._handleResize ) {
       window.removeEventListener( 'resize', this._handleResize );
@@ -270,6 +293,9 @@ export class Inspector {
 
     // webgl-memory
     this._webglMemory = this._renderer.getContext().getExtension( 'GMAN_webgl_memory' ) as WebGLMemoryExtension;
+
+    // plugins
+    this._plugins.forEach( ( plugin ) => plugin.handleAfterSetup?.() );
   }
 
   public registerDnD( target: HTMLElement ): () => void {
@@ -330,9 +356,11 @@ export class Inspector {
   }
 
   public update( delta: number ): void {
-    if ( this._controls ) { this._controls.update( delta ); }
     if ( this._model?.animationMixer ) { this._model.animationMixer.update( delta ); }
     if ( this._model?.vrm ) { this._model.vrm.update( delta ); }
+
+    // plugins
+    this._plugins.forEach( ( plugin ) => plugin.handleBeforeRender?.( delta ) );
 
     if ( this._renderer ) {
       this._renderer.render( this._scene, this._camera );

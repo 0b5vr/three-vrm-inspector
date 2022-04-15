@@ -6,6 +6,7 @@ import { ExportBufferViewPane } from './ExportBufferViewPane';
 import { HelpersPane } from './HelpersPane';
 import { JSEditorPane } from './JSEditorPane';
 import { JSONPane } from './JSONPane';
+import { LookAtPane } from './LookAtPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
 import { MixamoAnimationsPane } from './MixamoAnimationsPane';
@@ -24,6 +25,7 @@ const PaneList = (): JSX.Element => {
     'stats',
     'webglMemory',
     'blendShape',
+    'lookAt',
     'validationReport',
     'sampleModels',
     'helpers',
@@ -44,97 +46,114 @@ const PaneList = (): JSX.Element => {
     [ order ]
   );
 
+  let currentInitPositionTop = 0;
+  const generateInitPosition = (): { left: number, top: number } => {
+    const left = 0;
+    const top = currentInitPositionTop;
+
+    currentInitPositionTop += 20;
+
+    return { left, top };
+  };
+
   const panes: { [ key: string ]: JSX.Element } = {
     'jsonTree': <JSONPane
       key="jsonTree"
       paneKey="jsonTree"
       title="JSON Tree"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 0 } }
+      initPosition={ generateInitPosition() }
     />,
     'materialDebugger': <MaterialDebuggerPane
       key="materialDebugger"
       paneKey="materialDebugger"
       title="MToon Material Debugger"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 20 } }
+      initPosition={ generateInitPosition() }
     />,
     'meta': <MetaPane
       key="meta"
       paneKey="meta"
       title="Meta"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 40 } }
+      initPosition={ generateInitPosition() }
     />,
     'stats': <StatsPane
       key="stats"
       paneKey="stats"
       title="Stats"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 60 } }
+      initPosition={ generateInitPosition() }
     />,
     'webglMemory': <WebGLMemoryPane
       key="webglMemory"
       paneKey="webglMemory"
       title="WebGL Memory"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 80 } }
+      initPosition={ generateInitPosition() }
     />,
     'blendShape': <BlendShapePane
       key="blendShape"
       paneKey="blendShape"
       title="Blend Shape Proxy"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 100 } }
+      initPosition={ generateInitPosition() }
+    />,
+    'lookAt': <LookAtPane
+      key="lookAt"
+      paneKey="lookAt"
+      title="Look At"
+      onClick={ handleClick }
+      initPosition={ generateInitPosition() }
     />,
     'validationReport': <ValidationReportPane
       key="validationReport"
       paneKey="validationReport"
       title="Validation Report"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 120 } }
+      initPosition={ generateInitPosition() }
     />,
     'sampleModels': <SampleModelsPane
       key="sampleModels"
       paneKey="sampleModels"
       title="Sample Models"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 140 } }
+      initPosition={ generateInitPosition() }
     />,
     'helpers': <HelpersPane
       key="helpers"
       paneKey="helpers"
       title="Helpers"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 160 } }
+      initPosition={ generateInitPosition() }
     />,
     'exportBufferView': <ExportBufferViewPane
       key="exportBufferView"
       paneKey="exportBufferView"
       title="Export Buffer View"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 180 } }
+      initPosition={ generateInitPosition() }
     />,
     'mixamoAnimations': <MixamoAnimationsPane
       key="mixamoAnimations"
       paneKey="mixamoAnimations"
       title="Mixamo Animations"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 200 } }
+      initPosition={ generateInitPosition() }
     />,
     'jsEditor': <JSEditorPane
       key="jsEditor"
       paneKey="jsEditor"
       title="JavaScript Editor"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 220 } }
+      initPosition={ generateInitPosition() }
     />,
     'about': <AboutPane
       key="about"
       paneKey="about"
       title="About"
       onClick={ handleClick }
-      initPosition={ { left: 0, top: 240 } }
+      initPosition={ generateInitPosition() }
     />,
   };
 

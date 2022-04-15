@@ -25,14 +25,17 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
         <HelpersPaneCheckbox
           callback={ handleChangeLookAt }
           label="LookAt"
+          checked
         />
         <HelpersPaneCheckbox
           callback={ handleChangeSpringBones }
           label="Spring Bones"
+          checked
         />
         <HelpersPaneCheckbox
           callback={ handleChangeSpringBoneColliders }
           label="Spring Bone Colliders"
+          checked
         />
       </PaneRoot>
     </Pane>

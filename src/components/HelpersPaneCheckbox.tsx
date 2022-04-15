@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
 
-export const HelpersPaneCheckbox = ( { callback, label }: {
+export const HelpersPaneCheckbox = ( { callback, label, checked: checkedByDefault }: {
   callback: ( checked: boolean ) => void,
   label: string,
+  checked?: boolean,
 } ): JSX.Element => {
-  const [ isChecked, setChecked ] = useState( true );
+  const [ isChecked, setChecked ] = useState( checkedByDefault ?? false );
 
   const handleChange = useCallback( ( { target } ) => {
     callback( target.checked );
