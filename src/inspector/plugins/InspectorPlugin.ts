@@ -1,4 +1,4 @@
-import { Inspector } from './Inspector';
+import { Inspector } from '../Inspector';
 
 export interface InspectorPlugin {
   inspector: Inspector;

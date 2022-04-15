@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
-import type { Inspector } from './Inspector';
+import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
 
 const _v3A = new THREE.Vector3();

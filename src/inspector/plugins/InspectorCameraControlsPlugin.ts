@@ -1,5 +1,5 @@
 import CameraControls from 'camera-controls';
-import type { Inspector } from './Inspector';
+import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
 
 export class InspectorCameraControlsPlugin implements InspectorPlugin {
