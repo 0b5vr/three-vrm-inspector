@@ -50,6 +50,7 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     const { scene, camera, canvas } = this.inspector;
 
     this._transformControls = new TransformControls( camera, canvas );
+    this._transformControls.space = 'local';
     this._transformControls.mode = 'rotate';
     scene.add( this._transformControls );
 
@@ -88,6 +89,7 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
 
   public handleAfterUnload(): void {
     this._sprites = null;
+    this._transformControls?.detach();
   }
 
   public handleMouseDown( event: MouseEvent ): void {
