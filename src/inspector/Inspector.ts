@@ -4,6 +4,7 @@ import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { InspectorAnimationPlugin } from './plugins/InspectorAnimationPlugin';
 import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControlsPlugin';
+import { InspectorHumanoidTransformPlugin } from './plugins/InspectorHumanoidTransformPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
 import { VRM, VRMLoaderPlugin, VRMLookAtHelper, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
@@ -36,6 +37,7 @@ export class Inspector {
 
   public readonly animationPlugin: InspectorAnimationPlugin;
   public readonly cameraControlsPlugin: InspectorCameraControlsPlugin;
+  public readonly humanoidTransformPlugin: InspectorHumanoidTransformPlugin;
   public readonly lookAtPlugin: InspectorLookAtPlugin;
 
   private _scene: THREE.Scene;
@@ -129,11 +131,13 @@ export class Inspector {
     // plugins
     this.animationPlugin = new InspectorAnimationPlugin( this );
     this.cameraControlsPlugin = new InspectorCameraControlsPlugin( this );
+    this.humanoidTransformPlugin = new InspectorHumanoidTransformPlugin( this );
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
 
     this._plugins = [
       this.animationPlugin,
       this.cameraControlsPlugin,
+      this.humanoidTransformPlugin,
       this.lookAtPlugin,
     ];
   }
@@ -223,7 +227,7 @@ export class Inspector {
     this._model = model;
 
     // plugins
-    this._plugins.forEach( ( plugin ) => plugin.handleAfterLoad?.() );
+    this._plugins.forEach( ( plugin ) => plugin.handleAfterLoad?.( model ) );
 
     if ( vrm ) {
       vrm.firstPerson?.setup();

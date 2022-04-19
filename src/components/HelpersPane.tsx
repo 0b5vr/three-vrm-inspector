@@ -11,6 +11,10 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
     inspector.lookAtHelperRoot.visible = checked;
   }, [ inspector ] );
 
+  const handleChangeHumanoidTransform = useCallback( ( checked ) => {
+    inspector.humanoidTransformPlugin.active = checked;
+  }, [ inspector ] );
+
   const handleChangeSpringBones = useCallback( ( checked ) => {
     inspector.springBoneJointHelperRoot.visible = checked;
   }, [ inspector ] );
@@ -22,6 +26,11 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   return (
     <Pane { ...params }>
       <PaneRoot>
+        <HelpersPaneCheckbox
+          callback={ handleChangeHumanoidTransform }
+          label="Humanoid Transform"
+          checked
+        />
         <HelpersPaneCheckbox
           callback={ handleChangeLookAt }
           label="LookAt"

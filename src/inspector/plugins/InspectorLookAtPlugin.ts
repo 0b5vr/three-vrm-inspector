@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { InspectorModel } from '../InspectorModel';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
@@ -60,9 +61,9 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
     } );
   }
 
-  public handleAfterLoad(): void {
-    const vrm = this.inspector.model?.vrm;
-    if ( !vrm ) { return; }
+  public handleAfterLoad( model: InspectorModel ): void {
+    const { vrm } = model;
+    if ( vrm == null ) { return; }
 
     const head = vrm.humanoid?.getBoneNode( 'head' );
     if ( head != null ) {

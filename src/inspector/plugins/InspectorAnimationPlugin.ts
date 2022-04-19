@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { InspectorModel } from '../InspectorModel';
 import { loadMixamoAnimation } from './utils/loadMixamoAnimation';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
@@ -14,9 +15,9 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     this.inspector = inspector;
   }
 
-  public handleAfterLoad(): void {
-    const vrm = this.inspector.model?.vrm;
-    if ( !vrm ) { return; }
+  public handleAfterLoad( model: InspectorModel ): void {
+    const vrm = model.vrm;
+    if ( vrm == null ) { return; }
 
     this._currentAnimationMixer = new THREE.AnimationMixer( vrm.scene );
 
