@@ -25,6 +25,9 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     this._active = value;
 
     this._sprites?.forEach( ( sprite ) => sprite.visible = value );
+    if ( value === false ) {
+      this._transformControls?.detach();
+    }
   }
 
   public constructor( inspector: Inspector ) {
