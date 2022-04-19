@@ -28,9 +28,9 @@ export const MixamoAnimationsPane = ( params: PaneParams ): JSX.Element => {
     ( event: React.ChangeEvent<HTMLSelectElement> ) => {
       const name = event.target.value;
       if ( name === '-' ) {
-        inspector.clearMixamoAnimation();
+        inspector.animationPlugin.clearMixamoAnimation();
       } else {
-        inspector.loadMixamoAnimation( name );
+        inspector.animationPlugin.loadMixamoAnimation( name );
       }
     },
     [ inspector ]

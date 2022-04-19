@@ -2,6 +2,7 @@ import 'webgl-memory';
 import * as THREE from 'three';
 import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { InspectorAnimationPlugin } from './plugins/InspectorAnimationPlugin';
 import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControlsPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
@@ -13,7 +14,6 @@ import { WebIO } from '@gltf-transform/core';
 import { applyMixins } from '../utils/applyMixins';
 import { createAxisHelpers } from './createAxisHelpers';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
-import { loadMixamoAnimation } from './loadMixamoAnimation';
 import { validateBytes } from 'gltf-validator';
 import CameraControls from 'camera-controls';
 import cubemapXn from '../assets/cubemap/xn.jpg';
@@ -34,6 +34,7 @@ export class Inspector {
     return 100;
   }
 
+  public readonly animationPlugin: InspectorAnimationPlugin;
   public readonly cameraControlsPlugin: InspectorCameraControlsPlugin;
   public readonly lookAtPlugin: InspectorLookAtPlugin;
 
@@ -44,8 +45,6 @@ export class Inspector {
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
   private _model?: InspectorModel | null;
-  private _currentAnimationAction?: THREE.AnimationAction | null;
-  private _currentAnimationURL?: string | null;
   private _stats: InspectorStats | null = null;
   private _webglMemory: WebGLMemoryExtension | null = null;
   private _webglMemoryInfo: WebGLMemoryInfo | null = null;
@@ -128,10 +127,12 @@ export class Inspector {
     } ) );
 
     // plugins
+    this.animationPlugin = new InspectorAnimationPlugin( this );
     this.cameraControlsPlugin = new InspectorCameraControlsPlugin( this );
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
 
     this._plugins = [
+      this.animationPlugin,
       this.cameraControlsPlugin,
       this.lookAtPlugin,
     ];
@@ -148,8 +149,6 @@ export class Inspector {
 
     // plugins
     this._plugins.forEach( ( plugin ) => plugin.handleAfterUnload?.() );
-
-    this._currentAnimationAction = null;
 
     this._springBoneJointHelperRoot.children.concat().forEach( ( helper ) => {
       this._springBoneJointHelperRoot.remove( helper );
@@ -219,7 +218,6 @@ export class Inspector {
       originalGLTFJSON,
       vrm,
       scene,
-      animationMixer: null,
     };
 
     this._model = model;
@@ -242,12 +240,6 @@ export class Inspector {
       } );
 
       VRMUtils.rotateVRM0( vrm );
-
-      model.animationMixer = new THREE.AnimationMixer( vrm.scene );
-
-      if ( this._currentAnimationURL != null ) {
-        this.loadMixamoAnimation( this._currentAnimationURL );
-      }
     }
 
     this._emit( 'load', model );
@@ -325,38 +317,7 @@ export class Inspector {
     };
   }
 
-  public loadMixamoAnimation( url: string ): void {
-    const vrm = this._model?.vrm;
-    const mixer = this._model?.animationMixer;
-    if ( !vrm || !mixer ) { return; }
-
-    if ( this._currentAnimationAction ) {
-      this.clearMixamoAnimation();
-    }
-
-    loadMixamoAnimation( url, vrm ).then( ( clip ) => {
-      if ( clip ) {
-        this._currentAnimationURL = url;
-        this._currentAnimationAction = mixer.clipAction( clip );
-        this._currentAnimationAction.play();
-      }
-    } );
-  }
-
-  public clearMixamoAnimation(): void {
-    const vrm = this._model?.vrm;
-    const action = this._currentAnimationAction;
-    if ( !vrm || !action ) { return; }
-
-    this._currentAnimationURL = null;
-    action.stop();
-    this._currentAnimationAction = null;
-
-    vrm.humanoid?.resetPose();
-  }
-
   public update( delta: number ): void {
-    if ( this._model?.animationMixer ) { this._model.animationMixer.update( delta ); }
     if ( this._model?.vrm ) { this._model.vrm.update( delta ); }
 
     // plugins

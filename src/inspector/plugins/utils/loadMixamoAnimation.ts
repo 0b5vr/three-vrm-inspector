@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { VRM } from '@pixiv/three-vrm';
-import { arrayChunk } from './utils/arrayChunk';
-import { computeWorldSpaceRestPose } from './utils/computeWorldSpaceRestPose';
+import { arrayChunk } from '../..//utils/arrayChunk';
+import { computeWorldSpaceRestPose } from '../../utils/computeWorldSpaceRestPose';
 import { mixamoVRMRigMap } from './mixamoVRMRigMap';
 
 const _quatA = new THREE.Quaternion();

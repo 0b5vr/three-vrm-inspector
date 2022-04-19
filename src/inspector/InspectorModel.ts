@@ -10,5 +10,4 @@ export interface InspectorModel {
   originalGLTFJSON: GLTFSchema.IGLTF;
   vrm: VRM | null;
   scene: THREE.Group;
-  animationMixer: THREE.AnimationMixer | null;
 }
