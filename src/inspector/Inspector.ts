@@ -1,5 +1,6 @@
 import 'webgl-memory';
 import * as THREE from 'three';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { InspectorAnimationPlugin } from './plugins/InspectorAnimationPlugin';
@@ -50,6 +51,7 @@ export class Inspector {
   private _stats: InspectorStats | null = null;
   private _webglMemory: WebGLMemoryExtension | null = null;
   private _webglMemoryInfo: WebGLMemoryInfo | null = null;
+  private _dracoLoader: DRACOLoader;
   private _loader: GLTFLoader;
   private _canvas?: HTMLCanvasElement;
   private _layerMode: 'firstPerson' | 'thirdPerson' = 'thirdPerson';
@@ -117,7 +119,11 @@ export class Inspector {
     this._scene.add( axesHelper );
 
     // loader
+    this._dracoLoader = new DRACOLoader();
+    this._dracoLoader.setDecoderPath( './draco/' );
+
     this._loader = new GLTFLoader();
+    this._loader.setDRACOLoader( this._dracoLoader );
     this._loader.register( ( parser ) => new VRMLoaderPlugin( parser, {
       lookAtPlugin: new VRMLookAtLoaderPlugin( parser, {
         helperRoot: this._lookAtHelperRoot,
