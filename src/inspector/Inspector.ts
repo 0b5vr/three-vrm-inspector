@@ -250,6 +250,9 @@ export class Inspector {
       } );
 
       VRMUtils.rotateVRM0( vrm );
+
+      vrm.springBoneManager?.setInitState();
+      vrm.nodeConstraintManager?.setInitState();
     }
 
     this._emit( 'load', model );
