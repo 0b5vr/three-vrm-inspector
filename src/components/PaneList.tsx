@@ -10,6 +10,7 @@ import { LookAtPane } from './LookAtPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
 import { MixamoAnimationsPane } from './MixamoAnimationsPane';
+import { PostProcessingPane } from './PostProcessingPane';
 import { SampleModelsPane } from './SampleModelsPane';
 import { StatsPane } from './StatsPane';
 import { ValidationReportPane } from './ValidationReportPane';
@@ -31,6 +32,7 @@ const PaneList = (): JSX.Element => {
     'helpers',
     'exportBufferView',
     'mixamoAnimations',
+    'postProcessing',
     'jsEditor',
     'about',
   ] );
@@ -138,6 +140,13 @@ const PaneList = (): JSX.Element => {
       key="mixamoAnimations"
       paneKey="mixamoAnimations"
       title="Mixamo Animations"
+      onClick={ handleClick }
+      initPosition={ generateInitPosition() }
+    />,
+    'postProcessing': <PostProcessingPane
+      key="postProcessing"
+      paneKey="postProcessing"
+      title="Post Processing"
       onClick={ handleClick }
       initPosition={ generateInitPosition() }
     />,

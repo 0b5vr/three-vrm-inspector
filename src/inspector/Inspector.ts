@@ -1,6 +1,7 @@
 import 'webgl-memory';
 import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { InspectorAnimationPlugin } from './plugins/InspectorAnimationPlugin';
@@ -8,6 +9,8 @@ import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControls
 import { InspectorHumanoidTransformPlugin } from './plugins/InspectorHumanoidTransformPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
+import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { VRM, VRMLoaderPlugin, VRMLookAtHelper, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { ValidationReport } from './ValidationReport';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
@@ -40,6 +43,7 @@ export class Inspector {
   public readonly cameraControlsPlugin: InspectorCameraControlsPlugin;
   public readonly humanoidTransformPlugin: InspectorHumanoidTransformPlugin;
   public readonly lookAtPlugin: InspectorLookAtPlugin;
+  public readonly postProcessingPlugin: InspectorPostProcessingPlugin;
 
   private _scene: THREE.Scene;
   private _lookAtHelperRoot: THREE.Group;
@@ -47,6 +51,7 @@ export class Inspector {
   private _springBoneColliderHelperRoot: THREE.Group;
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
+  private _composer?: EffectComposer;
   private _model?: InspectorModel | null;
   private _stats: InspectorStats | null = null;
   private _webglMemory: WebGLMemoryExtension | null = null;
@@ -61,6 +66,8 @@ export class Inspector {
 
   public get scene(): THREE.Scene { return this._scene; }
   public get camera(): THREE.PerspectiveCamera { return this._camera; }
+  public get renderer(): THREE.WebGLRenderer | undefined { return this._renderer; }
+  public get composer(): EffectComposer | undefined { return this._composer; }
   public get lookAtHelperRoot(): THREE.Group {
     return this._lookAtHelperRoot;
   }
@@ -139,12 +146,14 @@ export class Inspector {
     this.cameraControlsPlugin = new InspectorCameraControlsPlugin( this );
     this.humanoidTransformPlugin = new InspectorHumanoidTransformPlugin( this );
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
+    this.postProcessingPlugin = new InspectorPostProcessingPlugin( this );
 
     this._plugins = [
       this.animationPlugin,
       this.cameraControlsPlugin,
       this.humanoidTransformPlugin,
       this.lookAtPlugin,
+      this.postProcessingPlugin,
     ];
   }
 
@@ -278,11 +287,25 @@ export class Inspector {
   public setup( canvas: HTMLCanvasElement ): void {
     this._canvas = canvas;
 
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const pixelRatio = window.devicePixelRatio;
+
     // renderer
     this._renderer = new THREE.WebGLRenderer( { canvas: this._canvas } );
     this._renderer.outputEncoding = THREE.sRGBEncoding;
-    this._renderer.setSize( window.innerWidth, window.innerHeight );
-    this._renderer.setPixelRatio( window.devicePixelRatio );
+    this._renderer.setSize( width, height );
+    this._renderer.setPixelRatio( pixelRatio );
+
+    // composer
+    this._composer = new EffectComposer(
+      this._renderer,
+      new THREE.WebGLRenderTarget( width, height, { type: THREE.HalfFloatType } ),
+    );
+    this._composer.setPixelRatio( window.devicePixelRatio );
+
+    const renderPass = new RenderPass( this._scene, this._camera );
+    this._composer.addPass( renderPass );
 
     // resize listener
     if ( this._handleResize ) {
@@ -293,6 +316,7 @@ export class Inspector {
       this._camera.updateProjectionMatrix();
 
       this._renderer!.setSize( window.innerWidth, window.innerHeight );
+      this._composer!.setSize( window.innerWidth, window.innerHeight );
     };
     window.addEventListener( 'resize', this._handleResize );
 
@@ -336,8 +360,8 @@ export class Inspector {
     // plugins
     this._plugins.forEach( ( plugin ) => plugin.handleBeforeRender?.( delta ) );
 
-    if ( this._renderer ) {
-      this._renderer.render( this._scene, this._camera );
+    if ( this._composer ) {
+      this._composer.render( delta );
     }
 
     if ( this._webglMemory ) {
