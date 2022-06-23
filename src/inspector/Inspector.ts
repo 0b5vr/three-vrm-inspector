@@ -12,13 +12,12 @@ import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { VRM, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+import { VRM, VRMHumanoidLoaderPlugin, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { ValidationReport } from './ValidationReport';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
 import { WebGLMemoryInfo } from './WebGLMemoryInfo';
 import { WebIO } from '@gltf-transform/core';
 import { applyMixins } from '../utils/applyMixins';
-import { createAxisHelpers } from './createAxisHelpers';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
 import { validateBytes } from 'gltf-validator';
 import CameraControls from 'camera-controls';
@@ -113,6 +112,9 @@ export class Inspector {
     this._loader = new GLTFLoader();
     this._loader.setDRACOLoader( this._dracoLoader );
     this._loader.register( ( parser ) => new VRMLoaderPlugin( parser, {
+      humanoidPlugin: new VRMHumanoidLoaderPlugin( parser, {
+        helperRoot: this.helpersPlugin.humanoidHelperRoot,
+      } ),
       lookAtPlugin: new VRMLookAtLoaderPlugin( parser, {
         helperRoot: this.helpersPlugin.lookAtHelperRoot,
       } ),
@@ -190,10 +192,6 @@ export class Inspector {
     }
 
     this._stats = await this._prepareStats( gltf, vrm );
-
-    if ( vrm ) {
-      createAxisHelpers( vrm );
-    }
 
     const scene = ( vrm?.scene ?? gltf.scene ) as THREE.Group;
     this._scene.add( scene );

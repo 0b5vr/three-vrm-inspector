@@ -7,12 +7,16 @@ import { useCallback, useContext } from 'react';
 export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
-  const handleChangeLookAt = useCallback( ( checked ) => {
-    inspector.helpersPlugin.lookAtHelperRoot.visible = checked;
+  const handleChangeHumanoid = useCallback( ( checked ) => {
+    inspector.helpersPlugin.humanoidHelperRoot.visible = checked;
   }, [ inspector ] );
 
   const handleChangeHumanoidTransform = useCallback( ( checked ) => {
     inspector.humanoidTransformPlugin.active = checked;
+  }, [ inspector ] );
+
+  const handleChangeLookAt = useCallback( ( checked ) => {
+    inspector.helpersPlugin.lookAtHelperRoot.visible = checked;
   }, [ inspector ] );
 
   const handleChangeSpringBones = useCallback( ( checked ) => {
@@ -26,6 +30,11 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   return (
     <Pane { ...params }>
       <PaneRoot>
+        <HelpersPaneCheckbox
+          callback={ handleChangeHumanoid }
+          label="Humanoid"
+          checked
+        />
         <HelpersPaneCheckbox
           callback={ handleChangeHumanoidTransform }
           label="Humanoid Transform"
