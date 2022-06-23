@@ -8,7 +8,7 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
   const handleChangeLookAt = useCallback( ( checked ) => {
-    inspector.lookAtHelperRoot.visible = checked;
+    inspector.helpersPlugin.lookAtHelperRoot.visible = checked;
   }, [ inspector ] );
 
   const handleChangeHumanoidTransform = useCallback( ( checked ) => {
@@ -16,11 +16,11 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   }, [ inspector ] );
 
   const handleChangeSpringBones = useCallback( ( checked ) => {
-    inspector.springBoneJointHelperRoot.visible = checked;
+    inspector.helpersPlugin.springBoneJointHelperRoot.visible = checked;
   }, [ inspector ] );
 
   const handleChangeSpringBoneColliders = useCallback( ( checked ) => {
-    inspector.springBoneColliderHelperRoot.visible = checked;
+    inspector.helpersPlugin.springBoneColliderHelperRoot.visible = checked;
   }, [ inspector ] );
 
   return (

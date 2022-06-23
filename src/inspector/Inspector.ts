@@ -6,12 +6,13 @@ import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { InspectorAnimationPlugin } from './plugins/InspectorAnimationPlugin';
 import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControlsPlugin';
+import { InspectorHelpersPlugin } from './plugins/InspectorHelpersPlugin';
 import { InspectorHumanoidTransformPlugin } from './plugins/InspectorHumanoidTransformPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { VRM, VRMLoaderPlugin, VRMLookAtHelper, VRMLookAtLoaderPlugin, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+import { VRM, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { ValidationReport } from './ValidationReport';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
 import { WebGLMemoryInfo } from './WebGLMemoryInfo';
@@ -41,14 +42,12 @@ export class Inspector {
 
   public readonly animationPlugin: InspectorAnimationPlugin;
   public readonly cameraControlsPlugin: InspectorCameraControlsPlugin;
+  public readonly helpersPlugin: InspectorHelpersPlugin;
   public readonly humanoidTransformPlugin: InspectorHumanoidTransformPlugin;
   public readonly lookAtPlugin: InspectorLookAtPlugin;
   public readonly postProcessingPlugin: InspectorPostProcessingPlugin;
 
   private _scene: THREE.Scene;
-  private _lookAtHelperRoot: THREE.Group;
-  private _springBoneJointHelperRoot: THREE.Group;
-  private _springBoneColliderHelperRoot: THREE.Group;
   private _camera: THREE.PerspectiveCamera;
   private _renderer?: THREE.WebGLRenderer;
   private _composer?: EffectComposer;
@@ -68,15 +67,6 @@ export class Inspector {
   public get camera(): THREE.PerspectiveCamera { return this._camera; }
   public get renderer(): THREE.WebGLRenderer | undefined { return this._renderer; }
   public get composer(): EffectComposer | undefined { return this._composer; }
-  public get lookAtHelperRoot(): THREE.Group {
-    return this._lookAtHelperRoot;
-  }
-  public get springBoneJointHelperRoot(): THREE.Group {
-    return this._springBoneJointHelperRoot;
-  }
-  public get springBoneColliderHelperRoot(): THREE.Group {
-    return this._springBoneColliderHelperRoot;
-  }
   public get model(): InspectorModel | null { return this._model ?? null; }
   public get stats(): InspectorStats | null { return this._stats; }
   public get webglMemoryInfo(): WebGLMemoryInfo | null { return this._webglMemoryInfo; }
@@ -101,18 +91,6 @@ export class Inspector {
     // scene
     this._scene = new THREE.Scene();
 
-    this._lookAtHelperRoot = new THREE.Group();
-    this._lookAtHelperRoot.renderOrder = 10000;
-    this._scene.add( this._lookAtHelperRoot );
-
-    this._springBoneJointHelperRoot = new THREE.Group();
-    this._springBoneJointHelperRoot.renderOrder = 10000;
-    this._scene.add( this._springBoneJointHelperRoot );
-
-    this._springBoneColliderHelperRoot = new THREE.Group();
-    this._springBoneColliderHelperRoot.renderOrder = 10000;
-    this._scene.add( this._springBoneColliderHelperRoot );
-
     // light
     const light = new THREE.DirectionalLight( 0xffffff );
     light.position.set( 1.0, 1.0, 1.0 ).normalize();
@@ -125,6 +103,9 @@ export class Inspector {
     const axesHelper = new THREE.AxesHelper( 5 );
     this._scene.add( axesHelper );
 
+    // helpers plugin must be made before the loader
+    this.helpersPlugin = new InspectorHelpersPlugin( this );
+
     // loader
     this._dracoLoader = new DRACOLoader();
     this._dracoLoader.setDecoderPath( './draco/' );
@@ -133,11 +114,11 @@ export class Inspector {
     this._loader.setDRACOLoader( this._dracoLoader );
     this._loader.register( ( parser ) => new VRMLoaderPlugin( parser, {
       lookAtPlugin: new VRMLookAtLoaderPlugin( parser, {
-        helperRoot: this._lookAtHelperRoot,
+        helperRoot: this.helpersPlugin.lookAtHelperRoot,
       } ),
       springBonePlugin: new VRMSpringBoneLoaderPlugin( parser, {
-        jointHelperRoot: this._springBoneJointHelperRoot,
-        colliderHelperRoot: this._springBoneColliderHelperRoot,
+        jointHelperRoot: this.helpersPlugin.springBoneJointHelperRoot,
+        colliderHelperRoot: this.helpersPlugin.springBoneColliderHelperRoot,
       } ),
     } ) );
 
@@ -151,6 +132,7 @@ export class Inspector {
     this._plugins = [
       this.animationPlugin,
       this.cameraControlsPlugin,
+      this.helpersPlugin,
       this.humanoidTransformPlugin,
       this.lookAtPlugin,
       this.postProcessingPlugin,
@@ -168,21 +150,6 @@ export class Inspector {
 
     // plugins
     this._plugins.forEach( ( plugin ) => plugin.handleAfterUnload?.() );
-
-    this._springBoneJointHelperRoot.children.concat().forEach( ( helper ) => {
-      this._springBoneJointHelperRoot.remove( helper );
-      ( helper as VRMSpringBoneJointHelper ).dispose();
-    } );
-
-    this._springBoneColliderHelperRoot.children.concat().forEach( ( helper ) => {
-      this._springBoneColliderHelperRoot.remove( helper );
-      ( helper as VRMSpringBoneColliderHelper ).dispose();
-    } );
-
-    this._lookAtHelperRoot.children.concat().forEach( ( helper ) => {
-      this._lookAtHelperRoot.remove( helper );
-      ( helper as VRMLookAtHelper ).dispose();
-    } );
 
     this._model = null;
   }
