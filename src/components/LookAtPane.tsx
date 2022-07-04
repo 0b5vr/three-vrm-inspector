@@ -2,12 +2,15 @@ import { HelpersPaneCheckbox } from './HelpersPaneCheckbox';
 import { InspectorContext } from '../InspectorContext';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 
 export const LookAtPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
+  const [ checkedEnableLookAt, setCheckedEnableLookAt ] = useState( true );
+
   const handleChangeEnableLookAt = useCallback( ( checked ) => {
+    setCheckedEnableLookAt( checked );
     inspector.lookAtPlugin.enableLookAt = checked;
   }, [ inspector ] );
 
@@ -17,6 +20,7 @@ export const LookAtPane = ( params: PaneParams ): JSX.Element => {
         <HelpersPaneCheckbox
           callback={ handleChangeEnableLookAt }
           label="Enable LookAt"
+          checked={ checkedEnableLookAt }
         />
       </PaneRoot>
     </Pane>
