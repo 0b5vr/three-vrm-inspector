@@ -356,7 +356,7 @@ export class Highlighter {
         nodeJointMap.set( springBone.bone, springBone );
       }
 
-      const helperRoot = inspector.springBoneJointHelperRoot;
+      const helperRoot = inspector.helpersPlugin.springBoneJointHelperRoot;
       const jointHelperMap = new Map<VRMSpringBoneJoint, VRMSpringBoneJointHelper>();
       helperRoot.children.forEach( ( child ) => {
         const helper = child as VRMSpringBoneJointHelper;
