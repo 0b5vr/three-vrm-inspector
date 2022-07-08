@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as V0VRM from '@pixiv/types-vrm-0.0';
+import * as V1VRMSchema from '@pixiv/types-vrmc-vrm-1.0';
 import { Colors } from '../constants/Colors';
 import { Inspector } from './Inspector';
 import { VRMSpringBoneJoint, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
@@ -281,11 +282,21 @@ export class Highlighter {
       && pathSplit[ 4 ] === 'humanBones'
     ) {
 
+      /**
+       * A map from old thumb bone names to new thumb bone names
+       */
+      const thumbBoneNameMap: { [key: string]: V1VRMSchema.HumanoidHumanBoneName | undefined } = {
+        leftThumbProximal: 'leftThumbMetacarpal',
+        leftThumbIntermediate: 'leftThumbProximal',
+        rightThumbProximal: 'rightThumbMetacarpal',
+        rightThumbIntermediate: 'rightThumbProximal',
+      };
+
       const index = parseInt( path.split( '/' ).pop()! );
 
       const vrm = json.extensions!.VRM as V0VRM.VRM;
       const boneName = vrm.humanoid!.humanBones![ index ].bone!;
-      const bone = inspector.model!.vrm!.humanoid!.getBoneNode( boneName )!;
+      const bone = inspector.model!.vrm!.humanoid!.getBoneNode( thumbBoneNameMap[ boneName ]! )!;
 
       return highlightNodes( [ bone ] );
 
@@ -352,8 +363,8 @@ export class Highlighter {
 
       const springBoneManager = inspector.model!.vrm!.springBoneManager!;
       const nodeJointMap = new Map<THREE.Object3D, VRMSpringBoneJoint>();
-      for ( const springBone of springBoneManager.springBones ) {
-        nodeJointMap.set( springBone.bone, springBone );
+      for ( const joint of springBoneManager.joints ) {
+        nodeJointMap.set( joint.bone, joint );
       }
 
       const helperRoot = inspector.helpersPlugin.springBoneJointHelperRoot;

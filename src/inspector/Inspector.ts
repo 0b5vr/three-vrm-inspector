@@ -365,7 +365,7 @@ export class Inspector {
 
     const materials: Array<THREE.Material> = await gltf.parser.getDependencies( 'material' );
 
-    const nSpringBones = vrm?.springBoneManager?.springBones?.size ?? 0;
+    const nJoints = vrm?.springBoneManager?.joints?.size ?? 0;
 
     return {
       dimension: dimensionBox.getSize( _v3A ).toArray(),
@@ -374,7 +374,7 @@ export class Inspector {
       meshes: nMeshes,
       primitives: nPrimitives,
       materials: materials.length,
-      springBones: nSpringBones,
+      joints: nJoints,
     };
   }
 

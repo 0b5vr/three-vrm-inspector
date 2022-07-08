@@ -5,5 +5,5 @@ export interface InspectorStats {
   meshes: number;
   primitives: number;
   materials: number;
-  springBones: number;
+  joints: number;
 }
