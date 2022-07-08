@@ -6,6 +6,7 @@ import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { InspectorAnimationPlugin } from './plugins/InspectorAnimationPlugin';
 import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControlsPlugin';
+import { InspectorGLTFValidatorPlugin } from './plugins/InspectorGLTFValidatorPlugin';
 import { InspectorHelpersPlugin } from './plugins/InspectorHelpersPlugin';
 import { InspectorHumanoidTransformPlugin } from './plugins/InspectorHumanoidTransformPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
@@ -13,13 +14,11 @@ import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { VRM, VRMHumanoidLoaderPlugin, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
-import { ValidationReport } from './ValidationReport';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
 import { WebGLMemoryInfo } from './WebGLMemoryInfo';
 import { WebIO } from '@gltf-transform/core';
 import { applyMixins } from '../utils/applyMixins';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
-import { validateBytes } from 'gltf-validator';
 import CameraControls from 'camera-controls';
 import cubemapXn from '../assets/cubemap/xn.jpg';
 import cubemapXp from '../assets/cubemap/xp.jpg';
@@ -35,12 +34,9 @@ const _v3A = new THREE.Vector3();
 CameraControls.install( { THREE } );
 
 export class Inspector {
-  public static get VALIDATOR_MAX_ISSUES(): number {
-    return 100;
-  }
-
   public readonly animationPlugin: InspectorAnimationPlugin;
   public readonly cameraControlsPlugin: InspectorCameraControlsPlugin;
+  public readonly gltfValidatorPlugin: InspectorGLTFValidatorPlugin;
   public readonly helpersPlugin: InspectorHelpersPlugin;
   public readonly humanoidTransformPlugin: InspectorHumanoidTransformPlugin;
   public readonly lookAtPlugin: InspectorLookAtPlugin;
@@ -127,6 +123,7 @@ export class Inspector {
     // plugins
     this.animationPlugin = new InspectorAnimationPlugin( this );
     this.cameraControlsPlugin = new InspectorCameraControlsPlugin( this );
+    this.gltfValidatorPlugin = new InspectorGLTFValidatorPlugin( this );
     this.humanoidTransformPlugin = new InspectorHumanoidTransformPlugin( this );
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
     this.postProcessingPlugin = new InspectorPostProcessingPlugin( this );
@@ -134,6 +131,7 @@ export class Inspector {
     this._plugins = [
       this.animationPlugin,
       this.cameraControlsPlugin,
+      this.gltfValidatorPlugin,
       this.helpersPlugin,
       this.humanoidTransformPlugin,
       this.lookAtPlugin,
@@ -158,14 +156,6 @@ export class Inspector {
 
   public async loadVRM( url: string ): Promise<InspectorModel | null> {
     const buffer = await fetch( url ).then( ( res ) => res.arrayBuffer() );
-    const validationReport = await validateBytes(
-      new Uint8Array( buffer ),
-      {
-        maxIssues: Inspector.VALIDATOR_MAX_ISSUES,
-      }
-    ).catch( ( error ) => console.error( 'Validation failed: ', error ) );
-
-    this._emit( 'validate', validationReport );
 
     this.unloadVRM();
 
@@ -197,8 +187,8 @@ export class Inspector {
     this._scene.add( scene );
 
     const model: InspectorModel = {
+      buffer,
       gltf,
-      validationReport,
       originalGLTFJSON,
       vrm,
       scene,
@@ -433,7 +423,6 @@ export interface InspectorEvents {
   load: InspectorModel | null;
   updateStats: InspectorStats;
   unload: void;
-  validate: ValidationReport;
   progress: ProgressEvent;
   error: any;
 }

@@ -4,7 +4,7 @@ import { NameValueEntry } from './NameValueEntry';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { ValidationReportIssue } from './ValidationReportIssue';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useReducer } from 'react';
 
 // == microcomponents ==============================================================================
 const ReportCount: React.FC<{
@@ -17,14 +17,25 @@ const ReportCount: React.FC<{
 // == element ======================================================================================
 export const ValidationReportPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
-  const issues = inspector.model?.validationReport?.issues;
+  const issues = inspector.gltfValidatorPlugin.validationReport?.issues;
+
+  // increment this to force rerender 😇
+  // used when click "See more"
+  const [ _worstCount, inclWorstCount ] = useReducer( ( c ) => c + 1, 0 );
+
+  const handleClickSeeMore = useCallback( () => {
+    const maxIssues = 2 * issues!.messages.length;
+    inspector.gltfValidatorPlugin.validate( maxIssues ).then( () => (
+      inclWorstCount()
+    ) );
+  }, [ issues ] );
 
   return (
     <Pane { ...params }>
       <PaneRoot className="w-120 h-80 resize overflow-y-scroll">
         <NameValueEntry
           name="Validator Version"
-          value={ inspector.model?.validationReport?.validatorVersion }
+          value={ inspector.gltfValidatorPlugin.validationReport?.validatorVersion }
         />
         <NameValueEntry
           name="Errors"
@@ -44,7 +55,13 @@ export const ValidationReportPane = ( params: PaneParams ): JSX.Element => {
         />
         <Hr />
         { issues?.truncated && <div className="m-1 font-bold">
-          There are too many issues! Showing only 100 entries.
+          There are too many issues! Showing only { issues?.messages.length } entries.
+          <span
+            onClick={ handleClickSeeMore }
+            className="pl-2 text-sky-500 font-bold cursor-pointer"
+          >
+            See all
+          </span>
         </div> }
         <div className="w-full font-mono leading-tight text-xs">
           { issues?.messages.map( ( issue, i ) => (
