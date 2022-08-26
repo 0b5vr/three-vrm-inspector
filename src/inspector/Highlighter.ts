@@ -294,9 +294,10 @@ export class Highlighter {
 
       const index = parseInt( path.split( '/' ).pop()! );
 
-      const vrm = json.extensions!.VRM as V0VRM.VRM;
-      const boneName = vrm.humanoid!.humanBones![ index ].bone!;
-      const bone = inspector.model!.vrm!.humanoid!.getBoneNode( thumbBoneNameMap[ boneName ]! )!;
+      const schemaVRM = json.extensions!.VRM as V0VRM.VRM;
+      const boneName = schemaVRM.humanoid!.humanBones![ index ].bone!;
+      const humanoid = inspector.model!.vrm!.humanoid!;
+      const bone = humanoid.getNormalizedBoneNode( thumbBoneNameMap[ boneName ]! )!;
 
       return highlightNodes( [ bone ] );
 

@@ -27,7 +27,7 @@ export default ( { inspector, THREE } ) => {
 
     const time = 0.001 * ( Date.now() - beginTime );
 
-    const leftUpperArm = vrm.humanoid?.getBoneNode( 'leftUpperArm' );
+    const leftUpperArm = vrm.humanoid?.getNormalizedBoneNode( 'leftUpperArm' );
     if ( leftUpperArm != null ) {
       leftUpperArm.rotation.z = Math.sin( time );
     }

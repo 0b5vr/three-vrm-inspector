@@ -19,7 +19,8 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     const vrm = model.vrm;
     if ( vrm == null ) { return; }
 
-    this._currentAnimationMixer = new THREE.AnimationMixer( vrm.scene );
+    const normalizedHumanBoneRoot = vrm.humanoid!.getNormalizedBoneNode( 'hips' )!.parent!;
+    this._currentAnimationMixer = new THREE.AnimationMixer( normalizedHumanBoneRoot );
 
     if ( this._currentAnimationURL != null ) {
       this.loadMixamoAnimation( this._currentAnimationURL );

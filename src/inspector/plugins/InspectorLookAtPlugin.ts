@@ -65,7 +65,7 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
     const { vrm } = model;
     if ( vrm == null ) { return; }
 
-    const head = vrm.humanoid?.getBoneNode( 'head' );
+    const head = vrm.humanoid?.getNormalizedBoneNode( 'head' );
     if ( head != null ) {
       head.getWorldPosition( _v3A );
       this._lookAtTarget.position.set( 0.0, 0.0, 5.0 ).add( _v3A );

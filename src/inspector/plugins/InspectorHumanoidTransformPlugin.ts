@@ -76,7 +76,7 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     if ( humanoid ) {
       this._sprites = [];
 
-      for ( const bone of Object.values( humanoid.humanBones ) ) {
+      for ( const bone of Object.values( humanoid.normalizedHumanBones ) ) {
         const boneNode = bone.node;
 
         const sprite = new THREE.Sprite( this._spriteMaterial );
