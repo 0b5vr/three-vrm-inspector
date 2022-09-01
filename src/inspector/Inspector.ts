@@ -200,10 +200,6 @@ export class Inspector {
     this._plugins.forEach( ( plugin ) => plugin.handleAfterLoad?.( model ) );
 
     if ( vrm ) {
-      // The root of normalized human bones needs to be in the scene
-      const normalizedHumanBoneRoot = vrm.humanoid!.getNormalizedBoneNode( 'hips' )!.parent!;
-      vrm.scene.add( normalizedHumanBoneRoot );
-
       // setup first person
       vrm.firstPerson?.setup();
       this._updateLayerMode();

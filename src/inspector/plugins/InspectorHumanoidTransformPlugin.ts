@@ -73,20 +73,18 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     const humanoid = model.vrm?.humanoid;
     if ( humanoid == null ) { return; }
 
-    if ( humanoid ) {
-      this._sprites = [];
+    this._sprites = [];
 
-      for ( const bone of Object.values( humanoid.normalizedHumanBones ) ) {
-        const boneNode = bone.node;
+    for ( const bone of Object.values( humanoid.normalizedHumanBones ) ) {
+      const boneNode = bone.node;
 
-        const sprite = new THREE.Sprite( this._spriteMaterial );
-        sprite.scale.setScalar( 0.01 );
-        sprite.renderOrder = 10000;
-        sprite.visible = this._active;
-        boneNode.add( sprite );
+      const sprite = new THREE.Sprite( this._spriteMaterial );
+      sprite.scale.setScalar( 0.01 );
+      sprite.renderOrder = 10000;
+      sprite.visible = this._active;
+      boneNode.add( sprite );
 
-        this._sprites.push( sprite );
-      }
+      this._sprites.push( sprite );
     }
   }
 

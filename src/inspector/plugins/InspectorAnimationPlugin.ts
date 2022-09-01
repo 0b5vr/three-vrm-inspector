@@ -19,8 +19,7 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     const vrm = model.vrm;
     if ( vrm == null ) { return; }
 
-    const normalizedHumanBoneRoot = vrm.humanoid!.getNormalizedBoneNode( 'hips' )!.parent!;
-    this._currentAnimationMixer = new THREE.AnimationMixer( normalizedHumanBoneRoot );
+    this._currentAnimationMixer = new THREE.AnimationMixer( vrm.humanoid.normalizedHumanBonesRoot );
 
     if ( this._currentAnimationURL != null ) {
       this.loadMixamoAnimation( this._currentAnimationURL );
@@ -69,6 +68,6 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     action.stop();
     this._currentAnimationAction = null;
 
-    vrm.humanoid?.resetPose();
+    vrm.humanoid.resetNormalizedPose();
   }
 }
