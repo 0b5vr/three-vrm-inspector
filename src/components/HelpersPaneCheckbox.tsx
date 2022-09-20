@@ -16,7 +16,9 @@ export const HelpersPaneCheckbox = ( { callback, label, checked }: {
         checked={ checked }
         onChange={ handleChange }
       />
-      { label }
+      <label className="ml-1">
+        { label }
+      </label>
     </div>
   );
 };

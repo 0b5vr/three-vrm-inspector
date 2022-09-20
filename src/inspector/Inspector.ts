@@ -91,13 +91,6 @@ export class Inspector {
     light.position.set( 1.0, 1.0, 1.0 ).normalize();
     this._scene.add( light );
 
-    // helpers
-    const gridHelper = new THREE.GridHelper( 10, 10 );
-    this._scene.add( gridHelper );
-
-    const axesHelper = new THREE.AxesHelper( 5 );
-    this._scene.add( axesHelper );
-
     // helpers plugin must be made before the loader
     this.helpersPlugin = new InspectorHelpersPlugin( this );
 

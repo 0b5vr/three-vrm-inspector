@@ -8,6 +8,8 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
+  const [ checkedGrid, setCheckedGrid ] = useState( true );
+  const [ checkedAxes, setCheckedAxes ] = useState( true );
   const [ checkedHumanoid, setCheckedHumanoid ] = useState( true );
   const [ checkedHumanoidTransform, setCheckedHumanoidTransform ] = useState( true );
   const [ checkedLookAt, setCheckedLookAt ] = useState( true );
@@ -15,6 +17,8 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const [ checkedSpringBoneColliders, setCheckedSpringBoneColliders ] = useState( true );
 
   const handleClickEnableAll = useCallback( () => {
+    setCheckedGrid( true );
+    setCheckedAxes( true );
     setCheckedHumanoid( true );
     setCheckedHumanoidTransform( true );
     setCheckedLookAt( true );
@@ -23,12 +27,22 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   }, [] );
 
   const handleClickDisableAll = useCallback( () => {
+    setCheckedGrid( false );
+    setCheckedAxes( false );
     setCheckedHumanoid( false );
     setCheckedHumanoidTransform( false );
     setCheckedLookAt( false );
     setCheckedSpringBones( false );
     setCheckedSpringBoneColliders( false );
   }, [] );
+
+  const handleChangeGrid = useCallback( ( checked ) => {
+    setCheckedGrid( checked );
+  }, [ inspector ] );
+
+  const handleChangeAxes = useCallback( ( checked ) => {
+    setCheckedAxes( checked );
+  }, [ inspector ] );
 
   const handleChangeHumanoid = useCallback( ( checked ) => {
     setCheckedHumanoid( checked );
@@ -49,6 +63,14 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const handleChangeSpringBoneColliders = useCallback( ( checked ) => {
     setCheckedSpringBoneColliders( checked );
   }, [ inspector ] );
+
+  useEffect( () => {
+    inspector.helpersPlugin.gridHelper.visible = checkedGrid;
+  }, [ inspector, checkedGrid ] );
+
+  useEffect( () => {
+    inspector.helpersPlugin.axesHelper.visible = checkedAxes;
+  }, [ inspector, checkedAxes ] );
 
   useEffect( () => {
     inspector.helpersPlugin.humanoidHelperRoot.visible = checkedHumanoid;
@@ -88,6 +110,16 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
 
         <Hr />
 
+        <HelpersPaneCheckbox
+          callback={ handleChangeGrid }
+          label="Grid"
+          checked={ checkedGrid }
+        />
+        <HelpersPaneCheckbox
+          callback={ handleChangeAxes }
+          label="Axes"
+          checked={ checkedAxes }
+        />
         <HelpersPaneCheckbox
           callback={ handleChangeHumanoid }
           label="Humanoid"

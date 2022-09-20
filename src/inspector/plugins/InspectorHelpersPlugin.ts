@@ -6,6 +6,8 @@ import type { InspectorPlugin } from './InspectorPlugin';
 export class InspectorHelpersPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
+  public readonly gridHelper: THREE.GridHelper;
+  public readonly axesHelper: THREE.AxesHelper;
   public readonly humanoidHelperRoot: THREE.Group;
   public readonly lookAtHelperRoot: THREE.Group;
   public readonly springBoneJointHelperRoot: THREE.Group;
@@ -13,6 +15,12 @@ export class InspectorHelpersPlugin implements InspectorPlugin {
 
   public constructor( inspector: Inspector ) {
     this.inspector = inspector;
+
+    this.gridHelper = new THREE.GridHelper( 10, 10 );
+    inspector.scene.add( this.gridHelper );
+
+    this.axesHelper = new THREE.AxesHelper( 5 );
+    inspector.scene.add( this.axesHelper );
 
     this.humanoidHelperRoot = new THREE.Group();
     this.humanoidHelperRoot.renderOrder = 10000;
