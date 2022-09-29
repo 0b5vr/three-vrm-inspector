@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@gltf-transform/core": "^1.2.4",
-    "@pixiv/three-vrm": "1.0.0",
+    "@pixiv/three-vrm": "1.0.3",
     "@pixiv/types-vrm-0.0": "1.0.0",
     "@pixiv/types-vrmc-vrm-1.0": "1.0.0",
     "@types/codemirror": "^5.60.5",
