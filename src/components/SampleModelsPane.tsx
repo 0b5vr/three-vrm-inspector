@@ -1,13 +1,15 @@
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { SampleModelsPaneButton } from './SampleModelsPaneButton';
+import seedSanVrm from '../assets/models/Seed-san.vrm';
 import threeVrmGirlVrm from '../assets/models/three-vrm-girl.vrm';
-import threeVrmGirlVrm00Vrm from '../assets/models/three-vrm-girl-vrm0.0.vrm';
+import vrm1ConstraintTwistSampleVrm from '../assets/models/VRM1_Constraint_Twist_Sample.vrm';
 
 // == models =======================================================================================
 const models = [
-  { name: 'three-vrm-girl (VRM0.X)', url: threeVrmGirlVrm00Vrm },
-  { name: 'three-vrm-girl (VRM1.0-beta)', url: threeVrmGirlVrm },
+  { name: 'three-vrm-girl (VRM0.0)', url: threeVrmGirlVrm },
+  { name: 'Seed-san (VRM1.0)', url: seedSanVrm },
+  { name: 'VRM1_Constaint_Twist_Sample (VRM1.0)', url: vrm1ConstraintTwistSampleVrm },
 ];
 
 // == element ======================================================================================
