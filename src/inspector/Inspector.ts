@@ -12,6 +12,7 @@ import { InspectorHumanoidTransformPlugin } from './plugins/InspectorHumanoidTra
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
+import { InspectorVisualizeWeightPlugin } from './plugins/InspectorVisualizeWeightPlugin';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { VRM, VRMHumanoidLoaderPlugin, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
@@ -19,6 +20,7 @@ import { WebGLMemoryInfo } from './WebGLMemoryInfo';
 import { WebIO } from '@gltf-transform/core';
 import { applyMixins } from '../utils/applyMixins';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
+import { removeUnnecessaryJoints } from './utils/removeUnnecessaryJoints';
 import CameraControls from 'camera-controls';
 import cubemapXn from '../assets/cubemap/xn.jpg';
 import cubemapXp from '../assets/cubemap/xp.jpg';
@@ -41,6 +43,7 @@ export class Inspector {
   public readonly humanoidTransformPlugin: InspectorHumanoidTransformPlugin;
   public readonly lookAtPlugin: InspectorLookAtPlugin;
   public readonly postProcessingPlugin: InspectorPostProcessingPlugin;
+  public readonly visualizeWeightPlugin: InspectorVisualizeWeightPlugin;
 
   private _scene: THREE.Scene;
   private _camera: THREE.PerspectiveCamera;
@@ -120,6 +123,7 @@ export class Inspector {
     this.humanoidTransformPlugin = new InspectorHumanoidTransformPlugin( this );
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
     this.postProcessingPlugin = new InspectorPostProcessingPlugin( this );
+    this.visualizeWeightPlugin = new InspectorVisualizeWeightPlugin( this );
 
     this._plugins = [
       this.animationPlugin,
@@ -129,6 +133,7 @@ export class Inspector {
       this.humanoidTransformPlugin,
       this.lookAtPlugin,
       this.postProcessingPlugin,
+      this.visualizeWeightPlugin,
     ];
   }
 
@@ -166,7 +171,7 @@ export class Inspector {
     } );
 
     VRMUtils.removeUnnecessaryVertices( gltf.scene );
-    VRMUtils.removeUnnecessaryJoints( gltf.scene );
+    this.visualizeWeightPlugin.boneIndexMap = removeUnnecessaryJoints( gltf.scene );
 
     const vrm: VRM | null = gltf.userData.vrm ?? null;
 

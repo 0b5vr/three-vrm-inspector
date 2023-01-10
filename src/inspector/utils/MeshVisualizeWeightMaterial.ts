@@ -68,9 +68,3 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
     };
   }
 }
-
-export const visualizeWeightMaterial = new MeshVisualizeWeightMaterial( {
-  transparent: true,
-  depthTest: false,
-  depthWrite: false,
-} );

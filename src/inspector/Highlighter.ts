@@ -8,7 +8,6 @@ import { genGizmo } from './utils/genGizmo';
 import { gltfExtractPrimitivesFromNode } from '../utils/gltfExtractPrimitivesFromNode';
 import { highlightMeshes } from './utils/highlightMeshes';
 import { highlightNodes } from './utils/highlightNodes';
-import { visualizeWeightMaterial } from './utils/visualizeWeightMaterial';
 import type { GLTF as GLTFSchema } from '@gltf-transform/core';
 
 const colorConstant = new THREE.Color( Colors.constant );
@@ -227,8 +226,9 @@ export class Highlighter {
       } ) ).then( ( result ) => result.flat() );
 
       promisePrimitives.then( ( primitives ) => {
-        callbacks.push( highlightMeshes( primitives, visualizeWeightMaterial ) );
-        visualizeWeightMaterial.skinIndexVisualize = jointIndex;
+        primitives.forEach( ( primitive ) => {
+          callbacks.push( inspector.visualizeWeightPlugin.visualize( primitive, jointIndex ) );
+        } );
       } );
 
       return () => {
