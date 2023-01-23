@@ -9,6 +9,9 @@ import { highlightGLTFSkinJoint } from './highlighter-functions/highlightGLTFSki
 import { highlightVRM0BlendShapeGroup } from './highlighter-functions/highlightVRM0BlendShapeGroup';
 import { highlightVRM0HumanBone } from './highlighter-functions/highlightVRM0HumanBone';
 import { highlightVRM0SecondaryAnimationBoneGroup } from './highlighter-functions/highlightVRM0SecondaryAnimationBoneGroup';
+import { highlightVRM1Expression } from './highlighter-functions/highlightVRM1Expression';
+import { highlightVRM1HumanBone } from './highlighter-functions/highlightVRM1HumanBone';
+import { highlightVRM1SpringBoneSpring } from './highlighter-functions/highlightVRM1SpringBoneSpring';
 import { highlightVRMFirstPersonMeshAnnotation } from './highlighter-functions/highlightVRMFirstPersonMeshAnnotation';
 import { highlightVRMLookAtOffset } from './highlighter-functions/highlightVRMLookAtOffset';
 import type { GLTF, GLTFParser } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -48,6 +51,12 @@ export class Highlighter {
       [ '/extensions/VRM/firstPerson/meshAnnotations', highlightVRMFirstPersonMeshAnnotation ],
       [ '/extensions/VRM/blendShapeMaster/blendShapeGroups/:index', highlightVRM0BlendShapeGroup ],
       [ '/extensions/VRM/secondaryAnimation/boneGroups/:index', highlightVRM0SecondaryAnimationBoneGroup ],
+      [ '/extensions/VRMC_vrm/humanoid/humanBones/:boneName', highlightVRM1HumanBone ],
+      [ '/extensions/VRMC_vrm/expressions/preset/:expressionName', highlightVRM1Expression ],
+      [ '/extensions/VRMC_vrm/expressions/custom/:expressionName', highlightVRM1Expression ],
+      [ '/extensions/VRMC_vrm/firstPerson/meshAnnotations', highlightVRMFirstPersonMeshAnnotation ],
+      [ '/extensions/VRMC_vrm/lookAt/offsetFromHeadBone', highlightVRMLookAtOffset ],
+      [ '/extensions/VRMC_springBone/springs/:index', highlightVRM1SpringBoneSpring ],
     ];
   }
 
