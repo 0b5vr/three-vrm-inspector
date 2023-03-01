@@ -9,6 +9,7 @@ import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControls
 import { InspectorGLTFValidatorPlugin } from './plugins/InspectorGLTFValidatorPlugin';
 import { InspectorHelpersPlugin } from './plugins/InspectorHelpersPlugin';
 import { InspectorHumanoidTransformPlugin } from './plugins/InspectorHumanoidTransformPlugin';
+import { InspectorLookAtBallPlugin } from './plugins/InspectorLookAtBallPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
@@ -42,6 +43,7 @@ export class Inspector {
   public readonly helpersPlugin: InspectorHelpersPlugin;
   public readonly humanoidTransformPlugin: InspectorHumanoidTransformPlugin;
   public readonly lookAtPlugin: InspectorLookAtPlugin;
+  public readonly lookAtBallPlugin: InspectorLookAtBallPlugin;
   public readonly postProcessingPlugin: InspectorPostProcessingPlugin;
   public readonly visualizeWeightPlugin: InspectorVisualizeWeightPlugin;
 
@@ -122,6 +124,7 @@ export class Inspector {
     this.gltfValidatorPlugin = new InspectorGLTFValidatorPlugin( this );
     this.humanoidTransformPlugin = new InspectorHumanoidTransformPlugin( this );
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
+    this.lookAtBallPlugin = new InspectorLookAtBallPlugin( this );
     this.postProcessingPlugin = new InspectorPostProcessingPlugin( this );
     this.visualizeWeightPlugin = new InspectorVisualizeWeightPlugin( this );
 
@@ -132,6 +135,7 @@ export class Inspector {
       this.helpersPlugin,
       this.humanoidTransformPlugin,
       this.lookAtPlugin,
+      this.lookAtBallPlugin,
       this.postProcessingPlugin,
       this.visualizeWeightPlugin,
     ];
@@ -173,7 +177,12 @@ export class Inspector {
     VRMUtils.removeUnnecessaryVertices( gltf.scene );
     this.visualizeWeightPlugin.boneIndexMap = removeUnnecessaryJoints( gltf.scene );
 
-    const vrm: VRM | null = gltf.userData.vrm ?? null;
+    let vrm: VRM | null = gltf.userData.vrm ?? null;
+
+    // workaround
+    if ( vrm?.humanoid == null ) {
+      vrm = null;
+    }
 
     if ( vrm == null ) {
       console.warn( 'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF' );

@@ -13,6 +13,7 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const [ checkedHumanoid, setCheckedHumanoid ] = useState( true );
   const [ checkedHumanoidTransform, setCheckedHumanoidTransform ] = useState( true );
   const [ checkedLookAt, setCheckedLookAt ] = useState( true );
+  const [ checkedLookAtBall, setCheckedLookAtBall ] = useState( true );
   const [ checkedSpringBones, setCheckedSpringBones ] = useState( true );
   const [ checkedSpringBoneColliders, setCheckedSpringBoneColliders ] = useState( true );
 
@@ -22,6 +23,7 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
     setCheckedHumanoid( true );
     setCheckedHumanoidTransform( true );
     setCheckedLookAt( true );
+    setCheckedLookAtBall( true );
     setCheckedSpringBones( true );
     setCheckedSpringBoneColliders( true );
   }, [] );
@@ -32,6 +34,7 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
     setCheckedHumanoid( false );
     setCheckedHumanoidTransform( false );
     setCheckedLookAt( false );
+    setCheckedLookAtBall( false );
     setCheckedSpringBones( false );
     setCheckedSpringBoneColliders( false );
   }, [] );
@@ -54,6 +57,10 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
 
   const handleChangeLookAt = useCallback( ( checked ) => {
     setCheckedLookAt( checked );
+  }, [ inspector ] );
+
+  const handleChangeLookAtBall = useCallback( ( checked ) => {
+    setCheckedLookAtBall( checked );
   }, [ inspector ] );
 
   const handleChangeSpringBones = useCallback( ( checked ) => {
@@ -83,6 +90,10 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   useEffect( () => {
     inspector.helpersPlugin.lookAtHelperRoot.visible = checkedLookAt;
   }, [ inspector, checkedLookAt ] );
+
+  useEffect( () => {
+    inspector.lookAtBallPlugin.isActive = checkedLookAtBall;
+  }, [ inspector, checkedLookAtBall ] );
 
   useEffect( () => {
     inspector.helpersPlugin.springBoneJointHelperRoot.visible = checkedSpringBones;
@@ -134,6 +145,11 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
           callback={ handleChangeLookAt }
           label="LookAt"
           checked={ checkedLookAt }
+        />
+        <HelpersPaneCheckbox
+          callback={ handleChangeLookAtBall }
+          label="LookAt Ball"
+          checked={ checkedLookAtBall }
         />
         <HelpersPaneCheckbox
           callback={ handleChangeSpringBones }
