@@ -257,7 +257,6 @@ export class Inspector {
 
     // renderer
     this._renderer = new THREE.WebGLRenderer( { canvas: this._canvas } );
-    this._renderer.outputEncoding = THREE.sRGBEncoding;
     this._renderer.setSize( width, height );
     this._renderer.setPixelRatio( pixelRatio );
 
