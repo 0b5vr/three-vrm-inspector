@@ -11,7 +11,7 @@ const highlightWireframeMaterial = new THREE.MeshBasicMaterial( {
   depthWrite: false
 } );
 
-const highlightSphereGeometry = new THREE.SphereBufferGeometry( 0.2 );
+const highlightSphereGeometry = new THREE.SphereGeometry( 0.2 );
 
 export function genGizmo( geom: THREE.BufferGeometry = highlightSphereGeometry ): THREE.Mesh {
   const mesh = new THREE.Mesh( geom, highlightWireframeMaterial );
