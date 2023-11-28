@@ -356,12 +356,14 @@ export class Inspector {
     meshes.forEach( ( meshOrGroup ) => {
       nMeshes ++;
 
-      if ( ( meshOrGroup as any ).isMesh ) {
-        processMesh( meshOrGroup as THREE.Mesh );
+      if ( meshOrGroup instanceof THREE.Mesh ) {
+        processMesh( meshOrGroup );
       } else {
-        const group = meshOrGroup as THREE.Group;
-        group.children.forEach( ( child ) => {
-          processMesh( child as THREE.Mesh );
+        meshOrGroup.children.forEach( ( child ) => {
+          // mesh descendants might have joints
+          if ( child instanceof THREE.Mesh ) {
+            processMesh( child );
+          }
         } );
       }
     } );

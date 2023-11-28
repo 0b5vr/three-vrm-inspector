@@ -116,17 +116,17 @@ export class MaterialDebugger {
   }
 
   private async _handleLoad(): Promise<void> {
-    const gltfMeshes = await this._inspector.model!.gltf!.parser.getDependencies( 'mesh' );
-    gltfMeshes.forEach( ( gltfMesh: THREE.Group | THREE.Mesh ) => {
-      if ( 'isGroup' in gltfMesh ) {
-        const group = gltfMesh as THREE.Group;
-        group.children.forEach( ( object ) => {
-          const mesh = object as THREE.Mesh;
-          this._addManagedMesh( mesh );
-        } );
+    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> = await this._inspector.model!.gltf!.parser.getDependencies( 'mesh' );
+    meshes.forEach( ( meshOrGroup ) => {
+      if ( meshOrGroup instanceof THREE.Mesh ) {
+        this._addManagedMesh( meshOrGroup );
       } else {
-        const mesh = gltfMesh as THREE.Mesh;
-        this._addManagedMesh( mesh );
+        meshOrGroup.children.forEach( ( child ) => {
+          // mesh descendants might have joints
+          if ( child instanceof THREE.Mesh ) {
+            this._addManagedMesh( child );
+          }
+        } );
       }
     } );
 
