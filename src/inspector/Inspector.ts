@@ -295,17 +295,25 @@ export class Inspector {
       event.preventDefault();
     };
 
-    const handleDrop = ( event: DragEvent ): void => {
+    const handleDrop = async ( event: DragEvent ): Promise<void> => {
       event.preventDefault();
 
       // read given file then convert it to blob url
-      const files = event.dataTransfer!.files;
-      if ( !files ) { return; }
-      const file = files[ 0 ];
+      const file = event.dataTransfer!.files?.[ 0 ];
       if ( !file ) { return; }
+
       const blob = new Blob( [ file ], { type: 'application/octet-stream' } );
       const url = URL.createObjectURL( blob );
-      this.loadVRM( url );
+
+      if ( file.name.endsWith( '.vrma' ) ) {
+        // if the file extension is .vrma load as VRM Animation
+        await this.animationPlugin.loadAnimation( { type: 'vrma', url } );
+      } else {
+        // otherwise load as VRM (or glTF)
+        await this.loadVRM( url );
+      }
+
+      URL.revokeObjectURL( url );
     };
 
     target.addEventListener( 'dragover', handleDragOver );
