@@ -3,12 +3,8 @@ import { InspectorContext } from '../InspectorContext';
 import { NameValueEntry } from './NameValueEntry';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
+import { bytesToDisplayBytes } from './utils/bytesToDisplayBytes';
 import { useContext } from 'react';
-
-// == functions ====================================================================================
-const bytesToDisplayBytes = ( bytes: number ): string => {
-  return ( bytes / 1048576.0 ).toFixed( 3 ) + ' MB';
-};
 
 // == element ======================================================================================
 export const WebGLMemoryPane = ( params: PaneParams ): JSX.Element => {

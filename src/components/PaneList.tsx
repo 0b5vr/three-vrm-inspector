@@ -13,6 +13,7 @@ import { MetaPane } from './MetaPane';
 import { PostProcessingPane } from './PostProcessingPane';
 import { SampleModelsPane } from './SampleModelsPane';
 import { StatsPane } from './StatsPane';
+import { TexturesPane } from './TexturesPane';
 import { ValidationReportPane } from './ValidationReportPane';
 import { WebGLMemoryPane } from './WebGLMemoryPane';
 import React, { useCallback, useState } from 'react';
@@ -24,6 +25,7 @@ const PaneList = (): JSX.Element => {
     'materialDebugger',
     'meta',
     'stats',
+    'textures',
     'webglMemory',
     'blendShape',
     'lookAt',
@@ -84,6 +86,13 @@ const PaneList = (): JSX.Element => {
       key="stats"
       paneKey="stats"
       title="Stats"
+      onClick={ handleClick }
+      initPosition={ generateInitPosition() }
+    />,
+    'textures': <TexturesPane
+      key="textures"
+      paneKey="textures"
+      title="Textures"
       onClick={ handleClick }
       initPosition={ generateInitPosition() }
     />,

@@ -13,6 +13,7 @@ import { InspectorLookAtBallPlugin } from './plugins/InspectorLookAtBallPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
+import { InspectorTexturesPlugin } from './plugins/InspectorTexturesPlugin';
 import { InspectorVisualizeWeightPlugin } from './plugins/InspectorVisualizeWeightPlugin';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { VRM, VRMHumanoidLoaderPlugin, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
@@ -45,6 +46,7 @@ export class Inspector {
   public readonly lookAtPlugin: InspectorLookAtPlugin;
   public readonly lookAtBallPlugin: InspectorLookAtBallPlugin;
   public readonly postProcessingPlugin: InspectorPostProcessingPlugin;
+  public readonly texturesPlugin: InspectorTexturesPlugin;
   public readonly visualizeWeightPlugin: InspectorVisualizeWeightPlugin;
 
   private _scene: THREE.Scene;
@@ -126,6 +128,7 @@ export class Inspector {
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
     this.lookAtBallPlugin = new InspectorLookAtBallPlugin( this );
     this.postProcessingPlugin = new InspectorPostProcessingPlugin( this );
+    this.texturesPlugin = new InspectorTexturesPlugin( this );
     this.visualizeWeightPlugin = new InspectorVisualizeWeightPlugin( this );
 
     this._plugins = [
@@ -137,6 +140,7 @@ export class Inspector {
       this.lookAtPlugin,
       this.lookAtBallPlugin,
       this.postProcessingPlugin,
+      this.texturesPlugin,
       this.visualizeWeightPlugin,
     ];
   }
