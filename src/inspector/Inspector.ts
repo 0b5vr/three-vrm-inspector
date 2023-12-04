@@ -381,6 +381,7 @@ export class Inspector {
       nVertices += buffer.count;
     }
 
+    const textures: Array<THREE.Material> = await gltf.parser.getDependencies( 'texture' );
     const materials: Array<THREE.Material> = await gltf.parser.getDependencies( 'material' );
 
     const nJoints = vrm?.springBoneManager?.joints?.size ?? 0;
@@ -391,6 +392,7 @@ export class Inspector {
       polygons: nPolygons,
       meshes: nMeshes,
       primitives: nPrimitives,
+      textures: textures.length,
       materials: materials.length,
       joints: nJoints,
     };

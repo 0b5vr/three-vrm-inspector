@@ -4,6 +4,7 @@ export interface InspectorStats {
   polygons: number;
   meshes: number;
   primitives: number;
+  textures: number;
   materials: number;
   joints: number;
 }

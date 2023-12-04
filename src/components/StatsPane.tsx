@@ -19,6 +19,7 @@ export const StatsPane = ( params: PaneParams ): JSX.Element => {
         <NameValueEntry name="Polygons" value={ inspector.stats?.polygons } />
         <NameValueEntry name="Meshes" value={ inspector.stats?.meshes } />
         <NameValueEntry name="Primitives" value={ inspector.stats?.primitives } />
+        <NameValueEntry name="Textures" value={ inspector.stats?.textures } />
         <NameValueEntry name="Materials" value={ inspector.stats?.materials } />
         <NameValueEntry name="Spring Bone Joints" value={ inspector.stats?.joints } />
       </PaneRoot>
