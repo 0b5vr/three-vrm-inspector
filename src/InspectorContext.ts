@@ -3,7 +3,7 @@ import { Highlighter } from './inspector/Highlighter';
 import { Inspector } from './inspector/Inspector';
 import { MaterialDebugger } from './inspector/MaterialDebugger';
 import React from 'react';
-import vrm1ConstraintTwistSampleVrm from './assets/models/VRM1_Constraint_Twist_Sample.vrm';
+import vrm1ConstraintTwistSampleVrm from './assets/models/VRM1_Constraint_Twist_Sample.vrm?url';
 
 function handleError( error: any ): void {
   console.error( error );

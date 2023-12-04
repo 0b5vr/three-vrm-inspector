@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-key */
 
 import { AboutPane } from './AboutPane';
+import { AnimationsPane } from './AnimationsPane';
 import { BlendShapePane } from './BlendShapePane';
 import { ExportBufferViewPane } from './ExportBufferViewPane';
 import { HelpersPane } from './HelpersPane';
@@ -9,7 +10,6 @@ import { JSONPane } from './JSONPane';
 import { LookAtPane } from './LookAtPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
-import { MixamoAnimationsPane } from './MixamoAnimationsPane';
 import { PostProcessingPane } from './PostProcessingPane';
 import { SampleModelsPane } from './SampleModelsPane';
 import { StatsPane } from './StatsPane';
@@ -31,7 +31,7 @@ const PaneList = (): JSX.Element => {
     'sampleModels',
     'helpers',
     'exportBufferView',
-    'mixamoAnimations',
+    'animations',
     'postProcessing',
     'jsEditor',
     'about',
@@ -136,10 +136,10 @@ const PaneList = (): JSX.Element => {
       onClick={ handleClick }
       initPosition={ generateInitPosition() }
     />,
-    'mixamoAnimations': <MixamoAnimationsPane
-      key="mixamoAnimations"
-      paneKey="mixamoAnimations"
-      title="Mixamo Animations"
+    'animations': <AnimationsPane
+      key="animations"
+      paneKey="animations"
+      title="Animations"
       onClick={ handleClick }
       initPosition={ generateInitPosition() }
     />,

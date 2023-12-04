@@ -1,9 +1,9 @@
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { SampleModelsPaneButton } from './SampleModelsPaneButton';
-import seedSanVrm from '../assets/models/Seed-san.vrm';
-import threeVrmGirlVrm from '../assets/models/three-vrm-girl.vrm';
-import vrm1ConstraintTwistSampleVrm from '../assets/models/VRM1_Constraint_Twist_Sample.vrm';
+import seedSanVrm from '../assets/models/Seed-san.vrm?url';
+import threeVrmGirlVrm from '../assets/models/three-vrm-girl.vrm?url';
+import vrm1ConstraintTwistSampleVrm from '../assets/models/VRM1_Constraint_Twist_Sample.vrm?url';
 
 // == models =======================================================================================
 const models = [
