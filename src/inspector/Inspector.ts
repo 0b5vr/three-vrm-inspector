@@ -260,7 +260,10 @@ export class Inspector {
     const pixelRatio = window.devicePixelRatio;
 
     // renderer
-    this._renderer = new THREE.WebGLRenderer( { canvas: this._canvas } );
+    this._renderer = new THREE.WebGLRenderer( {
+      canvas: this._canvas,
+      antialias: true,
+    } );
     this._renderer.setSize( width, height );
     this._renderer.setPixelRatio( pixelRatio );
 
