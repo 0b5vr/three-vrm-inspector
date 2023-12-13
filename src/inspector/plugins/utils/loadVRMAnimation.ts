@@ -8,5 +8,5 @@ export async function loadVRMAniamtion( name: string, vrm: VRM ): Promise<THREE.
   loader.register( ( parser ) => new VRMAnimationLoaderPlugin( parser ) );
   const gltf = await loader.loadAsync( name );
   const vrmAnimation: VRMAnimation = gltf.userData.vrmAnimations[ 0 ];
-  return createVRMAnimationClip( vrmAnimation, vrm );
+  return createVRMAnimationClip( vrmAnimation, vrm as any );
 }
