@@ -4,7 +4,7 @@ import { InspectorTexturesPluginInfo } from '../inspector/plugins/InspectorTextu
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { bytesToDisplayBytes } from './utils/bytesToDisplayBytes';
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 // == microcomponents ==============================================================================
 const Texture = ( { textureInfo }: {
@@ -14,9 +14,25 @@ const Texture = ( { textureInfo }: {
     `${ textureInfo.width }x${ textureInfo.height }, ${ bytesToDisplayBytes( textureInfo.byteLength ) }`
   ), [ textureInfo ] );
 
+  const [ url, setUrl ] = useState<string>( '' );
+  useEffect( () => {
+    let url: string | null = null;
+    textureInfo.promiseBlob.then( ( blob ) => {
+      url = URL.createObjectURL( blob );
+      setUrl( url );
+    } );
+
+    return () => {
+      if ( url != null ) {
+        URL.revokeObjectURL( url );
+      }
+    };
+  }, [ textureInfo ] );
+
   return (
-    <div className="flex items-center">
-      <div className="flex-grow">
+    <div className="flex gap-2">
+      <img src={ url } className="w-16 h-16" />
+      <div className="flex-grow flex flex-col justify-center">
         <div className="text-sm">{ textureInfo.name }</div>
         <div className="text-xs text-gray-400">{ textureInfo.mimeType }</div>
         <div className="text-xs text-gray-400">{ description }</div>
