@@ -8,29 +8,29 @@ import { useContext } from 'react';
 
 // == constants ====================================================================================
 const presets: VRMExpressionPresetName[] = [
-  VRMExpressionPresetName.Neutral,
-  VRMExpressionPresetName.Happy,
-  VRMExpressionPresetName.Angry,
-  VRMExpressionPresetName.Sad,
-  VRMExpressionPresetName.Relaxed,
-  VRMExpressionPresetName.Surprised,
-  VRMExpressionPresetName.Blink,
-  VRMExpressionPresetName.BlinkLeft,
-  VRMExpressionPresetName.BlinkRight,
-  VRMExpressionPresetName.Aa,
-  VRMExpressionPresetName.Ee,
-  VRMExpressionPresetName.Ih,
-  VRMExpressionPresetName.Oh,
-  VRMExpressionPresetName.Ou,
-  VRMExpressionPresetName.LookLeft,
-  VRMExpressionPresetName.LookRight,
-  VRMExpressionPresetName.LookDown,
-  VRMExpressionPresetName.LookUp,
+  'neutral',
+  'happy',
+  'angry',
+  'sad',
+  'relaxed',
+  'surprised',
+  'blink',
+  'blinkLeft',
+  'blinkRight',
+  'aa',
+  'ee',
+  'ih',
+  'oh',
+  'ou',
+  'lookLeft',
+  'lookRight',
+  'lookDown',
+  'lookUp',
 ];
 const presetSet: Set<string> = new Set( presets );
 
 // == element ======================================================================================
-export const BlendShapePane = ( params: PaneParams ): JSX.Element => {
+export const ExpressionsPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
   const expressionManager = inspector.model?.vrm?.expressionManager;
@@ -67,7 +67,7 @@ export const BlendShapePane = ( params: PaneParams ): JSX.Element => {
             />
           ) ) }
           { !hasUnknowns && <span className="text-gray-500">(No custom expressions)</span> }
-        </> : 'No blendShapeProxy detected.' }
+        </> : 'No Expressions / BlendShapeProxy detected.' }
       </PaneRoot>
     </Pane>
   );

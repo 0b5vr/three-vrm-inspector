@@ -2,8 +2,8 @@
 
 import { AboutPane } from './AboutPane';
 import { AnimationsPane } from './AnimationsPane';
-import { BlendShapePane } from './BlendShapePane';
 import { ExportBufferViewPane } from './ExportBufferViewPane';
+import { ExpressionsPane } from './BlendShapePane';
 import { HelpersPane } from './HelpersPane';
 import { JSEditorPane } from './JSEditorPane';
 import { JSONPane } from './JSONPane';
@@ -27,7 +27,7 @@ const PaneList = (): JSX.Element => {
     'stats',
     'textures',
     'webglMemory',
-    'blendShape',
+    'expressions',
     'lookAt',
     'validationReport',
     'sampleModels',
@@ -103,10 +103,10 @@ const PaneList = (): JSX.Element => {
       onClick={ handleClick }
       initPosition={ generateInitPosition() }
     />,
-    'blendShape': <BlendShapePane
-      key="blendShape"
-      paneKey="blendShape"
-      title="Blend Shape Proxy"
+    'expressions': <ExpressionsPane
+      key="expressions"
+      paneKey="expressions"
+      title="Expressions"
       onClick={ handleClick }
       initPosition={ generateInitPosition() }
     />,
