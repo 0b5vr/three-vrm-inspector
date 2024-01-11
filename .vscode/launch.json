@@ -11,10 +11,7 @@
       "sourceMaps": true,
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:3000/dist",
-      "webRoot": "${workspaceFolder}/dist",
-      "sourceMapPathOverrides": {
-        "webpack://vrm/*": "${workspaceRoot}/*",
-      }
+      "webRoot": "${workspaceFolder}/dist"
     }
   ]
 }
