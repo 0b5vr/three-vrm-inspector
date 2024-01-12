@@ -94,7 +94,7 @@ export class Inspector {
     this._scene = new THREE.Scene();
 
     // light
-    const light = new THREE.DirectionalLight( 0xffffff );
+    const light = new THREE.DirectionalLight( 0xffffff, Math.PI );
     light.position.set( 1.0, 1.0, 1.0 ).normalize();
     this._scene.add( light );
 
