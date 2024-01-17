@@ -36,7 +36,7 @@ export function removeUnnecessaryJoints(
       const boneIndexMap = new Map<number, number>(); // map of old bone index vs. new bone index
 
       // create a new bone map
-      const array = attribute.array as number[];
+      const array = attribute.array;
       for ( let i = 0; i < array.length; i ++ ) {
         const index = array[ i ];
 
