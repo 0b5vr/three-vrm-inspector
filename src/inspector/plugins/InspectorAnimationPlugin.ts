@@ -3,22 +3,39 @@ import { InspectorModel } from '../InspectorModel';
 import { VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
 import { loadMixamoAnimation } from './utils/loadMixamoAnimation';
 import { loadVRMAniamtion } from './utils/loadVRMAnimation';
+import { notifyObservers } from '../../utils/notifyObservers';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
+
+export interface InspectorAnimationPluginAnimation {
+  type: 'vrma' | 'mixamo';
+  url: string;
+  name: string;
+}
 
 export class InspectorAnimationPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
+  public animationChangeObservers: Set<
+    ( animation: InspectorAnimationPluginAnimation | null ) => void
+  >;
+  public animationUpdateObservers: Set<
+    ( event: {
+      time: number;
+      duration: number;
+    } ) => void
+  >;
+
   private _currentLookAtQuatProxy?: VRMLookAtQuaternionProxy | null;
   private _currentAnimationMixer?: THREE.AnimationMixer | null;
   private _currentAnimationAction?: THREE.AnimationAction | null;
-  private _currentAnimation?: {
-    type: 'vrma' | 'mixamo';
-    url: string;
-  } | null;
+  private _currentAnimation?: InspectorAnimationPluginAnimation | null;
 
   public constructor( inspector: Inspector ) {
     this.inspector = inspector;
+
+    this.animationChangeObservers = new Set();
+    this.animationUpdateObservers = new Set();
   }
 
   public handleAfterLoad( model: InspectorModel ): void {
@@ -47,17 +64,22 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
   public handleBeforeRender( delta: number ): void {
     if ( this._currentAnimationMixer != null ) {
       this._currentAnimationMixer.update( delta );
+
+      const time = this._currentAnimationAction?.time ?? 0.0;
+      const duration = this._currentAnimationAction?.getClip().duration ?? 0.0;
+      notifyObservers( this.animationUpdateObservers, { time, duration } );
     }
   }
 
-  public async loadAnimation( animation: { type: 'vrma' | 'mixamo', url: string } ): Promise<void> {
-    this._currentAnimation = animation;
-
+  public async loadAnimation( animation: InspectorAnimationPluginAnimation ): Promise<void> {
     if ( animation.type === 'vrma' ) {
-      this._loadVRMAnimation( animation.url );
+      await this._loadVRMAnimation( animation.url );
     } else if ( animation.type === 'mixamo' ) {
-      this._loadMixamoAnimation( animation.url );
+      await this._loadMixamoAnimation( animation.url );
     }
+
+    this._currentAnimation = animation;
+    notifyObservers( this.animationChangeObservers, animation );
   }
 
   public clearAnimation(): void {
@@ -67,9 +89,11 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     const action = this._currentAnimationAction;
     if ( !action ) { return; }
 
-    this._currentAnimation = null;
     action.stop();
     this._currentAnimationAction = null;
+
+    this._currentAnimation = null;
+    notifyObservers( this.animationChangeObservers, null );
 
     this._resetTargets();
   }

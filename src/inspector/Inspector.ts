@@ -314,7 +314,7 @@ export class Inspector {
 
       if ( file.name.endsWith( '.vrma' ) ) {
         // if the file extension is .vrma load as VRM Animation
-        await this.animationPlugin.loadAnimation( { type: 'vrma', url } );
+        await this.animationPlugin.loadAnimation( { type: 'vrma', url, name: 'Custom Animation (VRMA)' } );
       } else {
         // otherwise load as VRM (or glTF)
         await this.loadVRM( url );
