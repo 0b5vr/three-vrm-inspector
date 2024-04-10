@@ -10,9 +10,12 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 const Texture = ( { textureInfo }: {
   textureInfo: InspectorTexturesPluginInfo;
 } ): JSX.Element => {
-  const description = useMemo( () => (
-    `${ textureInfo.width }x${ textureInfo.height }, ${ bytesToDisplayBytes( textureInfo.byteLength ) }`
-  ), [ textureInfo ] );
+  const description = useMemo( () => {
+    const displayBytes = textureInfo.byteLength != null
+      ? bytesToDisplayBytes( textureInfo.byteLength )
+      : 'size unknown';
+    return `${ textureInfo.width }x${ textureInfo.height }, ${ displayBytes }`;
+  }, [ textureInfo ] );
 
   const [ url, setUrl ] = useState<string>( '' );
   useEffect( () => {
@@ -53,7 +56,7 @@ export const TexturesPane = ( params: PaneParams ): JSX.Element => {
 
   const totalBytes = useMemo( () => (
     textureInfos?.reduce( ( total, textureInfo ) => (
-      total + textureInfo.byteLength
+      total + ( textureInfo.byteLength ?? 0 )
     ), 0 ) ?? 0
   ), [ textureInfos ] );
 

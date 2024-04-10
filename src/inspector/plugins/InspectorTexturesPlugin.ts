@@ -11,9 +11,9 @@ export interface InspectorTexturesPluginInfo {
   height: number;
   mimeType: string | null;
   iTexture: number;
-  iImage: number;
-  iBufferView: number;
-  byteLength: number;
+  iImage: number | undefined;
+  iBufferView: number | undefined;
+  byteLength: number | undefined;
   image: ImageBitmap;
   texture: THREE.Texture;
   promiseBlob: Promise<Blob>;
@@ -91,9 +91,15 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
       this.__textureInfos = textures.map( ( texture, iTexture ) => {
         const image = texture.image;
 
-        const iImage = parser.json.textures[ iTexture ].source;
-        const iBufferView = parser.json.images[ iImage ].bufferView;
-        const byteLength = parser.json.bufferViews[ iBufferView ].byteLength;
+        const iImage: number | undefined
+          = parser.json.textures[ iTexture ].extensions?.[ 'KHR_texture_basisu' ]?.source
+            ?? parser.json.textures[ iTexture ].source;
+        const iBufferView: number | undefined = iImage != null
+          ? parser.json.images[ iImage ].bufferView
+          : undefined;
+        const byteLength: number | undefined = iBufferView != null
+          ? parser.json.bufferViews[ iBufferView ].byteLength
+          : undefined;
 
         const promiseBlob = textureToBlob(
           this.inspector.renderer!,

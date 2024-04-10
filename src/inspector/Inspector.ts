@@ -15,6 +15,7 @@ import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
 import { InspectorTexturesPlugin } from './plugins/InspectorTexturesPlugin';
 import { InspectorVisualizeWeightPlugin } from './plugins/InspectorVisualizeWeightPlugin';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { VRM, VRMHumanoidLoaderPlugin, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { WebGLMemoryExtension } from './WebGLMemoryExtension';
@@ -58,6 +59,7 @@ export class Inspector {
   private _webglMemory: WebGLMemoryExtension | null = null;
   private _webglMemoryInfo: WebGLMemoryInfo | null = null;
   private _dracoLoader: DRACOLoader;
+  private _ktx2Loader: KTX2Loader;
   private _loader: GLTFLoader;
   private _canvas?: HTMLCanvasElement;
   private _layerMode: 'firstPerson' | 'thirdPerson' = 'thirdPerson';
@@ -105,8 +107,12 @@ export class Inspector {
     this._dracoLoader = new DRACOLoader();
     this._dracoLoader.setDecoderPath( './draco/' );
 
+    this._ktx2Loader = new KTX2Loader();
+    this._ktx2Loader.setTranscoderPath( './basis/' );
+
     this._loader = new GLTFLoader();
     this._loader.setDRACOLoader( this._dracoLoader );
+    this._loader.setKTX2Loader( this._ktx2Loader );
     this._loader.register( ( parser ) => new VRMLoaderPlugin( parser, {
       humanoidPlugin: new VRMHumanoidLoaderPlugin( parser, {
         helperRoot: this.helpersPlugin.humanoidHelperRoot,
@@ -266,6 +272,8 @@ export class Inspector {
     } );
     this._renderer.setSize( width, height );
     this._renderer.setPixelRatio( pixelRatio );
+
+    this._ktx2Loader.detectSupport( this._renderer );
 
     // composer
     this._composer = new EffectComposer(
