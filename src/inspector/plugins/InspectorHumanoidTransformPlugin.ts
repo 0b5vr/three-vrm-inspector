@@ -46,7 +46,8 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     } );
 
     this._raycaster = new THREE.Raycaster();
-    this._active = true;
+
+    this._active = false;
   }
 
   public handleAfterSetup(): void {
@@ -94,6 +95,8 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
   }
 
   public handleMouseDown( event: MouseEvent ): void {
+    if ( !this._active ) { return; }
+
     const { camera, canvas } = this.inspector;
     if ( canvas == null ) { return; }
 
