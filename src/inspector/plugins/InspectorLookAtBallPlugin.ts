@@ -31,7 +31,7 @@ export class InspectorLookAtBallPlugin implements InspectorPlugin {
     this.ballOutside.renderOrder = 10001;
     this.root.add( this.ballOutside );
 
-    this.isActive = true;
+    this.isActive = false;
   }
 
   public handleBeforeRender(): void {

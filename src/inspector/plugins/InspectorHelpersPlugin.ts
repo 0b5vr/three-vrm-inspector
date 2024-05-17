@@ -23,18 +23,22 @@ export class InspectorHelpersPlugin implements InspectorPlugin {
     inspector.scene.add( this.axesHelper );
 
     this.humanoidHelperRoot = new THREE.Group();
+    this.humanoidHelperRoot.visible = false;
     this.humanoidHelperRoot.renderOrder = 10000;
     inspector.scene.add( this.humanoidHelperRoot );
 
     this.lookAtHelperRoot = new THREE.Group();
+    this.lookAtHelperRoot.visible = false;
     this.lookAtHelperRoot.renderOrder = 10000;
     inspector.scene.add( this.lookAtHelperRoot );
 
     this.springBoneJointHelperRoot = new THREE.Group();
+    this.springBoneJointHelperRoot.visible = false;
     this.springBoneJointHelperRoot.renderOrder = 10000;
     inspector.scene.add( this.springBoneJointHelperRoot );
 
     this.springBoneColliderHelperRoot = new THREE.Group();
+    this.springBoneColliderHelperRoot.visible = false;
     this.springBoneColliderHelperRoot.renderOrder = 10000;
     inspector.scene.add( this.springBoneColliderHelperRoot );
   }

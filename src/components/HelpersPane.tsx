@@ -8,14 +8,30 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 export const HelpersPane = ( params: PaneParams ): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
 
-  const [ checkedGrid, setCheckedGrid ] = useState( true );
-  const [ checkedAxes, setCheckedAxes ] = useState( true );
-  const [ checkedHumanoid, setCheckedHumanoid ] = useState( true );
-  const [ checkedHumanoidTransform, setCheckedHumanoidTransform ] = useState( true );
-  const [ checkedLookAt, setCheckedLookAt ] = useState( true );
-  const [ checkedLookAtBall, setCheckedLookAtBall ] = useState( true );
-  const [ checkedSpringBones, setCheckedSpringBones ] = useState( true );
-  const [ checkedSpringBoneColliders, setCheckedSpringBoneColliders ] = useState( true );
+  const [ checkedGrid, setCheckedGrid ] = useState(
+    inspector.helpersPlugin.gridHelper.visible
+  );
+  const [ checkedAxes, setCheckedAxes ] = useState(
+    inspector.helpersPlugin.axesHelper.visible
+  );
+  const [ checkedHumanoid, setCheckedHumanoid ] = useState(
+    inspector.helpersPlugin.humanoidHelperRoot.visible
+  );
+  const [ checkedHumanoidTransform, setCheckedHumanoidTransform ] = useState(
+    inspector.humanoidTransformPlugin.active
+  );
+  const [ checkedLookAt, setCheckedLookAt ] = useState(
+    inspector.helpersPlugin.lookAtHelperRoot.visible
+  );
+  const [ checkedLookAtBall, setCheckedLookAtBall ] = useState(
+    inspector.lookAtBallPlugin.isActive
+  );
+  const [ checkedSpringBones, setCheckedSpringBones ] = useState(
+    inspector.helpersPlugin.springBoneJointHelperRoot.visible
+  );
+  const [ checkedSpringBoneColliders, setCheckedSpringBoneColliders ] = useState(
+    inspector.helpersPlugin.springBoneColliderHelperRoot.visible
+  );
 
   const handleClickEnableAll = useCallback( () => {
     setCheckedGrid( true );
