@@ -9,6 +9,7 @@ import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControls
 import { InspectorGLTFValidatorPlugin } from './plugins/InspectorGLTFValidatorPlugin';
 import { InspectorHelpersPlugin } from './plugins/InspectorHelpersPlugin';
 import { InspectorHumanoidTransformPlugin } from './plugins/InspectorHumanoidTransformPlugin';
+import { InspectorLightsPlugin } from './plugins/InspectorLightsPlugin';
 import { InspectorLookAtBallPlugin } from './plugins/InspectorLookAtBallPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
@@ -44,6 +45,7 @@ export class Inspector {
   public readonly gltfValidatorPlugin: InspectorGLTFValidatorPlugin;
   public readonly helpersPlugin: InspectorHelpersPlugin;
   public readonly humanoidTransformPlugin: InspectorHumanoidTransformPlugin;
+  public readonly lightsPlugin: InspectorLightsPlugin;
   public readonly lookAtPlugin: InspectorLookAtPlugin;
   public readonly lookAtBallPlugin: InspectorLookAtBallPlugin;
   public readonly postProcessingPlugin: InspectorPostProcessingPlugin;
@@ -95,11 +97,6 @@ export class Inspector {
     // scene
     this._scene = new THREE.Scene();
 
-    // light
-    const light = new THREE.DirectionalLight( 0xffffff, Math.PI );
-    light.position.set( 1.0, 1.0, 1.0 ).normalize();
-    this._scene.add( light );
-
     // helpers plugin must be made before the loader
     this.helpersPlugin = new InspectorHelpersPlugin( this );
 
@@ -131,6 +128,7 @@ export class Inspector {
     this.cameraControlsPlugin = new InspectorCameraControlsPlugin( this );
     this.gltfValidatorPlugin = new InspectorGLTFValidatorPlugin( this );
     this.humanoidTransformPlugin = new InspectorHumanoidTransformPlugin( this );
+    this.lightsPlugin = new InspectorLightsPlugin( this );
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
     this.lookAtBallPlugin = new InspectorLookAtBallPlugin( this );
     this.postProcessingPlugin = new InspectorPostProcessingPlugin( this );

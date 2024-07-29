@@ -7,6 +7,7 @@ import { ExpressionsPane } from './BlendShapePane';
 import { HelpersPane } from './HelpersPane';
 import { JSEditorPane } from './JSEditorPane';
 import { JSONPane } from './JSONPane';
+import { LightsPane } from './LightsPane';
 import { LookAtPane } from './LookAtPane';
 import { MaterialDebuggerPane } from './MaterialDebuggerPane';
 import { MetaPane } from './MetaPane';
@@ -33,6 +34,7 @@ const PaneList = (): JSX.Element => {
     'sampleModels',
     'helpers',
     'exportBufferView',
+    'lights',
     'animations',
     'postProcessing',
     'jsEditor',
@@ -142,6 +144,13 @@ const PaneList = (): JSX.Element => {
       key="exportBufferView"
       paneKey="exportBufferView"
       title="Export Buffer View"
+      onClick={ handleClick }
+      initPosition={ generateInitPosition() }
+    />,
+    'lights': <LightsPane
+      key="lights"
+      paneKey="lights"
+      title="Lights"
       onClick={ handleClick }
       initPosition={ generateInitPosition() }
     />,
