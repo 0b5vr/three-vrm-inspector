@@ -98,6 +98,27 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     this._resetTargets();
   }
 
+  public play(): void {
+    const action = this._currentAnimationAction;
+    if ( !action ) { return; }
+
+    action.paused = false;
+  }
+
+  public pause(): void {
+    const action = this._currentAnimationAction;
+    if ( !action ) { return; }
+
+    action.paused = true;
+  }
+
+  public rewind(): void {
+    const action = this._currentAnimationAction;
+    if ( !action ) { return; }
+
+    action.time = 0;
+  }
+
   private async _loadVRMAnimation( url: string ): Promise<void> {
     const vrm = this.inspector.model?.vrm;
     if ( !vrm ) { return; }

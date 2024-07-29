@@ -71,6 +71,30 @@ export const AnimationsPane = ( params: PaneParams ): JSX.Element => {
     [ inspector ]
   );
 
+  // handle click play
+  const handleClickPlay = useCallback(
+    () => {
+      inspector.animationPlugin.play();
+    },
+    [ inspector ]
+  );
+
+  // handle click pause
+  const handleClickPause = useCallback(
+    () => {
+      inspector.animationPlugin.pause();
+    },
+    [ inspector ]
+  );
+
+  // handle click rewind
+  const handleClickRewind = useCallback(
+    () => {
+      inspector.animationPlugin.rewind();
+    },
+    [ inspector ]
+  );
+
   // element
   return (
     <Pane { ...params }>
@@ -83,6 +107,25 @@ export const AnimationsPane = ( params: PaneParams ): JSX.Element => {
             ) )
           }
         </select>
+        <br />
+        <button
+          className="px-1 bg-gray-800 border border-gray-500"
+          onClick={ handleClickPlay }
+        >
+          Play
+        </button>
+        <button
+          className="ml-1 px-1 bg-gray-800 border border-gray-500"
+          onClick={ handleClickPause }
+        >
+          Pause
+        </button>
+        <button
+          className="ml-1 px-1 bg-gray-800 border border-gray-500"
+          onClick={ handleClickRewind }
+        >
+          Rewind
+        </button>
         <br />
         <NameValueEntry name="Animation" value={ currentAnimation?.name ?? '(not playing)' } />
         <NameValueEntry name="Time" value={ timeDisplay } />
