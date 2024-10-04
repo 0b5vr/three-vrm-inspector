@@ -23,7 +23,7 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
 
     if ( this._transformControls ) {
       this._transformControls.enabled = value;
-      this._transformControls.visible = value;
+      this._transformControls.getHelper().visible = value;
     }
 
     if ( value ) {
@@ -46,12 +46,12 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
     const { scene, camera, canvas } = this.inspector;
 
     this._transformControls = new TransformControls( camera, canvas );
-    scene.add( this._transformControls );
+    scene.add( this._transformControls.getHelper() );
 
     this._transformControls.attach( this._lookAtTarget );
 
     this._transformControls.enabled = false;
-    this._transformControls.visible = false;
+    this._transformControls.getHelper().visible = false;
 
     this._transformControls.addEventListener( 'dragging-changed', ( event ) => {
       const cameraControls = this.inspector.cameraControlsPlugin.controls;

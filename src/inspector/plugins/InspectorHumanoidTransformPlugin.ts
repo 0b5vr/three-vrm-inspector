@@ -56,7 +56,7 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     this._transformControls = new TransformControls( camera, canvas );
     this._transformControls.space = 'local';
     this._transformControls.mode = 'rotate';
-    scene.add( this._transformControls );
+    scene.add( this._transformControls.getHelper() );
 
     this._transformControls.addEventListener( 'dragging-changed', ( event ) => {
       const cameraControls = this.inspector.cameraControlsPlugin.controls;
