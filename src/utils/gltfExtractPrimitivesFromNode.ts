@@ -1,7 +1,7 @@
 // yoinked from @pixiv/three-vrm
 
 import * as THREE from 'three';
-import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 function extractPrimitivesInternal(
   gltf: GLTF,

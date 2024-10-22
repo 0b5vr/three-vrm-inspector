@@ -14,7 +14,7 @@ import { highlightVRM1HumanBone } from './highlighter-functions/highlightVRM1Hum
 import { highlightVRM1SpringBoneSpring } from './highlighter-functions/highlightVRM1SpringBoneSpring';
 import { highlightVRMFirstPersonMeshAnnotation } from './highlighter-functions/highlightVRMFirstPersonMeshAnnotation';
 import { highlightVRMLookAtOffset } from './highlighter-functions/highlightVRMLookAtOffset';
-import type { GLTF, GLTFParser } from 'three/examples/jsm/loaders/GLTFLoader';
+import type { GLTF, GLTFParser } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { GLTF as GLTFSchema } from '@gltf-transform/core';
 import type { Inspector } from './Inspector';
 

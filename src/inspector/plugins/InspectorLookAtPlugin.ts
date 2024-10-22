@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { InspectorModel } from '../InspectorModel';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
 

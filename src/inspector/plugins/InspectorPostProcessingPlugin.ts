@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { ACESFilmicToneMappingShader } from 'three/examples/jsm/shaders/ACESFilmicToneMappingShader';
+import { ACESFilmicToneMappingShader } from 'three/examples/jsm/shaders/ACESFilmicToneMappingShader.js';
 import { Inspector } from '../Inspector';
 import { InspectorPlugin } from './InspectorPlugin';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 export class InspectorPostProcessingPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;

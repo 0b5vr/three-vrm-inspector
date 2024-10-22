@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass';
+import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
 import { Inspector } from '../Inspector';
 import { InspectorPlugin } from './InspectorPlugin';
 

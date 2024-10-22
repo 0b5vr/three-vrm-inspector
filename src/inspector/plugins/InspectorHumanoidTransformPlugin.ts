@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { registerMouseEvent } from '../../utils/registerMouseEvent';
 import imageGrabPurple from '../../assets/grab-purple.png';
 import type { Inspector } from '../Inspector';
