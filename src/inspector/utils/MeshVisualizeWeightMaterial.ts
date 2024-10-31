@@ -59,10 +59,10 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
       );
 
       shader.fragmentShader = shader.fragmentShader.replace(
-        'gl_FragColor = vec4( packNormalToRGB( normal ), opacity );',
+        'gl_FragColor = vec4( packNormalToRGB( normal ), diffuseColor.a );',
         `gl_FragColor = vec4(
           clamp( 2.0 - abs( vec3( 4.0, 2.0, 0.0 ) - 4.0 * vWeightVisualize ), 0.0, 1.0 ),
-          opacity
+          diffuseColor.a
         );`
       );
     };
