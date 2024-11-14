@@ -72,6 +72,7 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
   private __textureInfos: InspectorTexturesPluginInfo[] | null;
+  private __texturesToDeleteAfterUnload: THREE.Texture[];
 
   public get textureInfos(): InspectorTexturesPluginInfo[] | null {
     return this.__textureInfos;
@@ -81,6 +82,7 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
     this.inspector = inspector;
 
     this.__textureInfos = null;
+    this.__texturesToDeleteAfterUnload = [];
   }
 
   public handleAfterLoad(): void {
@@ -88,6 +90,8 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
     if ( !parser ) { return; }
 
     parser.getDependencies( 'texture' ).then( ( textures: THREE.Texture[] ) => {
+      this.__texturesToDeleteAfterUnload.push( ...textures );
+
       this.__textureInfos = textures.map( ( texture, iTexture ) => {
         const image = texture.image;
 
@@ -123,5 +127,11 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
         };
       } );
     } );
+  }
+
+  public handleAfterUnload(): void {
+    for ( const textures of this.__texturesToDeleteAfterUnload ) {
+      textures.dispose();
+    }
   }
 }
