@@ -1,15 +1,14 @@
 import { Hr } from './Hr';
-import { InspectorContext } from '../InspectorContext';
 import { NameValueEntry } from './NameValueEntry';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { bytesToDisplayBytes } from './utils/bytesToDisplayBytes';
-import { useContext } from 'react';
+import { useAtomValue } from 'jotai';
+import { webglMemoryInfoAtom } from '../stores/atoms/webglMemoryInfoAtom';
 
 // == element ======================================================================================
 export const WebGLMemoryPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
-  const info = inspector.webglMemoryInfo;
+  const info = useAtomValue( webglMemoryInfoAtom );
 
   return (
     <Pane { ...params }>

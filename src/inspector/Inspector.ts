@@ -16,11 +16,10 @@ import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
 import { InspectorTexturesPlugin } from './plugins/InspectorTexturesPlugin';
 import { InspectorVisualizeWeightPlugin } from './plugins/InspectorVisualizeWeightPlugin';
+import { InspectorWebGLMemoryPlugin } from './plugins/InspectorWebGLMemoryPlugin';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { VRM, VRMHumanoidLoaderPlugin, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
-import { WebGLMemoryExtension } from './WebGLMemoryExtension';
-import { WebGLMemoryInfo } from './WebGLMemoryInfo';
 import { WebIO } from '@gltf-transform/core';
 import { applyMixins } from '../utils/applyMixins';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
@@ -51,6 +50,7 @@ export class Inspector {
   public readonly postProcessingPlugin: InspectorPostProcessingPlugin;
   public readonly texturesPlugin: InspectorTexturesPlugin;
   public readonly visualizeWeightPlugin: InspectorVisualizeWeightPlugin;
+  public readonly webglMemoryPlugin: InspectorWebGLMemoryPlugin;
 
   private _scene: THREE.Scene;
   private _camera: THREE.PerspectiveCamera;
@@ -58,8 +58,6 @@ export class Inspector {
   private _composer?: EffectComposer;
   private _model?: InspectorModel | null;
   private _stats: InspectorStats | null = null;
-  private _webglMemory: WebGLMemoryExtension | null = null;
-  private _webglMemoryInfo: WebGLMemoryInfo | null = null;
   private _dracoLoader: DRACOLoader;
   private _ktx2Loader: KTX2Loader;
   private _loader: GLTFLoader;
@@ -75,7 +73,6 @@ export class Inspector {
   public get composer(): EffectComposer | undefined { return this._composer; }
   public get model(): InspectorModel | null { return this._model ?? null; }
   public get stats(): InspectorStats | null { return this._stats; }
-  public get webglMemoryInfo(): WebGLMemoryInfo | null { return this._webglMemoryInfo; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
   public get layerMode(): 'firstPerson' | 'thirdPerson' { return this._layerMode; }
 
@@ -134,6 +131,7 @@ export class Inspector {
     this.postProcessingPlugin = new InspectorPostProcessingPlugin( this );
     this.texturesPlugin = new InspectorTexturesPlugin( this );
     this.visualizeWeightPlugin = new InspectorVisualizeWeightPlugin( this );
+    this.webglMemoryPlugin = new InspectorWebGLMemoryPlugin( this );
 
     this._plugins = [
       this.animationPlugin,
@@ -146,6 +144,7 @@ export class Inspector {
       this.postProcessingPlugin,
       this.texturesPlugin,
       this.visualizeWeightPlugin,
+      this.webglMemoryPlugin,
     ];
   }
 
@@ -296,9 +295,6 @@ export class Inspector {
     };
     window.addEventListener( 'resize', this._handleResize );
 
-    // webgl-memory
-    this._webglMemory = this._renderer.getContext().getExtension( 'GMAN_webgl_memory' ) as WebGLMemoryExtension;
-
     // plugins
     this._plugins.forEach( ( plugin ) => plugin.handleAfterSetup?.() );
   }
@@ -346,10 +342,6 @@ export class Inspector {
 
     if ( this._composer ) {
       this._composer.render( delta );
-    }
-
-    if ( this._webglMemory ) {
-      this._webglMemoryInfo = this._webglMemory.getMemoryInfo();
     }
   }
 
