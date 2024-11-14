@@ -1,7 +1,9 @@
 import * as THREE from 'three';
+import { EventEmittable } from '../../utils/EventEmittable';
 import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
 import { Inspector } from '../Inspector';
 import { InspectorPlugin } from './InspectorPlugin';
+import { applyMixins } from '../../utils/applyMixins';
 
 const _v2A = new THREE.Vector2();
 
@@ -68,6 +70,11 @@ function textureToBlob(
   } );
 }
 
+interface InspectorTexturesPluginEvents {
+  updateTextureInfos: { textureInfos: InspectorTexturesPluginInfo[] | null };
+}
+
+export interface InspectorTexturesPlugin extends EventEmittable<InspectorTexturesPluginEvents> {}
 export class InspectorTexturesPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
@@ -85,14 +92,14 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
     this.__texturesToDeleteAfterUnload = [];
   }
 
-  public handleAfterLoad(): void {
+  public loadTextureInfos(): void {
     const parser = this.inspector.model?.gltf?.parser;
     if ( !parser ) { return; }
 
     parser.getDependencies( 'texture' ).then( ( textures: THREE.Texture[] ) => {
       this.__texturesToDeleteAfterUnload.push( ...textures );
 
-      this.__textureInfos = textures.map( ( texture, iTexture ) => {
+      const textureInfos = textures.map( ( texture, iTexture ) => {
         const image = texture.image;
 
         const iImage: number | undefined
@@ -126,12 +133,20 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
           promiseBlob,
         };
       } );
+
+      this.__textureInfos = textureInfos;
+      this._emit( 'updateTextureInfos', { textureInfos } );
     } );
   }
 
   public handleAfterUnload(): void {
+    this.__textureInfos = null;
+    this._emit( 'updateTextureInfos', { textureInfos: null } );
+
     for ( const textures of this.__texturesToDeleteAfterUnload ) {
       textures.dispose();
     }
   }
 }
+
+applyMixins( InspectorTexturesPlugin, [ EventEmittable ] );

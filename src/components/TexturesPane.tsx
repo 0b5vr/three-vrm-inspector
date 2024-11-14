@@ -4,6 +4,8 @@ import { InspectorTexturesPluginInfo } from '../inspector/plugins/InspectorTextu
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { bytesToDisplayBytes } from './utils/bytesToDisplayBytes';
+import { textureInfosAtom } from '../stores/atoms/textureInfosAtom';
+import { useAtomValue } from 'jotai';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
 // == microcomponents ==============================================================================
@@ -44,12 +46,9 @@ const Texture = ( { textureInfo }: {
   );
 };
 
-// == element ======================================================================================
-export const TexturesPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
-  const texturesPlugin = inspector.texturesPlugin;
-  const textureInfos = texturesPlugin.textureInfos;
-
+const TexturesInfo = ( { textureInfos }: {
+  textureInfos: InspectorTexturesPluginInfo[];
+} ): JSX.Element => {
   const count = useMemo( () => (
     textureInfos?.length ?? 0
   ), [ textureInfos ] );
@@ -70,26 +69,57 @@ export const TexturesPane = ( params: PaneParams ): JSX.Element => {
   ), [ totalPixels ] );
 
   return (
+    <>
+      <div>Textures count: { count }</div>
+      <div>Total size: { bytesToDisplayBytes( totalBytes ) }</div>
+      <div>Total pixels: { totalPixelsDisplay }</div>
+
+      <Hr />
+
+      <div className="flex flex-col gap-1">
+        { textureInfos.map( ( textureInfo, i ) => (
+          <Texture
+            key={ i }
+            textureInfo={ textureInfo }
+          />
+        ) ) }
+      </div>
+    </>
+  );
+};
+
+const LoadButtonStuff = (): JSX.Element => {
+  const { inspector } = useContext( InspectorContext );
+  const texturesPlugin = inspector.texturesPlugin;
+
+  const onClick = (): void => {
+    texturesPlugin.loadTextureInfos();
+  };
+
+  return (
+    <div className="flex flex-col gap-2 items-center justify-center h-full">
+      <button
+        className="px-2 py-1 bg-gray-700 rounded"
+        onClick={ onClick }
+      >
+        Load texture infos
+      </button>
+      <span className="text-xs text-gray-300">(Might consume extra VRAMs, idk why)</span>
+    </div>
+  );
+};
+
+// == element ======================================================================================
+export const TexturesPane = ( params: PaneParams ): JSX.Element => {
+  const textureInfos = useAtomValue( textureInfosAtom );
+
+  return (
     <Pane { ...params }>
       <PaneRoot
         className="w-80 h-96 overflow-y-scroll resize"
       >
-        <div>Textures count: { count }</div>
-        <div>Total size: { bytesToDisplayBytes( totalBytes ) }</div>
-        <div>Total pixels: { totalPixelsDisplay }</div>
-
-        <Hr />
-
-        { textureInfos != null && (
-          <div className="flex flex-col gap-1">
-            { textureInfos.map( ( textureInfo, i ) => (
-              <Texture
-                key={ i }
-                textureInfo={ textureInfo }
-              />
-            ) ) }
-          </div>
-        ) }
+        {textureInfos != null && <TexturesInfo textureInfos={textureInfos} />}
+        {textureInfos == null && <LoadButtonStuff />}
       </PaneRoot>
     </Pane>
   );

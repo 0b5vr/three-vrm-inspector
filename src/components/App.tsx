@@ -2,10 +2,12 @@ import { InspectorContext } from '../InspectorContext';
 import { PaneList } from './PaneList';
 import { ProgressBar } from './ProgressBar';
 import { useCallback, useContext } from 'react';
+import { useInspectorSubscribers } from '../stores/hooks/useInspectorSubscribers';
 
 // == element ======================================================================================
 const OutOfContextApp = (): JSX.Element => {
   const { inspector } = useContext( InspectorContext );
+  useInspectorSubscribers( inspector );
 
   const canvas = useCallback( ( canvas: HTMLCanvasElement ) => {
     if ( canvas ) {
