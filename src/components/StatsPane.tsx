@@ -1,27 +1,27 @@
-import { InspectorContext } from '../InspectorContext';
 import { NameValueEntry } from './NameValueEntry';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
-import { useContext } from 'react';
+import { statsAtom } from '../stores/atoms/statsAtom';
+import { useAtomValue } from 'jotai';
 
 // == element ======================================================================================
 export const StatsPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
+  const stats = useAtomValue( statsAtom );
 
-  const dim = inspector.stats?.dimension.map( ( v ) => v.toFixed( 3 ) );
+  const dim = stats?.dimension.map( ( v ) => v.toFixed( 3 ) );
   const dimText = `( ${ dim?.[ 0 ] ?? 0.0 }, ${ dim?.[ 1 ] ?? 0.0 }, ${ dim?.[ 2 ] ?? 0.0 } )`;
 
   return (
     <Pane { ...params }>
       <PaneRoot>
         <NameValueEntry name="Dimension" value={ dimText } />
-        <NameValueEntry name="Vertices" value={ inspector.stats?.vertices } />
-        <NameValueEntry name="Polygons" value={ inspector.stats?.polygons } />
-        <NameValueEntry name="Meshes" value={ inspector.stats?.meshes } />
-        <NameValueEntry name="Primitives" value={ inspector.stats?.primitives } />
-        <NameValueEntry name="Textures" value={ inspector.stats?.textures } />
-        <NameValueEntry name="Materials" value={ inspector.stats?.materials } />
-        <NameValueEntry name="Spring Bone Joints" value={ inspector.stats?.joints } />
+        <NameValueEntry name="Vertices" value={ stats?.vertices } />
+        <NameValueEntry name="Polygons" value={ stats?.polygons } />
+        <NameValueEntry name="Meshes" value={ stats?.meshes } />
+        <NameValueEntry name="Primitives" value={ stats?.primitives } />
+        <NameValueEntry name="Textures" value={ stats?.textures } />
+        <NameValueEntry name="Materials" value={ stats?.materials } />
+        <NameValueEntry name="Spring Bone Joints" value={ stats?.joints } />
       </PaneRoot>
     </Pane>
   );

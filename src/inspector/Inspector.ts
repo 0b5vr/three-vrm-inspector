@@ -14,6 +14,7 @@ import { InspectorLookAtBallPlugin } from './plugins/InspectorLookAtBallPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
 import { InspectorModel } from './InspectorModel';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
+import { InspectorStatsPlugin } from './plugins/InspectorStatsPlugin';
 import { InspectorTexturesPlugin } from './plugins/InspectorTexturesPlugin';
 import { InspectorVisualizeWeightPlugin } from './plugins/InspectorVisualizeWeightPlugin';
 import { InspectorWebGLMemoryPlugin } from './plugins/InspectorWebGLMemoryPlugin';
@@ -32,9 +33,6 @@ import cubemapYp from '../assets/cubemap/yp.jpg';
 import cubemapZn from '../assets/cubemap/zn.jpg';
 import cubemapZp from '../assets/cubemap/zp.jpg';
 import type { InspectorPlugin } from './plugins/InspectorPlugin';
-import type { InspectorStats } from './InspectorStats';
-
-const _v3A = new THREE.Vector3();
 
 CameraControls.install( { THREE } );
 
@@ -48,6 +46,7 @@ export class Inspector {
   public readonly lookAtPlugin: InspectorLookAtPlugin;
   public readonly lookAtBallPlugin: InspectorLookAtBallPlugin;
   public readonly postProcessingPlugin: InspectorPostProcessingPlugin;
+  public readonly statsPlugin: InspectorStatsPlugin;
   public readonly texturesPlugin: InspectorTexturesPlugin;
   public readonly visualizeWeightPlugin: InspectorVisualizeWeightPlugin;
   public readonly webglMemoryPlugin: InspectorWebGLMemoryPlugin;
@@ -57,7 +56,6 @@ export class Inspector {
   private _renderer?: THREE.WebGLRenderer;
   private _composer?: EffectComposer;
   private _model?: InspectorModel | null;
-  private _stats: InspectorStats | null = null;
   private _dracoLoader: DRACOLoader;
   private _ktx2Loader: KTX2Loader;
   private _loader: GLTFLoader;
@@ -72,7 +70,6 @@ export class Inspector {
   public get renderer(): THREE.WebGLRenderer | undefined { return this._renderer; }
   public get composer(): EffectComposer | undefined { return this._composer; }
   public get model(): InspectorModel | null { return this._model ?? null; }
-  public get stats(): InspectorStats | null { return this._stats; }
   public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
   public get layerMode(): 'firstPerson' | 'thirdPerson' { return this._layerMode; }
 
@@ -129,6 +126,7 @@ export class Inspector {
     this.lookAtPlugin = new InspectorLookAtPlugin( this );
     this.lookAtBallPlugin = new InspectorLookAtBallPlugin( this );
     this.postProcessingPlugin = new InspectorPostProcessingPlugin( this );
+    this.statsPlugin = new InspectorStatsPlugin( this );
     this.texturesPlugin = new InspectorTexturesPlugin( this );
     this.visualizeWeightPlugin = new InspectorVisualizeWeightPlugin( this );
     this.webglMemoryPlugin = new InspectorWebGLMemoryPlugin( this );
@@ -142,6 +140,7 @@ export class Inspector {
       this.lookAtPlugin,
       this.lookAtBallPlugin,
       this.postProcessingPlugin,
+      this.statsPlugin,
       this.texturesPlugin,
       this.visualizeWeightPlugin,
       this.webglMemoryPlugin,
@@ -194,8 +193,6 @@ export class Inspector {
     if ( vrm == null ) {
       console.warn( 'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF' );
     }
-
-    this._stats = await this._prepareStats( gltf, vrm );
 
     const scene = ( vrm?.scene ?? gltf.scene ) as THREE.Group;
     this._scene.add( scene );
@@ -345,64 +342,6 @@ export class Inspector {
     }
   }
 
-  private async _prepareStats(
-    gltf: GLTF,
-    vrm: VRM | null,
-  ): Promise<InspectorStats | null> {
-    const dimensionBox = new THREE.Box3();
-    const positionBuffers = new Set<THREE.BufferAttribute>();
-    let nMeshes = 0;
-    let nPrimitives = 0;
-    let nPolygons = 0;
-
-    const processMesh = ( mesh: THREE.Mesh ): void => {
-      nPrimitives ++;
-
-      const geometry = mesh.geometry as THREE.BufferGeometry;
-      dimensionBox.expandByObject( mesh );
-      const buffer = geometry.getAttribute( 'position' ) as THREE.BufferAttribute;
-      positionBuffers.add( buffer );
-      nPolygons += ( geometry.index?.count ?? buffer.count ) / 3;
-    };
-
-    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> = await gltf.parser.getDependencies( 'mesh' );
-    meshes.forEach( ( meshOrGroup ) => {
-      nMeshes ++;
-
-      if ( meshOrGroup instanceof THREE.Mesh ) {
-        processMesh( meshOrGroup );
-      } else {
-        meshOrGroup.children.forEach( ( child ) => {
-          // mesh descendants might have joints
-          if ( child instanceof THREE.Mesh ) {
-            processMesh( child );
-          }
-        } );
-      }
-    } );
-
-    let nVertices = 0;
-    for ( const buffer of positionBuffers ) {
-      nVertices += buffer.count;
-    }
-
-    const textures: Array<THREE.Material> = await gltf.parser.getDependencies( 'texture' );
-    const materials: Array<THREE.Material> = await gltf.parser.getDependencies( 'material' );
-
-    const nJoints = vrm?.springBoneManager?.joints?.size ?? 0;
-
-    return {
-      dimension: dimensionBox.getSize( _v3A ).toArray(),
-      vertices: nVertices,
-      polygons: nPolygons,
-      meshes: nMeshes,
-      primitives: nPrimitives,
-      textures: textures.length,
-      materials: materials.length,
-      joints: nJoints,
-    };
-  }
-
   private _requestEnvMap(): Promise<THREE.CubeTexture> {
     // envmap
     const envMapUrl = [
@@ -446,7 +385,6 @@ export class Inspector {
 
 export interface InspectorEvents {
   load: InspectorModel | null;
-  updateStats: InspectorStats;
   unload: void;
   progress: ProgressEvent;
   error: any;
