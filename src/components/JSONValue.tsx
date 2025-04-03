@@ -58,6 +58,14 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
     [ setIsHovering, leaveCallback ]
   );
 
+  const handleClickCopy = useCallback(
+    () => {
+      const text = JSON.stringify( value, null, 2 );
+      navigator.clipboard.writeText( text );
+    },
+    [ value ]
+  );
+
   const isArray = Array.isArray( value );
   const isNull = value == null;
   const isNumber = typeof value === 'number';
@@ -73,7 +81,7 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
   };
 
   return (
-    <div className="select-auto">
+    <div className="select-auto group">
       <span
         className={ `cursor-pointer ${ isHovering && 'text-sky-500' }` }
         { ...interactableProps }
@@ -136,6 +144,12 @@ export const JSONValue = ( { name, value, fullPath = '' }: JSONValueProps ): JSX
       { isString && <>
         <span className="text-yellow-300" { ...interactableProps }>&quot;{ value }&quot;</span>
       </> }
+
+      <button
+        className={`pl-1 ${isHovering ? 'opacity-40' : 'opacity-0'} hover:opacity-100`}
+        { ...interactableProps }
+        onClick={handleClickCopy}
+      >📋</button>
     </div>
   );
 };
