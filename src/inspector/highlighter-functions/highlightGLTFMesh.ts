@@ -3,7 +3,28 @@ import { HighlighterRuleFunction } from '../Highlighter';
 import { gltfExtractPrimitivesFromNode } from '../../utils/gltfExtractPrimitivesFromNode';
 import { highlightMeshes } from '../utils/highlightMeshes';
 
-export const highlightGLTFMesh: HighlighterRuleFunction = ( { index }, { gltf, json } ) => {
+function createBoxFromMeshes( meshes: THREE.Mesh[] ): THREE.Box3 {
+  const box = new THREE.Box3();
+  for ( const mesh of meshes ) {
+    box.expandByObject( mesh );
+  }
+  return box;
+}
+
+function highlightBox( box: THREE.Box3, scene: THREE.Scene ): () => void {
+  const boxHelper = new THREE.Box3Helper( box, '#ff0000' );
+  scene.add( boxHelper );
+
+  return () => {
+    scene.remove( boxHelper );
+    boxHelper.dispose();
+  };
+}
+
+export const highlightGLTFMesh: HighlighterRuleFunction = (
+  { index },
+  { gltf, json, inspector },
+) => {
   const indexNum = parseInt( index, 10 );
   let callback: ( () => void ) | undefined;
 
@@ -19,8 +40,14 @@ export const highlightGLTFMesh: HighlighterRuleFunction = ( { index }, { gltf, j
     return gltfExtractPrimitivesFromNode( gltf, nodeIndex ) as Promise<THREE.Mesh[]>;
   } ) ).then( ( result ) => result.flat() );
 
-  promisePrimitives.then( ( primitives ) => {
-    callback = highlightMeshes( primitives );
+  promisePrimitives.then( ( primitives: THREE.Mesh[] ) => {
+    const callbackMeshes = highlightMeshes( primitives );
+    const callbackBox = highlightBox( createBoxFromMeshes( primitives ), inspector.scene );
+
+    callback = () => {
+      callbackMeshes();
+      callbackBox();
+    };
   } );
 
   return () => {
