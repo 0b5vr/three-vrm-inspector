@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-key */
-
 import { AboutPane } from './AboutPane';
 import { AnimationsPane } from './AnimationsPane';
 import { ExportBufferViewPane } from './ExportBufferViewPane';
