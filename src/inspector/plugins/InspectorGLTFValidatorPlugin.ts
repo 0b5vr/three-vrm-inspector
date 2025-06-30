@@ -38,10 +38,6 @@ export class InspectorGLTFValidatorPlugin implements InspectorPlugin {
     return validationReport;
   }
 
-  public handleAfterLoad(): void {
-    this.validate();
-  }
-
   public handleAfterUnload(): void {
     this.__validationReport = null;
   }
