@@ -16,5 +16,5 @@ export const Colors = {
 
   constant: '#ff0066',
   number: '#8a8aff',
-  string: '#f7f025'
+  string: '#f7f025',
 };

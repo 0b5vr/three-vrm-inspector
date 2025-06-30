@@ -15,7 +15,7 @@ export interface ValidationReport {
    * An object containing various metrics about the validated asset. May be undefined for
    * invalid inputs.
    */
-  info?:  Info;
+  info?: Info;
 
   issues: Issues;
 
@@ -65,7 +65,7 @@ export interface Info {
    */
   minVersion?: string;
 
-  resources?:  Resource[];
+  resources?: Resource[];
 
   /**
    * The glTF version that this asset targets.
@@ -82,13 +82,13 @@ export interface Resource {
   /**
    * Image-specific metadata.
    */
-  image?:    Image;
+  image?: Image;
 
   mimeType?: string;
 
-  pointer?:  string;
+  pointer?: string;
 
-  storage?:  any;
+  storage?: any;
 
   /**
    * URI. Defined only for external resources.
@@ -100,12 +100,12 @@ export interface Resource {
  * Image-specific metadata.
  */
 export interface Image {
-  bits?:      number;
-  format?:    Format;
-  height:     number;
+  bits?: number;
+  format?: Format;
+  height: number;
   primaries?: Primaries;
-  transfer?:  Transfer;
-  width:      number;
+  transfer?: Transfer;
+  width: number;
 }
 
 export enum Format {
@@ -127,10 +127,10 @@ export enum Transfer {
 }
 
 export interface Issues {
-  messages:    MessageObject[];
-  numErrors:   number;
-  numHints:    number;
-  numInfos:    number;
+  messages: MessageObject[];
+  numErrors: number;
+  numHints: number;
+  numInfos: number;
   numWarnings: number;
 
   /**
@@ -140,7 +140,7 @@ export interface Issues {
 }
 
 export interface MessageObject {
-  code:    string;
+  code: string;
   message: string;
 
   /**

@@ -17,15 +17,15 @@ export const highlightVRM0HumanBone: HighlighterRuleFunction = (
   { index },
   { inspector, json },
 ) => {
-  const indexNum = parseInt( index, 10 );
+  const indexNum = parseInt(index, 10);
 
   const schemaVRM = json.extensions!.VRM as V0VRM.VRM;
-  const v0BoneName = schemaVRM.humanoid!.humanBones![ indexNum ].bone!;
+  const v0BoneName = schemaVRM.humanoid!.humanBones![indexNum].bone!;
   const boneName
-    = thumbBoneNameMap[ v0BoneName ] ?? v0BoneName as V1VRMSchema.HumanoidHumanBoneName;
+    = thumbBoneNameMap[v0BoneName] ?? v0BoneName as V1VRMSchema.HumanoidHumanBoneName;
 
   const humanoid = inspector.model!.vrm!.humanoid!;
-  const bone = humanoid.getRawBoneNode( boneName )!;
+  const bone = humanoid.getRawBoneNode(boneName)!;
 
-  return highlightNodes( [ bone ] );
+  return highlightNodes([bone]);
 };

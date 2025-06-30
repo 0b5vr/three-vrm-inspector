@@ -24,7 +24,7 @@ export interface WebGLMemoryInfo {
      * bytes used in total
      */
     total: number;
-  },
+  };
   resources: {
     /**
      * count of buffers
@@ -76,5 +76,5 @@ export interface WebGLMemoryInfo {
      * count of vertexArrays, only if used or WebGL2
      */
     vertexArray: number;
-  }
+  };
 }

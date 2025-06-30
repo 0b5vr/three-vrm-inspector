@@ -9,61 +9,61 @@ export interface PaneParams {
   initOpening?: boolean;
   children?: React.ReactNode;
   paneKey: string;
-  onClick: ( event: React.MouseEvent, paneKey: string ) => void;
+  onClick: (event: React.MouseEvent, paneKey: string) => void;
   className?: string;
 }
 
 // == element ======================================================================================
-const Pane: React.FC<PaneParams> = ( params ) => {
-  const [ position, setPosition ] = useState( params.initPosition ?? {
+const Pane: React.FC<PaneParams> = (params) => {
+  const [position, setPosition] = useState(params.initPosition ?? {
     left: 0,
     top: 0,
-  } );
-  const [ isOpening, setOpening ] = useState( params.initOpening ?? false );
+  });
+  const [isOpening, setOpening] = useState(params.initOpening ?? false);
   const whenDoubleClick = useDoubleClick();
 
   const handleMouseDown = useCallback(
-    ( event: React.MouseEvent ) => {
-      params.onClick?.( event, params.paneKey );
+    (event: React.MouseEvent) => {
+      params.onClick?.(event, params.paneKey);
     },
-    [ params.onClick, params.paneKey ]
+    [params.onClick, params.paneKey],
   );
 
   const handleMouseDownTitleBar = useCallback(
-    ( event: React.MouseEvent ) => {
+    (event: React.MouseEvent) => {
       event.preventDefault();
 
       let left = position.left;
       let top = position.top;
 
       registerMouseEvent(
-        ( event, movementSum ) => {
+        (event, movementSum) => {
           event.preventDefault();
           event.stopPropagation();
 
           left += movementSum.x;
           top += movementSum.y;
 
-          setPosition( { left, top } );
+          setPosition({ left, top });
         },
       );
 
-      whenDoubleClick( () => {
-        setOpening( !isOpening );
-      } );
+      whenDoubleClick(() => {
+        setOpening(!isOpening);
+      });
     },
-    [ isOpening, position ]
+    [isOpening, position],
   );
 
   const handleMouseDownExpand = useCallback(
-    ( event: React.MouseEvent ) => {
+    (event: React.MouseEvent) => {
       event.preventDefault();
       event.stopPropagation();
 
-      params.onClick?.( event, params.paneKey );
-      setOpening( !isOpening );
+      params.onClick?.(event, params.paneKey);
+      setOpening(!isOpening);
     },
-    [ isOpening, params.onClick, params.paneKey ]
+    [isOpening, params.onClick, params.paneKey],
   );
 
   return (
@@ -72,24 +72,24 @@ const Pane: React.FC<PaneParams> = ( params ) => {
         left: position.left,
         top: position.top,
         minWidth: '15rem',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 1.0)'
+        boxShadow: '0 0 10px rgba(0, 0, 0, 1.0)',
       }}
-      className={ `absolute shadow ${ params.className }` }
-      onMouseDown={ handleMouseDown }
+      className={`absolute shadow ${params.className}`}
+      onMouseDown={handleMouseDown}
     >
       <div // title bar
         className="h-5 leading-5 w-full bg-gray-700 cursor-move"
-        onMouseDown={ handleMouseDownTitleBar }
+        onMouseDown={handleMouseDownTitleBar}
       >
         <div // plus
           className="inline-block w-5 h-5 text-center cursor-pointer hover:text-sky-500"
-          onMouseDown={ handleMouseDownExpand }
+          onMouseDown={handleMouseDownExpand}
         >
           { isOpening ? '-' : '+' }
         </div>
         { params.title }
       </div>
-      { isOpening && ( params.children ?? null ) }
+      { isOpening && (params.children ?? null) }
     </div>
   );
 };

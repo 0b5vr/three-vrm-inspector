@@ -21,7 +21,7 @@ export interface InspectorTexturesPluginInfo {
   promiseBlob: Promise<Blob>;
 }
 
-const fsqMaterial = new THREE.ShaderMaterial( {
+const fsqMaterial = new THREE.ShaderMaterial({
   uniforms: {
     tDiffuse: { value: null },
   },
@@ -39,9 +39,9 @@ const fsqMaterial = new THREE.ShaderMaterial( {
       gl_FragColor = texture2D( tDiffuse, vUv );
     }
   `,
-} );
+});
 
-const fsq = new FullScreenQuad( fsqMaterial );
+const fsq = new FullScreenQuad(fsqMaterial);
 
 function textureToBlob(
   renderer: THREE.WebGLRenderer,
@@ -49,32 +49,34 @@ function textureToBlob(
   width: number,
   height: number,
 ): Promise<Blob> {
-  return new Promise( ( resolve, reject ) => {
-    renderer.getSize( _v2A );
+  return new Promise((resolve, reject) => {
+    renderer.getSize(_v2A);
 
-    renderer.setSize( width, height );
+    renderer.setSize(width, height);
     renderer.clear();
 
     fsqMaterial.uniforms.tDiffuse.value = texture;
-    fsq.render( renderer );
+    fsq.render(renderer);
 
-    renderer.domElement.toBlob( ( blob ) => {
-      if ( blob != null ) {
-        resolve( blob );
+    renderer.domElement.toBlob((blob) => {
+      if (blob != null) {
+        resolve(blob);
       } else {
-        reject( 'Failed to convert texture to blob.' );
+        reject('Failed to convert texture to blob.');
       }
-    }, 'image/png' );
+    }, 'image/png');
 
-    renderer.setSize( _v2A.x, _v2A.y );
-  } );
+    renderer.setSize(_v2A.x, _v2A.y);
+  });
 }
 
 interface InspectorTexturesPluginEvents {
   updateTextureInfos: { textureInfos: InspectorTexturesPluginInfo[] | null };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
 export interface InspectorTexturesPlugin extends EventEmittable<InspectorTexturesPluginEvents> {}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class InspectorTexturesPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
@@ -85,7 +87,7 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
     return this.__textureInfos;
   }
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this.inspector = inspector;
 
     this.__textureInfos = null;
@@ -94,22 +96,22 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
 
   public loadTextureInfos(): void {
     const parser = this.inspector.model?.gltf?.parser;
-    if ( !parser ) { return; }
+    if (!parser) { return; }
 
-    parser.getDependencies( 'texture' ).then( ( textures: THREE.Texture[] ) => {
-      this.__texturesToDeleteAfterUnload.push( ...textures );
+    parser.getDependencies('texture').then((textures: THREE.Texture[]) => {
+      this.__texturesToDeleteAfterUnload.push(...textures);
 
-      const textureInfos = textures.map( ( texture, iTexture ) => {
+      const textureInfos = textures.map((texture, iTexture) => {
         const image = texture.image;
 
         const iImage: number | undefined
-          = parser.json.textures[ iTexture ].extensions?.[ 'KHR_texture_basisu' ]?.source
-            ?? parser.json.textures[ iTexture ].source;
+          = parser.json.textures[iTexture].extensions?.['KHR_texture_basisu']?.source
+            ?? parser.json.textures[iTexture].source;
         const iBufferView: number | undefined = iImage != null
-          ? parser.json.images[ iImage ].bufferView
+          ? parser.json.images[iImage].bufferView
           : undefined;
         const byteLength: number | undefined = iBufferView != null
-          ? parser.json.bufferViews[ iBufferView ].byteLength
+          ? parser.json.bufferViews[iBufferView].byteLength
           : undefined;
 
         const promiseBlob = textureToBlob(
@@ -132,21 +134,21 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
           texture,
           promiseBlob,
         };
-      } );
+      });
 
       this.__textureInfos = textureInfos;
-      this._emit( 'updateTextureInfos', { textureInfos } );
-    } );
+      this._emit('updateTextureInfos', { textureInfos });
+    });
   }
 
   public handleAfterUnload(): void {
     this.__textureInfos = null;
-    this._emit( 'updateTextureInfos', { textureInfos: null } );
+    this._emit('updateTextureInfos', { textureInfos: null });
 
-    for ( const textures of this.__texturesToDeleteAfterUnload ) {
+    for (const textures of this.__texturesToDeleteAfterUnload) {
       textures.dispose();
     }
   }
 }
 
-applyMixins( InspectorTexturesPlugin, [ EventEmittable ] );
+applyMixins(InspectorTexturesPlugin, [EventEmittable]);

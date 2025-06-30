@@ -2,18 +2,18 @@ import { Colors } from '../constants/Colors';
 import React, { useCallback, useState } from 'react';
 
 // == microcomponents ==============================================================================
-const Message: React.FC = ( { children } ) => (
-  <div style={ { marginLeft: '1.13em' } }>{ children }</div>
+const Message: React.FC = ({ children }) => (
+  <div style={{ marginLeft: '1.13em' }}>{ children }</div>
 );
 
 // == element ======================================================================================
-export const ValidationReportIssue = ( props: {
+export const ValidationReportIssue = (props: {
   code: string;
   message: string;
   severity: number;
   pointer?: string;
-} ): JSX.Element => {
-  const [ isOpening, setOpening ] = useState( false );
+}): JSX.Element => {
+  const [isOpening, setOpening] = useState(false);
 
   const color = props.severity === 0
     ? Colors.error
@@ -23,15 +23,15 @@ export const ValidationReportIssue = ( props: {
 
   const handleClick = useCallback(
     () => {
-      setOpening( !isOpening );
+      setOpening(!isOpening);
     },
-    [ isOpening ]
+    [isOpening],
   );
 
   return (
-    <div className="group cursor-pointer" onClick={ handleClick }>
+    <div className="group cursor-pointer" onClick={handleClick}>
       <span className="group-hover:text-sky-500">{ isOpening ? '- ' : '+ ' }</span>
-      <span style={ { color } }>{ props.code }</span>
+      <span style={{ color }}>{ props.code }</span>
       <span className="text-gray-500">{ ' - ' + props.pointer }</span>
       { isOpening && <Message>{ props.message }</Message> }
     </div>

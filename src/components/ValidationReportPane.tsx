@@ -41,7 +41,7 @@ function useValidator() {
     validate,
     validationReport,
     isValidating,
-  }
+  };
 }
 
 // == microcomponents ==============================================================================
@@ -88,7 +88,11 @@ const TruncatedIssuesNotice: React.FC<{
 
   return (
     <div className="m-1 font-bold">
-      There are too many issues! Showing only {issues.messages.length} entries.
+      There are too many issues! Showing only
+      {' '}
+      {issues.messages.length}
+      {' '}
+      entries.
       <span
         onClick={onSeeMore}
         className="pl-2 text-sky-500 font-bold cursor-pointer"
@@ -137,28 +141,32 @@ export const ValidationReportPane = (params: PaneParams): JSX.Element => {
           value={<ReportCount count={issues?.numHints} colorClass="text-sky-500" />}
         />
         <Hr />
-        {isValidating ? (
-          <div className="flex items-center justify-center py-4">
-            <div className="text-gray-500">Validating...</div>
-          </div>
-        ) : !validationReport ? (
-          <div className="flex items-center justify-center py-4">
-            <button
-              className="px-2 py-1 bg-gray-700 rounded"
-              onClick={handleClickValidate}
-            >
-              Validate
-            </button>
-          </div>
-        ) : (
-          <>
-            <TruncatedIssuesNotice
-              issues={issues}
-              onSeeMore={handleClickSeeMore}
-            />
-            <ValidationIssuesList issues={issues} />
-          </>
-        )}
+        {isValidating
+          ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="text-gray-500">Validating...</div>
+              </div>
+            )
+          : !validationReport
+              ? (
+                  <div className="flex items-center justify-center py-4">
+                    <button
+                      className="px-2 py-1 bg-gray-700 rounded"
+                      onClick={handleClickValidate}
+                    >
+                      Validate
+                    </button>
+                  </div>
+                )
+              : (
+                  <>
+                    <TruncatedIssuesNotice
+                      issues={issues}
+                      onSeeMore={handleClickSeeMore}
+                    />
+                    <ValidationIssuesList issues={issues} />
+                  </>
+                )}
       </PaneRoot>
     </Pane>
   );

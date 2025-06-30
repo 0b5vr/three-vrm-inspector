@@ -11,20 +11,20 @@ export class InspectorCameraControlsPlugin implements InspectorPlugin {
     return this._controls;
   }
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this.inspector = inspector;
   }
 
   public handleAfterSetup(): void {
     const { camera, canvas } = this.inspector;
 
-    this._controls = new CameraControls( camera, canvas! );
-    this._controls.setTarget( 0.0, 1.0, 0.0 );
+    this._controls = new CameraControls(camera, canvas!);
+    this._controls.setTarget(0.0, 1.0, 0.0);
   }
 
-  public handleBeforeRender( delta: number ): void {
-    if ( this._controls ) {
-      this._controls.update( delta );
+  public handleBeforeRender(delta: number): void {
+    if (this._controls) {
+      this._controls.update(delta);
     }
   }
 }

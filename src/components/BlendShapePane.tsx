@@ -27,47 +27,51 @@ const presets: VRMExpressionPresetName[] = [
   'lookDown',
   'lookUp',
 ];
-const presetSet: Set<string> = new Set( presets );
+const presetSet: Set<string> = new Set(presets);
 
 // == element ======================================================================================
-export const ExpressionsPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
+export const ExpressionsPane = (params: PaneParams): JSX.Element => {
+  const { inspector } = useContext(InspectorContext);
 
   const expressionManager = inspector.model?.vrm?.expressionManager;
   const expressionMap = expressionManager?.expressionMap;
 
   const customNames: string[] = [];
-  if ( expressionMap ) {
-    Array.from( Object.keys( expressionMap ) ).forEach( ( name ) => {
-      if ( !presetSet.has( name ) ) {
-        customNames.push( name );
+  if (expressionMap) {
+    Array.from(Object.keys(expressionMap)).forEach((name) => {
+      if (!presetSet.has(name)) {
+        customNames.push(name);
       }
-    } );
+    });
   }
 
-  const hasUnknowns = ( customNames?.length ?? 0 ) >= 1;
+  const hasUnknowns = (customNames?.length ?? 0) >= 1;
 
   return (
-    <Pane { ...params }>
+    <Pane {...params}>
       <PaneRoot>
-        { expressionManager ? <>
-          { presets.map( ( name ) => (
-            <BlendShapeRow
-              key={ name }
-              name={ name }
-              isAvailable={ expressionManager?.getExpression( name ) != null }
-            />
-          ) ) }
-          <Hr />
-          { customNames?.map( ( name ) => (
-            <BlendShapeRow
-              key={ name }
-              name={ name }
-              isAvailable={ true }
-            />
-          ) ) }
-          { !hasUnknowns && <span className="text-gray-500">(No custom expressions)</span> }
-        </> : 'No Expressions / BlendShapeProxy detected.' }
+        { expressionManager
+          ? (
+              <>
+                { presets.map((name) => (
+                  <BlendShapeRow
+                    key={name}
+                    name={name}
+                    isAvailable={expressionManager?.getExpression(name) != null}
+                  />
+                )) }
+                <Hr />
+                { customNames?.map((name) => (
+                  <BlendShapeRow
+                    key={name}
+                    name={name}
+                    isAvailable={true}
+                  />
+                )) }
+                { !hasUnknowns && <span className="text-gray-500">(No custom expressions)</span> }
+              </>
+            )
+          : 'No Expressions / BlendShapeProxy detected.' }
       </PaneRoot>
     </Pane>
   );

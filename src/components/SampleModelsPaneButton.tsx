@@ -1,17 +1,19 @@
 import { InspectorContext } from '../InspectorContext';
 import { useCallback, useContext } from 'react';
 
-export const SampleModelsPaneButton = ( { name, url }: {
+export const SampleModelsPaneButton = ({ name, url }: {
   name: string;
   url: string;
-} ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
+}): JSX.Element => {
+  const { inspector } = useContext(InspectorContext);
 
-  const load = useCallback( () => {
-    inspector.loadVRM( url );
-  }, [ inspector ] );
+  const load = useCallback(() => {
+    inspector.loadVRM(url);
+  }, [inspector]);
 
-  return <button value={ name } className="bg-gray-800 border border-gray-500 px-1 py-0 block" onClick={ load }>
-    { name }
-  </button>;
+  return (
+    <button value={name} className="bg-gray-800 border border-gray-500 px-1 py-0 block" onClick={load}>
+      { name }
+    </button>
+  );
 };

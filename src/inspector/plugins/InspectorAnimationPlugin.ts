@@ -17,13 +17,14 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
   public animationChangeObservers: Set<
-    ( animation: InspectorAnimationPluginAnimation | null ) => void
+    (animation: InspectorAnimationPluginAnimation | null) => void
   >;
+
   public animationUpdateObservers: Set<
-    ( event: {
+    (event: {
       time: number;
       duration: number;
-    } ) => void
+    }) => void
   >;
 
   private _currentLookAtQuatProxy?: VRMLookAtQuaternionProxy | null;
@@ -31,28 +32,28 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
   private _currentAnimationAction?: THREE.AnimationAction | null;
   private _currentAnimation?: InspectorAnimationPluginAnimation | null;
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this.inspector = inspector;
 
     this.animationChangeObservers = new Set();
     this.animationUpdateObservers = new Set();
   }
 
-  public handleAfterLoad( model: InspectorModel ): void {
+  public handleAfterLoad(model: InspectorModel): void {
     const vrm = model.vrm;
-    if ( vrm == null ) { return; }
+    if (vrm == null) { return; }
 
     const lookAt = vrm.lookAt;
-    if ( lookAt != null ) {
-      this._currentLookAtQuatProxy = new VRMLookAtQuaternionProxy( lookAt as any );
+    if (lookAt != null) {
+      this._currentLookAtQuatProxy = new VRMLookAtQuaternionProxy(lookAt as any);
       this._currentLookAtQuatProxy.name = 'lookAtQuaternionProxy';
-      vrm.scene.add( this._currentLookAtQuatProxy );
+      vrm.scene.add(this._currentLookAtQuatProxy);
     }
 
-    this._currentAnimationMixer = new THREE.AnimationMixer( vrm.scene );
+    this._currentAnimationMixer = new THREE.AnimationMixer(vrm.scene);
 
-    if ( this._currentAnimation != null ) {
-      this.loadAnimation( this._currentAnimation );
+    if (this._currentAnimation != null) {
+      this.loadAnimation(this._currentAnimation);
     }
   }
 
@@ -61,115 +62,115 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     this._currentAnimationMixer = null;
   }
 
-  public handleBeforeRender( delta: number ): void {
-    if ( this._currentAnimationMixer != null ) {
-      this._currentAnimationMixer.update( delta );
+  public handleBeforeRender(delta: number): void {
+    if (this._currentAnimationMixer != null) {
+      this._currentAnimationMixer.update(delta);
 
       const time = this._currentAnimationAction?.time ?? 0.0;
       const duration = this._currentAnimationAction?.getClip().duration ?? 0.0;
-      notifyObservers( this.animationUpdateObservers, { time, duration } );
+      notifyObservers(this.animationUpdateObservers, { time, duration });
     }
   }
 
-  public async loadAnimation( animation: InspectorAnimationPluginAnimation ): Promise<void> {
-    if ( animation.type === 'vrma' ) {
-      await this._loadVRMAnimation( animation.url );
-    } else if ( animation.type === 'mixamo' ) {
-      await this._loadMixamoAnimation( animation.url );
+  public async loadAnimation(animation: InspectorAnimationPluginAnimation): Promise<void> {
+    if (animation.type === 'vrma') {
+      await this._loadVRMAnimation(animation.url);
+    } else if (animation.type === 'mixamo') {
+      await this._loadMixamoAnimation(animation.url);
     }
 
     this._currentAnimation = animation;
-    notifyObservers( this.animationChangeObservers, animation );
+    notifyObservers(this.animationChangeObservers, animation);
   }
 
   public clearAnimation(): void {
     const vrm = this.inspector.model?.vrm;
-    if ( !vrm ) { return; }
+    if (!vrm) { return; }
 
     const action = this._currentAnimationAction;
-    if ( !action ) { return; }
+    if (!action) { return; }
 
     action.stop();
     this._currentAnimationAction = null;
 
     this._currentAnimation = null;
-    notifyObservers( this.animationChangeObservers, null );
+    notifyObservers(this.animationChangeObservers, null);
 
     this._resetTargets();
   }
 
   public play(): void {
     const action = this._currentAnimationAction;
-    if ( !action ) { return; }
+    if (!action) { return; }
 
     action.paused = false;
   }
 
   public pause(): void {
     const action = this._currentAnimationAction;
-    if ( !action ) { return; }
+    if (!action) { return; }
 
     action.paused = true;
   }
 
   public rewind(): void {
     const action = this._currentAnimationAction;
-    if ( !action ) { return; }
+    if (!action) { return; }
 
     action.time = 0;
   }
 
-  private async _loadVRMAnimation( url: string ): Promise<void> {
+  private async _loadVRMAnimation(url: string): Promise<void> {
     const vrm = this.inspector.model?.vrm;
-    if ( !vrm ) { return; }
+    if (!vrm) { return; }
 
     const mixer = this._currentAnimationMixer;
-    if ( !mixer ) { return; }
+    if (!mixer) { return; }
 
-    if ( this._currentAnimationAction != null ) {
+    if (this._currentAnimationAction != null) {
       this.clearAnimation();
     }
 
-    const clip = await loadVRMAniamtion( url, vrm );
+    const clip = await loadVRMAniamtion(url, vrm);
 
-    this._currentAnimationAction = mixer.clipAction( clip );
+    this._currentAnimationAction = mixer.clipAction(clip);
     this._currentAnimationAction.play();
   }
 
-  private async _loadMixamoAnimation( url: string ): Promise<void> {
+  private async _loadMixamoAnimation(url: string): Promise<void> {
     const vrm = this.inspector.model?.vrm;
-    if ( !vrm ) { return; }
+    if (!vrm) { return; }
 
     const mixer = this._currentAnimationMixer;
-    if ( !mixer ) { return; }
+    if (!mixer) { return; }
 
-    if ( this._currentAnimationAction != null ) {
+    if (this._currentAnimationAction != null) {
       this.clearAnimation();
     } else {
       this._resetTargets();
     }
 
-    const clip = await loadMixamoAnimation( url, vrm );
+    const clip = await loadMixamoAnimation(url, vrm);
 
-    if ( clip ) {
-      this._currentAnimationAction = mixer.clipAction( clip );
+    if (clip) {
+      this._currentAnimationAction = mixer.clipAction(clip);
       this._currentAnimationAction.play();
     }
   }
 
   private _resetTargets(): void {
     const vrm = this.inspector.model?.vrm;
-    if ( !vrm ) { return; }
+    if (!vrm) { return; }
 
     vrm.humanoid.resetNormalizedPose();
 
     const expressionsMap = vrm.expressionManager?.expressionMap;
-    if ( expressionsMap ) {
-      Object.keys( expressionsMap ).map( ( key ) => {
-        vrm.expressionManager?.setValue( key, 0.0 );
-      } );
+    if (expressionsMap) {
+      Object.keys(expressionsMap).map((key) => {
+        vrm.expressionManager?.setValue(key, 0.0);
+      });
     }
 
-    this._currentLookAtQuatProxy?.quaternion.set( 0, 0, 0, 1 );
+    this._currentLookAtQuatProxy?.quaternion.set(0, 0, 0, 1);
   }
 }

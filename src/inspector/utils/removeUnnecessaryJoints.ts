@@ -17,19 +17,19 @@ export function removeUnnecessaryJoints(
   const skeletonList: Map<THREE.BufferAttribute, THREE.Skeleton> = new Map();
 
   // Traverse an entire tree
-  root.traverse( ( obj ) => {
-    if ( obj.type !== 'SkinnedMesh' ) {
+  root.traverse((obj) => {
+    if (obj.type !== 'SkinnedMesh') {
       return;
     }
 
     const mesh = obj as THREE.SkinnedMesh;
     const geometry = mesh.geometry;
-    const attribute = geometry.getAttribute( 'skinIndex' ) as THREE.BufferAttribute;
+    const attribute = geometry.getAttribute('skinIndex') as THREE.BufferAttribute;
 
     // look for existing skeleton
-    let skeleton = skeletonList.get( attribute );
+    let skeleton = skeletonList.get(attribute);
 
-    if ( !skeleton ) {
+    if (!skeleton) {
       // generate reduced bone list
       const bones: THREE.Bone[] = []; // new list of bone
       const boneInverses: THREE.Matrix4[] = []; // new list of boneInverse
@@ -37,39 +37,39 @@ export function removeUnnecessaryJoints(
 
       // create a new bone map
       const array = attribute.array;
-      for ( let i = 0; i < array.length; i ++ ) {
-        const index = array[ i ];
+      for (let i = 0; i < array.length; i++) {
+        const index = array[i];
 
         // new skinIndex buffer
-        let newBoneIndex = boneIndexMap.get( index );
+        let newBoneIndex = boneIndexMap.get(index);
 
-        if ( newBoneIndex == null ) {
+        if (newBoneIndex == null) {
           newBoneIndex = bones.length;
-          boneIndexMap.set( index, newBoneIndex );
+          boneIndexMap.set(index, newBoneIndex);
 
-          bones.push( mesh.skeleton.bones[ index ] );
-          boneInverses.push( mesh.skeleton.boneInverses[ index ] );
+          bones.push(mesh.skeleton.bones[index]);
+          boneInverses.push(mesh.skeleton.boneInverses[index]);
         }
 
-        array[ i ] = newBoneIndex;
+        array[i] = newBoneIndex;
       }
 
       // replace with new indices
-      attribute.copyArray( array );
+      attribute.copyArray(array);
       attribute.needsUpdate = true;
 
       // replace with new indices
-      skeleton = new THREE.Skeleton( bones, boneInverses );
-      skeletonList.set( attribute, skeleton );
+      skeleton = new THREE.Skeleton(bones, boneInverses);
+      skeletonList.set(attribute, skeleton);
 
       // set the boneIndexMap to the result
-      resultMap.set( skeleton, boneIndexMap );
+      resultMap.set(skeleton, boneIndexMap);
     }
 
-    mesh.bind( skeleton, new THREE.Matrix4() );
+    mesh.bind(skeleton, new THREE.Matrix4());
     //                  ^^^^^^^^^^^^^^^^^^^ transform of meshes should be ignored
     // See: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#skins
-  } );
+  });
 
   return resultMap;
 }

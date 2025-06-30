@@ -16,22 +16,22 @@ export class InspectorGLTFValidatorPlugin implements InspectorPlugin {
     return this.__validationReport;
   }
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this.inspector = inspector;
 
     this.__validationReport = null;
   }
 
   public async validate(
-    maxIssues: number = InspectorGLTFValidatorPlugin.VALIDATOR_MAX_ISSUES
+    maxIssues: number = InspectorGLTFValidatorPlugin.VALIDATOR_MAX_ISSUES,
   ): Promise<ValidationReport | null> {
     const buffer = this.inspector.model?.buffer;
-    if ( !buffer ) { return null; }
+    if (!buffer) { return null; }
 
     const validationReport = await validateBytes(
-      new Uint8Array( buffer ),
+      new Uint8Array(buffer),
       { maxIssues },
-    ).catch( ( error ) => console.error( 'Validation failed: ', error ) );
+    ).catch((error) => console.error('Validation failed: ', error));
 
     this.__validationReport = validationReport;
 

@@ -11,16 +11,16 @@ export function highlightNodes(
 ): () => void {
   const nodeMeshMap: Map<THREE.Object3D, THREE.Mesh> = new Map();
 
-  nodes.forEach( ( node ) => {
+  nodes.forEach((node) => {
     const mesh = genGizmo();
-    node.add( mesh );
-    nodeMeshMap.set( node, mesh );
-  } );
+    node.add(mesh);
+    nodeMeshMap.set(node, mesh);
+  });
 
   return () => {
-    nodes.forEach( ( node ) => {
-      const mesh = nodeMeshMap.get( node )!;
-      node.remove( mesh );
-    } );
+    nodes.forEach((node) => {
+      const mesh = nodeMeshMap.get(node)!;
+      node.remove(mesh);
+    });
   };
 }

@@ -20,25 +20,27 @@ export interface InspectorStatsPluginStats {
   joints: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
 export interface InspectorStatsPlugin extends EventEmittable<{
   update: { stats: InspectorStatsPluginStats | null };
 }> {}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class InspectorStatsPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this.inspector = inspector;
   }
 
-  public handleAfterLoad( model: InspectorModel ): void {
+  public handleAfterLoad(model: InspectorModel): void {
     const { gltf, vrm } = model;
-    this._prepareStats( gltf, vrm ).then( ( stats ) => {
-      this._emit( 'update', { stats } );
-    } );
+    this._prepareStats(gltf, vrm).then((stats) => {
+      this._emit('update', { stats });
+    });
   }
 
   public handleAfterUnload(): void {
-    this._emit( 'update', { stats: null } );
+    this._emit('update', { stats: null });
   }
 
   private async _prepareStats(
@@ -51,44 +53,44 @@ export class InspectorStatsPlugin implements InspectorPlugin {
     let nPrimitives = 0;
     let nPolygons = 0;
 
-    const processMesh = ( mesh: THREE.Mesh ): void => {
-      nPrimitives ++;
+    const processMesh = (mesh: THREE.Mesh): void => {
+      nPrimitives++;
 
       const geometry = mesh.geometry as THREE.BufferGeometry;
-      dimensionBox.expandByObject( mesh );
-      const buffer = geometry.getAttribute( 'position' ) as THREE.BufferAttribute;
-      positionBuffers.add( buffer );
-      nPolygons += ( geometry.index?.count ?? buffer.count ) / 3;
+      dimensionBox.expandByObject(mesh);
+      const buffer = geometry.getAttribute('position') as THREE.BufferAttribute;
+      positionBuffers.add(buffer);
+      nPolygons += (geometry.index?.count ?? buffer.count) / 3;
     };
 
-    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> = await gltf.parser.getDependencies( 'mesh' );
-    meshes.forEach( ( meshOrGroup ) => {
-      nMeshes ++;
+    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> = await gltf.parser.getDependencies('mesh');
+    meshes.forEach((meshOrGroup) => {
+      nMeshes++;
 
-      if ( meshOrGroup instanceof THREE.Mesh ) {
-        processMesh( meshOrGroup );
+      if (meshOrGroup instanceof THREE.Mesh) {
+        processMesh(meshOrGroup);
       } else {
-        meshOrGroup.children.forEach( ( child ) => {
+        meshOrGroup.children.forEach((child) => {
           // mesh descendants might have joints
-          if ( child instanceof THREE.Mesh ) {
-            processMesh( child );
+          if (child instanceof THREE.Mesh) {
+            processMesh(child);
           }
-        } );
+        });
       }
-    } );
+    });
 
     let nVertices = 0;
-    for ( const buffer of positionBuffers ) {
+    for (const buffer of positionBuffers) {
       nVertices += buffer.count;
     }
 
-    const textures: Array<THREE.Material> = await gltf.parser.getDependencies( 'texture' );
-    const materials: Array<THREE.Material> = await gltf.parser.getDependencies( 'material' );
+    const textures: Array<THREE.Material> = await gltf.parser.getDependencies('texture');
+    const materials: Array<THREE.Material> = await gltf.parser.getDependencies('material');
 
     const nJoints = vrm?.springBoneManager?.joints?.size ?? 0;
 
     return {
-      dimension: dimensionBox.getSize( _v3A ).toArray(),
+      dimension: dimensionBox.getSize(_v3A).toArray(),
       vertices: nVertices,
       polygons: nPolygons,
       meshes: nMeshes,
@@ -100,4 +102,4 @@ export class InspectorStatsPlugin implements InspectorPlugin {
   }
 }
 
-applyMixins( InspectorStatsPlugin, [ EventEmittable ] );
+applyMixins(InspectorStatsPlugin, [EventEmittable]);

@@ -13,17 +13,17 @@ const models = [
 ];
 
 // == element ======================================================================================
-export const SampleModelsPane = ( params: PaneParams ): JSX.Element => {
+export const SampleModelsPane = (params: PaneParams): JSX.Element => {
   return (
-    <Pane { ...params }>
+    <Pane {...params}>
       <PaneRoot>
-        { models.map( ( { name, url } ) => (
+        { models.map(({ name, url }) => (
           <SampleModelsPaneButton
-            key={ name }
-            name={ name }
-            url={ url }
+            key={name}
+            name={name}
+            url={url}
           />
-        ) ) }
+        )) }
       </PaneRoot>
     </Pane>
   );

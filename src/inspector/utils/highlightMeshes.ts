@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
-const highlightMaterial = new THREE.MeshNormalMaterial( {
+const highlightMaterial = new THREE.MeshNormalMaterial({
   transparent: true,
   depthTest: false,
   depthWrite: false,
-} );
+});
 
 /**
  * Highlight specified meshes
@@ -17,16 +17,16 @@ export function highlightMeshes(
 ): () => void {
   const meshMaterialMap: Map<THREE.Mesh, THREE.Material> = new Map();
 
-  meshes.forEach( ( mesh ) => {
-    if ( Array.isArray( mesh.material ) ) {
-      meshMaterialMap.set( mesh, mesh.material[ 0 ] );
-      mesh.material[ 0 ] = material;
+  meshes.forEach((mesh) => {
+    if (Array.isArray(mesh.material)) {
+      meshMaterialMap.set(mesh, mesh.material[0]);
+      mesh.material[0] = material;
     }
-  } );
+  });
 
   return (): void => {
-    for ( const [ mesh, mtl ] of meshMaterialMap ) {
-      ( mesh.material as THREE.Material[] )[ 0 ] = mtl;
+    for (const [mesh, mtl] of meshMaterialMap) {
+      (mesh.material as THREE.Material[])[0] = mtl;
     }
   };
 }

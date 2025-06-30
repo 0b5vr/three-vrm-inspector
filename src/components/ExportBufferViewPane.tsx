@@ -3,27 +3,26 @@ import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import React, { useCallback, useContext, useRef } from 'react';
 
-export const ExportBufferViewPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
+export const ExportBufferViewPane = (params: PaneParams): JSX.Element => {
+  const { inspector } = useContext(InspectorContext);
 
-  const refInput = useRef<HTMLInputElement | null>( null );
+  const refInput = useRef<HTMLInputElement | null>(null);
 
-  const handleSubmit = useCallback( ( event: React.FormEvent ) => {
+  const handleSubmit = useCallback((event: React.FormEvent) => {
     event.preventDefault();
 
     const strIndex = refInput.current?.value;
-    if ( strIndex != null && strIndex !== '' ) {
-      const index = parseInt( strIndex, 10 );
-      inspector.exportBufferView( index );
+    if (strIndex != null && strIndex !== '') {
+      const index = parseInt(strIndex, 10);
+      inspector.exportBufferView(index);
     }
-  }, [ inspector ] );
-
+  }, [inspector]);
 
   return (
-    <Pane { ...params }>
+    <Pane {...params}>
       <PaneRoot>
-        <form onSubmit={ handleSubmit } >
-          <input type="number" ref={ refInput } defaultValue={ 0 } className="w-24 px-1 bg-gray-800 border border-gray-500" required />
+        <form onSubmit={handleSubmit}>
+          <input type="number" ref={refInput} defaultValue={0} className="w-24 px-1 bg-gray-800 border border-gray-500" required />
           <input type="submit" className="ml-1 px-1 bg-gray-800 border border-gray-500" value="Export" />
         </form>
       </PaneRoot>

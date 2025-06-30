@@ -24,51 +24,51 @@ const animations: InspectorAnimationPluginAnimation[] = [
 ];
 
 // == element ======================================================================================
-export const AnimationsPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
+export const AnimationsPane = (params: PaneParams): JSX.Element => {
+  const { inspector } = useContext(InspectorContext);
 
   // listen to animation change
-  const [ currentAnimation, setCurrentAnimation ]
-    = useState<InspectorAnimationPluginAnimation | null>( null );
+  const [currentAnimation, setCurrentAnimation]
+    = useState<InspectorAnimationPluginAnimation | null>(null);
 
-  useEffect( () => {
-    const observer = ( animation: InspectorAnimationPluginAnimation | null ): void => {
-      setCurrentAnimation( animation );
+  useEffect(() => {
+    const observer = (animation: InspectorAnimationPluginAnimation | null): void => {
+      setCurrentAnimation(animation);
     };
 
-    inspector.animationPlugin.animationChangeObservers.add( observer );
+    inspector.animationPlugin.animationChangeObservers.add(observer);
     return () => {
-      inspector.animationPlugin.animationChangeObservers.delete( observer );
+      inspector.animationPlugin.animationChangeObservers.delete(observer);
     };
-  }, [ inspector ] );
+  }, [inspector]);
 
   // listen to animation update
-  const [ timeDisplay, setTimeDisplay ] = useState( '0.000 / 0.000' );
+  const [timeDisplay, setTimeDisplay] = useState('0.000 / 0.000');
 
-  useEffect( () => {
-    const observer = ( { time, duration }: { time: number, duration: number } ): void => {
-      setTimeDisplay( `${ time.toFixed( 3 ) } / ${ duration.toFixed( 3 ) }` );
+  useEffect(() => {
+    const observer = ({ time, duration }: { time: number; duration: number }): void => {
+      setTimeDisplay(`${time.toFixed(3)} / ${duration.toFixed(3)}`);
     };
 
-    inspector.animationPlugin.animationUpdateObservers.add( observer );
+    inspector.animationPlugin.animationUpdateObservers.add(observer);
     return () => {
-      inspector.animationPlugin.animationUpdateObservers.delete( observer );
+      inspector.animationPlugin.animationUpdateObservers.delete(observer);
     };
-  }, [ inspector ] );
+  }, [inspector]);
 
   // handle select change
   const handleSelectChange = useCallback(
-    ( event: React.ChangeEvent<HTMLSelectElement> ) => {
-      const i = parseInt( event.target.value, 10 );
-      if ( i === -1 ) {
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const i = parseInt(event.target.value, 10);
+      if (i === -1) {
         inspector.animationPlugin.clearAnimation();
         return;
       }
 
-      const animation = animations[ i ];
-      inspector.animationPlugin.loadAnimation( animation );
+      const animation = animations[i];
+      inspector.animationPlugin.loadAnimation(animation);
     },
-    [ inspector ]
+    [inspector],
   );
 
   // handle click play
@@ -76,7 +76,7 @@ export const AnimationsPane = ( params: PaneParams ): JSX.Element => {
     () => {
       inspector.animationPlugin.play();
     },
-    [ inspector ]
+    [inspector],
   );
 
   // handle click pause
@@ -84,7 +84,7 @@ export const AnimationsPane = ( params: PaneParams ): JSX.Element => {
     () => {
       inspector.animationPlugin.pause();
     },
-    [ inspector ]
+    [inspector],
   );
 
   // handle click rewind
@@ -92,43 +92,43 @@ export const AnimationsPane = ( params: PaneParams ): JSX.Element => {
     () => {
       inspector.animationPlugin.rewind();
     },
-    [ inspector ]
+    [inspector],
   );
 
   // element
   return (
-    <Pane { ...params }>
+    <Pane {...params}>
       <PaneRoot>
-        <select className="bg-gray-800 border border-gray-500 w-full" onChange={ handleSelectChange }>
-          <option key={ -1 } value={ -1 }>(No animation)</option>
+        <select className="bg-gray-800 border border-gray-500 w-full" onChange={handleSelectChange}>
+          <option key={-1} value={-1}>(No animation)</option>
           {
-            animations.map( ( { name }, i ) => (
-              <option key={ i } value={ i }>{ name }</option>
-            ) )
+            animations.map(({ name }, i) => (
+              <option key={i} value={i}>{ name }</option>
+            ))
           }
         </select>
         <br />
         <button
           className="px-1 bg-gray-800 border border-gray-500"
-          onClick={ handleClickPlay }
+          onClick={handleClickPlay}
         >
           Play
         </button>
         <button
           className="ml-1 px-1 bg-gray-800 border border-gray-500"
-          onClick={ handleClickPause }
+          onClick={handleClickPause}
         >
           Pause
         </button>
         <button
           className="ml-1 px-1 bg-gray-800 border border-gray-500"
-          onClick={ handleClickRewind }
+          onClick={handleClickRewind}
         >
           Rewind
         </button>
         <br />
-        <NameValueEntry name="Animation" value={ currentAnimation?.name ?? '(not playing)' } />
-        <NameValueEntry name="Time" value={ timeDisplay } />
+        <NameValueEntry name="Animation" value={currentAnimation?.name ?? '(not playing)'} />
+        <NameValueEntry name="Time" value={timeDisplay} />
       </PaneRoot>
     </Pane>
   );

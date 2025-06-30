@@ -5,7 +5,7 @@ export interface InspectorPlugin {
   inspector: Inspector;
 
   handleAfterSetup?: () => void;
-  handleAfterLoad?: ( model: InspectorModel ) => void;
+  handleAfterLoad?: (model: InspectorModel) => void;
   handleAfterUnload?: () => void;
-  handleBeforeRender?: ( delta: number ) => void;
+  handleBeforeRender?: (delta: number) => void;
 }

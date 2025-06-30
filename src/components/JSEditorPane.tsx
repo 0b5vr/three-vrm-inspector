@@ -43,85 +43,85 @@ export default ( { inspector, THREE } ) => {
 }
 `;
 
-export const JSEditorPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
-  const [ code, setCode ] = useState( defaultCode );
-  const [ hasEdited, setHasEdited ] = useState( false );
+export const JSEditorPane = (params: PaneParams): JSX.Element => {
+  const { inspector } = useContext(InspectorContext);
+  const [code, setCode] = useState(defaultCode);
+  const [hasEdited, setHasEdited] = useState(false);
   const refLastUnmount = useRef<() => void>();
 
   // -- event handlers -----------------------------------------------------------------------------
-  useEffect( () => {
+  useEffect(() => {
     // prevent terrible consequence
-    window.addEventListener( 'beforeunload', ( event ) => {
-      if ( hasEdited ) {
+    window.addEventListener('beforeunload', (event) => {
+      if (hasEdited) {
         const confirmationMessage = 'You will lose all of your changes on the editor!';
         event.returnValue = confirmationMessage;
         return confirmationMessage;
       }
-    } );
-  }, [ hasEdited ] );
+    });
+  }, [hasEdited]);
 
   const handleCompile = useCallback(
-    ( code ) => {
+    (code) => {
       refLastUnmount.current?.();
 
-      const blob = new Blob( [ code ], { type: 'text/javascript' } );
-      const url = URL.createObjectURL( blob );
+      const blob = new Blob([code], { type: 'text/javascript' });
+      const url = URL.createObjectURL(blob);
 
-      import( url ).then( ( mod ) => {
-        refLastUnmount.current = mod.default( { inspector, THREE } );
-        URL.revokeObjectURL( url );
-      } );
+      import(url).then((mod) => {
+        refLastUnmount.current = mod.default({ inspector, THREE });
+        URL.revokeObjectURL(url);
+      });
     },
-    [ inspector ],
+    [inspector],
   );
 
   const handleEditorDidMount = useCallback(
-    ( editor: CodeMirror.Editor ) => {
-      editor.addKeyMap( {
+    (editor: CodeMirror.Editor) => {
+      editor.addKeyMap({
         'Ctrl-S': () => {
-          handleCompile( editor.getValue() );
+          handleCompile(editor.getValue());
         },
         'Ctrl-R': () => {
-          handleCompile( editor.getValue() );
+          handleCompile(editor.getValue());
         },
-      } );
+      });
     },
-    [ handleCompile ]
+    [handleCompile],
   );
 
   const handleBeforeChange = useCallback(
-    ( editor: CodeMirror.Editor, data: CodeMirror.EditorChange, value: string ) => {
-      setCode( value );
-      setHasEdited( true );
+    (editor: CodeMirror.Editor, data: CodeMirror.EditorChange, value: string) => {
+      setCode(value);
+      setHasEdited(true);
     },
-    []
+    [],
   );
 
   const handleChange = useCallback(
     () => {
       // do nothing
     },
-    []
+    [],
   );
 
   return (
-    <Pane { ...params }>
+    <Pane {...params}>
       <PaneRoot
         className="w-120 h-80"
         paddingClass="p-0"
       >
         <ReactCodeMirror
-          value={ code }
-          options={ {
+          value={code}
+          options={{
             mode: 'text/javascript',
             keyMap: 'sublime',
             theme: 'monokai-sharp',
-            lineNumbers: true
-          } }
-          editorDidMount={ handleEditorDidMount }
-          onBeforeChange={ handleBeforeChange }
-          onChange={ handleChange }
+            lineNumbers: true,
+          }}
+          editorDidMount={handleEditorDidMount}
+          onBeforeChange={handleBeforeChange}
+          onChange={handleChange}
           className="h-full leading-tight"
         />
       </PaneRoot>

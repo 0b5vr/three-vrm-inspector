@@ -19,7 +19,7 @@ import React, { useCallback, useState } from 'react';
 
 // == element ======================================================================================
 const PaneList = (): JSX.Element => {
-  const [ order, setOrder ] = useState( [
+  const [order, setOrder] = useState([
     'jsonTree',
     'materialDebugger',
     'meta',
@@ -37,21 +37,21 @@ const PaneList = (): JSX.Element => {
     'postProcessing',
     'jsEditor',
     'about',
-  ] );
+  ]);
 
   const handleClick = useCallback(
-    ( event: React.MouseEvent, paneKey: string ) => {
+    (event: React.MouseEvent, paneKey: string) => {
       const newOrder = order.concat();
-      newOrder.splice( order.indexOf( paneKey ), 1 );
-      newOrder.push( paneKey );
+      newOrder.splice(order.indexOf(paneKey), 1);
+      newOrder.push(paneKey);
 
-      setOrder( newOrder );
+      setOrder(newOrder);
     },
-    [ order ]
+    [order],
   );
 
   let currentInitPositionTop = 0;
-  const generateInitPosition = (): { left: number, top: number } => {
+  const generateInitPosition = (): { left: number; top: number } => {
     const left = 0;
     const top = currentInitPositionTop;
 
@@ -61,130 +61,166 @@ const PaneList = (): JSX.Element => {
   };
 
   const panes: { [ key: string ]: JSX.Element } = {
-    'jsonTree': <JSONPane
-      key="jsonTree"
-      paneKey="jsonTree"
-      title="JSON Tree"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'materialDebugger': <MaterialDebuggerPane
-      key="materialDebugger"
-      paneKey="materialDebugger"
-      title="MToon Material Debugger"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'meta': <MetaPane
-      key="meta"
-      paneKey="meta"
-      title="Meta"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'stats': <StatsPane
-      key="stats"
-      paneKey="stats"
-      title="Stats"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'textures': <TexturesPane
-      key="textures"
-      paneKey="textures"
-      title="Textures"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'webglMemory': <WebGLMemoryPane
-      key="webglMemory"
-      paneKey="webglMemory"
-      title="WebGL Memory"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'expressions': <ExpressionsPane
-      key="expressions"
-      paneKey="expressions"
-      title="Expressions"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'lookAt': <LookAtPane
-      key="lookAt"
-      paneKey="lookAt"
-      title="Look At"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'validationReport': <ValidationReportPane
-      key="validationReport"
-      paneKey="validationReport"
-      title="Validation Report"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'sampleModels': <SampleModelsPane
-      key="sampleModels"
-      paneKey="sampleModels"
-      title="Sample Models"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'helpers': <HelpersPane
-      key="helpers"
-      paneKey="helpers"
-      title="Helpers"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'exportBufferView': <ExportBufferViewPane
-      key="exportBufferView"
-      paneKey="exportBufferView"
-      title="Export Buffer View"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'lights': <LightsPane
-      key="lights"
-      paneKey="lights"
-      title="Lights"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'animations': <AnimationsPane
-      key="animations"
-      paneKey="animations"
-      title="Animations"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'postProcessing': <PostProcessingPane
-      key="postProcessing"
-      paneKey="postProcessing"
-      title="Post Processing"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'jsEditor': <JSEditorPane
-      key="jsEditor"
-      paneKey="jsEditor"
-      title="JavaScript Editor"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
-    'about': <AboutPane
-      key="about"
-      paneKey="about"
-      title="About"
-      onClick={ handleClick }
-      initPosition={ generateInitPosition() }
-    />,
+    'jsonTree': (
+      <JSONPane
+        key="jsonTree"
+        paneKey="jsonTree"
+        title="JSON Tree"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'materialDebugger': (
+      <MaterialDebuggerPane
+        key="materialDebugger"
+        paneKey="materialDebugger"
+        title="MToon Material Debugger"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'meta': (
+      <MetaPane
+        key="meta"
+        paneKey="meta"
+        title="Meta"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'stats': (
+      <StatsPane
+        key="stats"
+        paneKey="stats"
+        title="Stats"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'textures': (
+      <TexturesPane
+        key="textures"
+        paneKey="textures"
+        title="Textures"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'webglMemory': (
+      <WebGLMemoryPane
+        key="webglMemory"
+        paneKey="webglMemory"
+        title="WebGL Memory"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'expressions': (
+      <ExpressionsPane
+        key="expressions"
+        paneKey="expressions"
+        title="Expressions"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'lookAt': (
+      <LookAtPane
+        key="lookAt"
+        paneKey="lookAt"
+        title="Look At"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'validationReport': (
+      <ValidationReportPane
+        key="validationReport"
+        paneKey="validationReport"
+        title="Validation Report"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'sampleModels': (
+      <SampleModelsPane
+        key="sampleModels"
+        paneKey="sampleModels"
+        title="Sample Models"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'helpers': (
+      <HelpersPane
+        key="helpers"
+        paneKey="helpers"
+        title="Helpers"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'exportBufferView': (
+      <ExportBufferViewPane
+        key="exportBufferView"
+        paneKey="exportBufferView"
+        title="Export Buffer View"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'lights': (
+      <LightsPane
+        key="lights"
+        paneKey="lights"
+        title="Lights"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'animations': (
+      <AnimationsPane
+        key="animations"
+        paneKey="animations"
+        title="Animations"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'postProcessing': (
+      <PostProcessingPane
+        key="postProcessing"
+        paneKey="postProcessing"
+        title="Post Processing"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'jsEditor': (
+      <JSEditorPane
+        key="jsEditor"
+        paneKey="jsEditor"
+        title="JavaScript Editor"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
+    'about': (
+      <AboutPane
+        key="about"
+        paneKey="about"
+        title="About"
+        onClick={handleClick}
+        initPosition={generateInitPosition()}
+      />
+    ),
   };
 
-  return <>
-    { order.map( ( paneKey ) => panes[ paneKey ] ) }
-  </>;
+  return (
+    <>
+      { order.map((paneKey) => panes[paneKey]) }
+    </>
+  );
 };
 
 export { PaneList };

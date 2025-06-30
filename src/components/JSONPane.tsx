@@ -4,29 +4,29 @@ import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { useContext, useEffect, useState } from 'react';
 
-const JSONPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
-  const [ root, setRoot ] = useState<any>( undefined );
+const JSONPane = (params: PaneParams): JSX.Element => {
+  const { inspector } = useContext(InspectorContext);
+  const [root, setRoot] = useState<any>(undefined);
 
-  useEffect( () => {
+  useEffect(() => {
     const handleLoad = (): void => {
-      setRoot( inspector.model?.originalGLTFJSON );
+      setRoot(inspector.model?.originalGLTFJSON);
     };
 
-    inspector.on( 'load', handleLoad );
+    inspector.on('load', handleLoad);
 
     return () => {
-      inspector.off( 'load', handleLoad );
+      inspector.off('load', handleLoad);
     };
-  }, [ inspector ] );
+  }, [inspector]);
 
   return (
-    <Pane { ...params }>
+    <Pane {...params}>
       <PaneRoot
         className="w-120 h-80 overflow-scroll whitespace-nowrap resize font-mono text-xs leading-tight"
         paddingClass="p-0"
       >
-        <JSONValue value={ root } />
+        <JSONValue value={root} />
       </PaneRoot>
     </Pane>
   );

@@ -7,8 +7,8 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
     return this._skinIndexVisualize;
   }
 
-  public set skinIndexVisualize( index: number ) {
-    if ( this._uniforms ) {
+  public set skinIndexVisualize(index: number) {
+    if (this._uniforms) {
       this._uniforms.skinIndexVisualize = { value: index };
     }
 
@@ -17,13 +17,13 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
 
   private _uniforms?: { [ uniform: string ]: THREE.IUniform };
 
-  public constructor( parameters: THREE.MeshNormalMaterialParameters ) {
-    super( parameters );
+  public constructor(parameters: THREE.MeshNormalMaterialParameters) {
+    super(parameters);
 
     this._skinIndexVisualize = 0;
 
     // See: https://github.com/mrdoob/three.js/blob/master/src/renderers/shaders/ShaderChunk/skinning_pars_vertex.glsl.js
-    this.onBeforeCompile = ( shader ) => {
+    this.onBeforeCompile = (shader) => {
       this._uniforms = shader.uniforms;
       this._uniforms.skinIndexVisualize = { value: this._skinIndexVisualize };
 
@@ -32,7 +32,7 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
         `#include <common>
 
         varying float vWeightVisualize;
-        uniform float skinIndexVisualize;`
+        uniform float skinIndexVisualize;`,
       );
 
       shader.vertexShader = shader.vertexShader.replace(
@@ -48,14 +48,14 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
           vWeightVisualize = 0.0;
         #endif
 
-        #include <begin_vertex>`
+        #include <begin_vertex>`,
       );
 
       shader.fragmentShader = shader.fragmentShader.replace(
         '#include <packing>',
         `#include <packing>
 
-        varying float vWeightVisualize;`
+        varying float vWeightVisualize;`,
       );
 
       shader.fragmentShader = shader.fragmentShader.replace(
@@ -63,7 +63,7 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
         `gl_FragColor = vec4(
           clamp( 2.0 - abs( vec3( 4.0, 2.0, 0.0 ) - 4.0 * vWeightVisualize ), 0.0, 1.0 ),
           diffuseColor.a
-        );`
+        );`,
       );
     };
   }

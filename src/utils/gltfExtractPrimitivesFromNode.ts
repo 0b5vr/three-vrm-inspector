@@ -60,25 +60,25 @@ function extractPrimitivesInternal(
    */
 
   // Make sure that the node has a mesh
-  const schemaNode = gltf.parser.json.nodes[ nodeIndex ];
+  const schemaNode = gltf.parser.json.nodes[nodeIndex];
   const meshIndex = schemaNode.mesh;
-  if ( meshIndex == null ) {
+  if (meshIndex == null) {
     return null;
   }
 
   // How many primitives the mesh has?
-  const schemaMesh = gltf.parser.json.meshes[ meshIndex ];
+  const schemaMesh = gltf.parser.json.meshes[meshIndex];
   const primitiveCount = schemaMesh.primitives.length;
 
   // Traverse the node and take first (primitiveCount) meshes
   const primitives: THREE.Mesh[] = [];
-  node.traverse( ( object ) => {
-    if ( primitives.length < primitiveCount ) {
-      if ( ( object as any ).isMesh ) {
-        primitives.push( object as THREE.Mesh );
+  node.traverse((object) => {
+    if (primitives.length < primitiveCount) {
+      if ((object as any).isMesh) {
+        primitives.push(object as THREE.Mesh);
       }
     }
-  } );
+  });
 
   return primitives;
 }
@@ -96,8 +96,8 @@ export async function gltfExtractPrimitivesFromNode(
   gltf: GLTF,
   nodeIndex: number,
 ): Promise<THREE.Mesh[] | null> {
-  const node: THREE.Object3D = await gltf.parser.getDependency( 'node', nodeIndex );
-  return extractPrimitivesInternal( gltf, nodeIndex, node );
+  const node: THREE.Object3D = await gltf.parser.getDependency('node', nodeIndex);
+  return extractPrimitivesInternal(gltf, nodeIndex, node);
 }
 
 /**
@@ -112,15 +112,15 @@ export async function gltfExtractPrimitivesFromNode(
 export async function gltfExtractPrimitivesFromNodes(
   gltf: GLTF,
 ): Promise<Map<number, THREE.Mesh[]>> {
-  const nodes: THREE.Object3D[] = await gltf.parser.getDependencies( 'node' );
+  const nodes: THREE.Object3D[] = await gltf.parser.getDependencies('node');
   const map = new Map<number, THREE.Mesh[]>();
 
-  nodes.forEach( ( node, index ) => {
-    const result = extractPrimitivesInternal( gltf, index, node );
-    if ( result != null ) {
-      map.set( index, result );
+  nodes.forEach((node, index) => {
+    const result = extractPrimitivesInternal(gltf, index, node);
+    if (result != null) {
+      map.set(index, result);
     }
-  } );
+  });
 
   return map;
 }

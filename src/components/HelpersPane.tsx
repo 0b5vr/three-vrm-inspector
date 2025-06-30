@@ -5,132 +5,132 @@ import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
-export const HelpersPane = ( params: PaneParams ): JSX.Element => {
-  const { inspector } = useContext( InspectorContext );
+export const HelpersPane = (params: PaneParams): JSX.Element => {
+  const { inspector } = useContext(InspectorContext);
 
-  const [ checkedGrid, setCheckedGrid ] = useState(
-    inspector.helpersPlugin.gridHelper.visible
+  const [checkedGrid, setCheckedGrid] = useState(
+    inspector.helpersPlugin.gridHelper.visible,
   );
-  const [ checkedAxes, setCheckedAxes ] = useState(
-    inspector.helpersPlugin.axesHelper.visible
+  const [checkedAxes, setCheckedAxes] = useState(
+    inspector.helpersPlugin.axesHelper.visible,
   );
-  const [ checkedHumanoid, setCheckedHumanoid ] = useState(
-    inspector.helpersPlugin.humanoidHelperRoot.visible
+  const [checkedHumanoid, setCheckedHumanoid] = useState(
+    inspector.helpersPlugin.humanoidHelperRoot.visible,
   );
-  const [ checkedHumanoidTransform, setCheckedHumanoidTransform ] = useState(
-    inspector.humanoidTransformPlugin.active
+  const [checkedHumanoidTransform, setCheckedHumanoidTransform] = useState(
+    inspector.humanoidTransformPlugin.active,
   );
-  const [ checkedLookAt, setCheckedLookAt ] = useState(
-    inspector.helpersPlugin.lookAtHelperRoot.visible
+  const [checkedLookAt, setCheckedLookAt] = useState(
+    inspector.helpersPlugin.lookAtHelperRoot.visible,
   );
-  const [ checkedLookAtBall, setCheckedLookAtBall ] = useState(
-    inspector.lookAtBallPlugin.isActive
+  const [checkedLookAtBall, setCheckedLookAtBall] = useState(
+    inspector.lookAtBallPlugin.isActive,
   );
-  const [ checkedSpringBones, setCheckedSpringBones ] = useState(
-    inspector.helpersPlugin.springBoneJointHelperRoot.visible
+  const [checkedSpringBones, setCheckedSpringBones] = useState(
+    inspector.helpersPlugin.springBoneJointHelperRoot.visible,
   );
-  const [ checkedSpringBoneColliders, setCheckedSpringBoneColliders ] = useState(
-    inspector.helpersPlugin.springBoneColliderHelperRoot.visible
+  const [checkedSpringBoneColliders, setCheckedSpringBoneColliders] = useState(
+    inspector.helpersPlugin.springBoneColliderHelperRoot.visible,
   );
 
-  const handleClickEnableAll = useCallback( () => {
-    setCheckedGrid( true );
-    setCheckedAxes( true );
-    setCheckedHumanoid( true );
-    setCheckedHumanoidTransform( true );
-    setCheckedLookAt( true );
-    setCheckedLookAtBall( true );
-    setCheckedSpringBones( true );
-    setCheckedSpringBoneColliders( true );
-  }, [] );
+  const handleClickEnableAll = useCallback(() => {
+    setCheckedGrid(true);
+    setCheckedAxes(true);
+    setCheckedHumanoid(true);
+    setCheckedHumanoidTransform(true);
+    setCheckedLookAt(true);
+    setCheckedLookAtBall(true);
+    setCheckedSpringBones(true);
+    setCheckedSpringBoneColliders(true);
+  }, []);
 
-  const handleClickDisableAll = useCallback( () => {
-    setCheckedGrid( false );
-    setCheckedAxes( false );
-    setCheckedHumanoid( false );
-    setCheckedHumanoidTransform( false );
-    setCheckedLookAt( false );
-    setCheckedLookAtBall( false );
-    setCheckedSpringBones( false );
-    setCheckedSpringBoneColliders( false );
-  }, [] );
+  const handleClickDisableAll = useCallback(() => {
+    setCheckedGrid(false);
+    setCheckedAxes(false);
+    setCheckedHumanoid(false);
+    setCheckedHumanoidTransform(false);
+    setCheckedLookAt(false);
+    setCheckedLookAtBall(false);
+    setCheckedSpringBones(false);
+    setCheckedSpringBoneColliders(false);
+  }, []);
 
-  const handleChangeGrid = useCallback( ( checked ) => {
-    setCheckedGrid( checked );
-  }, [ inspector ] );
+  const handleChangeGrid = useCallback((checked) => {
+    setCheckedGrid(checked);
+  }, [inspector]);
 
-  const handleChangeAxes = useCallback( ( checked ) => {
-    setCheckedAxes( checked );
-  }, [ inspector ] );
+  const handleChangeAxes = useCallback((checked) => {
+    setCheckedAxes(checked);
+  }, [inspector]);
 
-  const handleChangeHumanoid = useCallback( ( checked ) => {
-    setCheckedHumanoid( checked );
-  }, [ inspector ] );
+  const handleChangeHumanoid = useCallback((checked) => {
+    setCheckedHumanoid(checked);
+  }, [inspector]);
 
-  const handleChangeHumanoidTransform = useCallback( ( checked ) => {
-    setCheckedHumanoidTransform( checked );
-  }, [ inspector ] );
+  const handleChangeHumanoidTransform = useCallback((checked) => {
+    setCheckedHumanoidTransform(checked);
+  }, [inspector]);
 
-  const handleChangeLookAt = useCallback( ( checked ) => {
-    setCheckedLookAt( checked );
-  }, [ inspector ] );
+  const handleChangeLookAt = useCallback((checked) => {
+    setCheckedLookAt(checked);
+  }, [inspector]);
 
-  const handleChangeLookAtBall = useCallback( ( checked ) => {
-    setCheckedLookAtBall( checked );
-  }, [ inspector ] );
+  const handleChangeLookAtBall = useCallback((checked) => {
+    setCheckedLookAtBall(checked);
+  }, [inspector]);
 
-  const handleChangeSpringBones = useCallback( ( checked ) => {
-    setCheckedSpringBones( checked );
-  }, [ inspector ] );
+  const handleChangeSpringBones = useCallback((checked) => {
+    setCheckedSpringBones(checked);
+  }, [inspector]);
 
-  const handleChangeSpringBoneColliders = useCallback( ( checked ) => {
-    setCheckedSpringBoneColliders( checked );
-  }, [ inspector ] );
+  const handleChangeSpringBoneColliders = useCallback((checked) => {
+    setCheckedSpringBoneColliders(checked);
+  }, [inspector]);
 
-  useEffect( () => {
+  useEffect(() => {
     inspector.helpersPlugin.gridHelper.visible = checkedGrid;
-  }, [ inspector, checkedGrid ] );
+  }, [inspector, checkedGrid]);
 
-  useEffect( () => {
+  useEffect(() => {
     inspector.helpersPlugin.axesHelper.visible = checkedAxes;
-  }, [ inspector, checkedAxes ] );
+  }, [inspector, checkedAxes]);
 
-  useEffect( () => {
+  useEffect(() => {
     inspector.helpersPlugin.humanoidHelperRoot.visible = checkedHumanoid;
-  }, [ inspector, checkedHumanoid ] );
+  }, [inspector, checkedHumanoid]);
 
-  useEffect( () => {
+  useEffect(() => {
     inspector.humanoidTransformPlugin.active = checkedHumanoidTransform;
-  }, [ inspector, checkedHumanoidTransform ] );
+  }, [inspector, checkedHumanoidTransform]);
 
-  useEffect( () => {
+  useEffect(() => {
     inspector.helpersPlugin.lookAtHelperRoot.visible = checkedLookAt;
-  }, [ inspector, checkedLookAt ] );
+  }, [inspector, checkedLookAt]);
 
-  useEffect( () => {
+  useEffect(() => {
     inspector.lookAtBallPlugin.isActive = checkedLookAtBall;
-  }, [ inspector, checkedLookAtBall ] );
+  }, [inspector, checkedLookAtBall]);
 
-  useEffect( () => {
+  useEffect(() => {
     inspector.helpersPlugin.springBoneJointHelperRoot.visible = checkedSpringBones;
-  }, [ inspector, checkedSpringBones ] );
+  }, [inspector, checkedSpringBones]);
 
-  useEffect( () => {
+  useEffect(() => {
     inspector.helpersPlugin.springBoneColliderHelperRoot.visible = checkedSpringBoneColliders;
-  }, [ inspector, checkedSpringBoneColliders ] );
+  }, [inspector, checkedSpringBoneColliders]);
 
   return (
-    <Pane { ...params }>
+    <Pane {...params}>
       <PaneRoot>
         <button
           className="ml-1 px-1 bg-gray-800 border border-gray-500"
-          onClick={ handleClickEnableAll }
+          onClick={handleClickEnableAll}
         >
           Enable All
         </button>
         <button
           className="ml-1 px-1 bg-gray-800 border border-gray-500"
-          onClick={ handleClickDisableAll }
+          onClick={handleClickDisableAll}
         >
           Disable All
         </button>
@@ -138,44 +138,44 @@ export const HelpersPane = ( params: PaneParams ): JSX.Element => {
         <Hr />
 
         <HelpersPaneCheckbox
-          callback={ handleChangeGrid }
+          callback={handleChangeGrid}
           label="Grid"
-          checked={ checkedGrid }
+          checked={checkedGrid}
         />
         <HelpersPaneCheckbox
-          callback={ handleChangeAxes }
+          callback={handleChangeAxes}
           label="Axes"
-          checked={ checkedAxes }
+          checked={checkedAxes}
         />
         <HelpersPaneCheckbox
-          callback={ handleChangeHumanoid }
+          callback={handleChangeHumanoid}
           label="Humanoid"
-          checked={ checkedHumanoid }
+          checked={checkedHumanoid}
         />
         <HelpersPaneCheckbox
-          callback={ handleChangeHumanoidTransform }
+          callback={handleChangeHumanoidTransform}
           label="Humanoid Transform"
-          checked={ checkedHumanoidTransform }
+          checked={checkedHumanoidTransform}
         />
         <HelpersPaneCheckbox
-          callback={ handleChangeLookAt }
+          callback={handleChangeLookAt}
           label="LookAt"
-          checked={ checkedLookAt }
+          checked={checkedLookAt}
         />
         <HelpersPaneCheckbox
-          callback={ handleChangeLookAtBall }
+          callback={handleChangeLookAtBall}
           label="LookAt Ball"
-          checked={ checkedLookAtBall }
+          checked={checkedLookAtBall}
         />
         <HelpersPaneCheckbox
-          callback={ handleChangeSpringBones }
+          callback={handleChangeSpringBones}
           label="Spring Bones"
-          checked={ checkedSpringBones }
+          checked={checkedSpringBones}
         />
         <HelpersPaneCheckbox
-          callback={ handleChangeSpringBoneColliders }
+          callback={handleChangeSpringBoneColliders}
           label="Spring Bone Colliders"
-          checked={ checkedSpringBoneColliders }
+          checked={checkedSpringBoneColliders}
         />
       </PaneRoot>
     </Pane>

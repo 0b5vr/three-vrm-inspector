@@ -8,22 +8,22 @@ import * as THREE from 'three';
  */
 export function forEachMeshMaterials(
   mesh: THREE.Mesh,
-  callback: ( material: THREE.Material ) => void,
+  callback: (material: THREE.Material) => void,
 ): void {
   const set = new Set<THREE.Material>();
 
   const materialOrMaterials = mesh.material;
-  if ( Array.isArray( materialOrMaterials ) ) {
+  if (Array.isArray(materialOrMaterials)) {
     const materials = materialOrMaterials as THREE.Material[];
-    materials.forEach( ( material ) => {
-      set.add( material );
-    } );
+    materials.forEach((material) => {
+      set.add(material);
+    });
   } else {
     const material = materialOrMaterials as THREE.Material;
-    set.add( material );
+    set.add(material);
   }
 
-  for ( const material of set ) {
-    callback( material );
+  for (const material of set) {
+    callback(material);
   }
 }

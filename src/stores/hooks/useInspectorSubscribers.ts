@@ -5,38 +5,38 @@ import { useEffect } from 'react';
 import { useSetAtom } from 'jotai';
 import { webglMemoryInfoAtom } from '../atoms/webglMemoryInfoAtom';
 
-function useStatsSubscriber( inspector: Inspector ): void {
-  const setStats = useSetAtom( statsAtom );
+function useStatsSubscriber(inspector: Inspector): void {
+  const setStats = useSetAtom(statsAtom);
 
-  useEffect( () => {
-    inspector.statsPlugin.on( 'update', ( { stats } ) => {
-      setStats( stats );
-    } );
-  }, [ inspector ] );
+  useEffect(() => {
+    inspector.statsPlugin.on('update', ({ stats }) => {
+      setStats(stats);
+    });
+  }, [inspector]);
 }
 
-function useTextureInfosSubscriber( inspector: Inspector ): void {
-  const setTextureInfos = useSetAtom( textureInfosAtom );
+function useTextureInfosSubscriber(inspector: Inspector): void {
+  const setTextureInfos = useSetAtom(textureInfosAtom);
 
-  useEffect( () => {
-    inspector.texturesPlugin.on( 'updateTextureInfos', ( { textureInfos } ) => {
-      setTextureInfos( textureInfos );
-    } );
-  }, [ inspector ] );
+  useEffect(() => {
+    inspector.texturesPlugin.on('updateTextureInfos', ({ textureInfos }) => {
+      setTextureInfos(textureInfos);
+    });
+  }, [inspector]);
 }
 
-function useWebGLMemoryInfoSubscriber( inspector: Inspector ): void {
-  const setWebGLMemoryInfo = useSetAtom( webglMemoryInfoAtom );
+function useWebGLMemoryInfoSubscriber(inspector: Inspector): void {
+  const setWebGLMemoryInfo = useSetAtom(webglMemoryInfoAtom);
 
-  useEffect( () => {
-    inspector.webglMemoryPlugin.on( 'update', ( { webGLMemoryInfo } ) => {
-      setWebGLMemoryInfo( webGLMemoryInfo );
-    } );
-  }, [ inspector ] );
+  useEffect(() => {
+    inspector.webglMemoryPlugin.on('update', ({ webGLMemoryInfo }) => {
+      setWebGLMemoryInfo(webGLMemoryInfo);
+    });
+  }, [inspector]);
 }
 
-export function useInspectorSubscribers( inspector: Inspector ): void {
-  useStatsSubscriber( inspector );
-  useTextureInfosSubscriber( inspector );
-  useWebGLMemoryInfoSubscriber( inspector );
+export function useInspectorSubscribers(inspector: Inspector): void {
+  useStatsSubscriber(inspector);
+  useTextureInfosSubscriber(inspector);
+  useWebGLMemoryInfoSubscriber(inspector);
 }

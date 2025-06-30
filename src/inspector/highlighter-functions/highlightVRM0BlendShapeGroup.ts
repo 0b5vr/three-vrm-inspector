@@ -31,21 +31,21 @@ export const highlightVRM0BlendShapeGroup: HighlighterRuleFunction = (
   { index },
   { json, inspector },
 ) => {
-  const indexNum = parseInt( index, 10 );
+  const indexNum = parseInt(index, 10);
 
   const vrm = json.extensions!.VRM as V0VRM.VRM;
   const blendShapeMaster = vrm.blendShapeMaster!;
-  const blendShapeGroup = blendShapeMaster.blendShapeGroups![ indexNum ];
+  const blendShapeGroup = blendShapeMaster.blendShapeGroups![indexNum];
   const v0BlendShapePresetName = blendShapeGroup.presetName;
   const name = blendShapeGroup.name!;
   const expressionName = v0BlendShapePresetName != null
-    ? expressionNameMap[ v0BlendShapePresetName ] ?? name
+    ? expressionNameMap[v0BlendShapePresetName] ?? name
     : name;
 
-  const prevValue = inspector.model!.vrm!.expressionManager!.getValue( expressionName )!;
-  inspector.model!.vrm!.expressionManager!.setValue( expressionName, 1.0 );
+  const prevValue = inspector.model!.vrm!.expressionManager!.getValue(expressionName)!;
+  inspector.model!.vrm!.expressionManager!.setValue(expressionName, 1.0);
 
   return () => {
-    inspector.model!.vrm!.expressionManager!.setValue( expressionName, prevValue );
+    inspector.model!.vrm!.expressionManager!.setValue(expressionName, prevValue);
   };
 };

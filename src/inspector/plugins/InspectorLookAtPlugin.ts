@@ -18,76 +18,76 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
     return this._enableLookAt;
   }
 
-  public set enableLookAt( value: boolean ) {
+  public set enableLookAt(value: boolean) {
     this._enableLookAt = value;
 
-    if ( this._transformControls ) {
+    if (this._transformControls) {
       this._transformControls.enabled = value;
       this._transformControls.getHelper().visible = value;
     }
 
-    if ( value ) {
+    if (value) {
       this._enableLookAtTarget();
     } else {
       this._disableLookAtTarget();
     }
   }
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this.inspector = inspector;
 
     this._enableLookAt = false;
 
     this._lookAtTarget = new THREE.Object3D();
-    inspector.scene.add( this._lookAtTarget );
+    inspector.scene.add(this._lookAtTarget);
   }
 
   public handleAfterSetup(): void {
     const { scene, camera, canvas } = this.inspector;
 
-    this._transformControls = new TransformControls( camera, canvas );
-    scene.add( this._transformControls.getHelper() );
+    this._transformControls = new TransformControls(camera, canvas);
+    scene.add(this._transformControls.getHelper());
 
-    this._transformControls.attach( this._lookAtTarget );
+    this._transformControls.attach(this._lookAtTarget);
 
     this._transformControls.enabled = false;
     this._transformControls.getHelper().visible = false;
 
-    this._transformControls.addEventListener( 'dragging-changed', ( event ) => {
+    this._transformControls.addEventListener('dragging-changed', (event) => {
       const cameraControls = this.inspector.cameraControlsPlugin.controls;
-      if ( cameraControls ) {
+      if (cameraControls) {
         cameraControls.enabled = !event.value;
       }
-    } );
+    });
   }
 
-  public handleAfterLoad( model: InspectorModel ): void {
+  public handleAfterLoad(model: InspectorModel): void {
     const { vrm } = model;
-    if ( vrm == null ) { return; }
+    if (vrm == null) { return; }
 
-    const head = vrm.humanoid?.getNormalizedBoneNode( 'head' );
-    if ( head != null ) {
-      head.getWorldPosition( _v3A );
-      this._lookAtTarget.position.set( 0.0, 0.0, 5.0 ).add( _v3A );
+    const head = vrm.humanoid?.getNormalizedBoneNode('head');
+    if (head != null) {
+      head.getWorldPosition(_v3A);
+      this._lookAtTarget.position.set(0.0, 0.0, 5.0).add(_v3A);
     }
 
-    if ( this._enableLookAt ) {
+    if (this._enableLookAt) {
       this._enableLookAtTarget();
     }
   }
 
   private _enableLookAtTarget(): void {
     const lookAt = this.inspector.model?.vrm?.lookAt;
-    if ( !lookAt ) { return; }
+    if (!lookAt) { return; }
 
     lookAt.target = this._lookAtTarget;
   }
 
   private _disableLookAtTarget(): void {
     const lookAt = this.inspector.model?.vrm?.lookAt;
-    if ( !lookAt ) { return; }
+    if (!lookAt) { return; }
 
     lookAt.target = undefined;
-    lookAt.applier.lookAt( _eulerA.set( 0.0, 0.0, 0.0 ) );
+    lookAt.applier.lookAt(_eulerA.set(0.0, 0.0, 0.0));
   }
 }

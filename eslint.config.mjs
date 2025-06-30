@@ -23,6 +23,11 @@ export default [
     quoteProps: 'consistent',
   }),
   {
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@stylistic/max-statements-per-line': ['error', { max: 2 }],

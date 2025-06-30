@@ -21,29 +21,29 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     return this._active;
   }
 
-  public set active( value: boolean ) {
+  public set active(value: boolean) {
     this._active = value;
 
-    this._sprites?.forEach( ( sprite ) => sprite.visible = value );
-    if ( value === false ) {
+    this._sprites?.forEach((sprite) => sprite.visible = value);
+    if (value === false) {
       this._transformControls?.detach();
     }
   }
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this.inspector = inspector;
 
     const loader = new THREE.TextureLoader();
-    const grabTexture = loader.load( imageGrabPurple, ( texture ) => {
+    const grabTexture = loader.load(imageGrabPurple, (texture) => {
       texture.flipY = false;
-    } );
+    });
 
-    this._spriteMaterial = new THREE.SpriteMaterial( {
+    this._spriteMaterial = new THREE.SpriteMaterial({
       sizeAttenuation: false,
       transparent: true,
       depthTest: false,
       map: grabTexture,
-    } );
+    });
 
     this._raycaster = new THREE.Raycaster();
 
@@ -53,39 +53,39 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
   public handleAfterSetup(): void {
     const { scene, camera, canvas } = this.inspector;
 
-    this._transformControls = new TransformControls( camera, canvas );
+    this._transformControls = new TransformControls(camera, canvas);
     this._transformControls.space = 'local';
     this._transformControls.mode = 'rotate';
-    scene.add( this._transformControls.getHelper() );
+    scene.add(this._transformControls.getHelper());
 
-    this._transformControls.addEventListener( 'dragging-changed', ( event ) => {
+    this._transformControls.addEventListener('dragging-changed', (event) => {
       const cameraControls = this.inspector.cameraControlsPlugin.controls;
-      if ( cameraControls ) {
+      if (cameraControls) {
         cameraControls.enabled = !event.value;
       }
-    } );
+    });
 
-    if ( canvas != null ) {
-      canvas?.addEventListener( 'mousedown', ( event ) => this.handleMouseDown( event ) );
+    if (canvas != null) {
+      canvas?.addEventListener('mousedown', (event) => this.handleMouseDown(event));
     }
   }
 
-  public handleAfterLoad( model: InspectorModel ): void {
+  public handleAfterLoad(model: InspectorModel): void {
     const humanoid = model.vrm?.humanoid;
-    if ( humanoid == null ) { return; }
+    if (humanoid == null) { return; }
 
     this._sprites = [];
 
-    for ( const bone of Object.values( humanoid.normalizedHumanBones ) ) {
+    for (const bone of Object.values(humanoid.normalizedHumanBones)) {
       const boneNode = bone.node;
 
-      const sprite = new THREE.Sprite( this._spriteMaterial );
-      sprite.scale.setScalar( 0.01 );
+      const sprite = new THREE.Sprite(this._spriteMaterial);
+      sprite.scale.setScalar(0.01);
       sprite.renderOrder = 10000;
       sprite.visible = this._active;
-      boneNode.add( sprite );
+      boneNode.add(sprite);
 
-      this._sprites.push( sprite );
+      this._sprites.push(sprite);
     }
   }
 
@@ -94,28 +94,28 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     this._transformControls?.detach();
   }
 
-  public handleMouseDown( event: MouseEvent ): void {
-    if ( !this._active ) { return; }
+  public handleMouseDown(event: MouseEvent): void {
+    if (!this._active) { return; }
 
     const { camera, canvas } = this.inspector;
-    if ( canvas == null ) { return; }
+    if (canvas == null) { return; }
 
     const sprites = this._sprites;
-    if ( sprites == null ) { return; }
+    if (sprites == null) { return; }
 
     const transformControls = this._transformControls;
-    if ( transformControls == null ) { return; }
+    if (transformControls == null) { return; }
 
     const rect = canvas.getBoundingClientRect();
 
     _v2A.set(
-      ( event.clientX - rect.left ) / rect.width * 2.0 - 1.0,
-      -( event.clientY - rect.top ) / rect.height * 2.0 + 1.0,
+      (event.clientX - rect.left) / rect.width * 2.0 - 1.0,
+      -(event.clientY - rect.top) / rect.height * 2.0 + 1.0,
     );
 
-    this._raycaster.setFromCamera( _v2A, camera );
-    const isects = this._raycaster.intersectObjects( sprites, false );
-    const isect = isects[ 0 ];
+    this._raycaster.setFromCamera(_v2A, camera);
+    const isects = this._raycaster.intersectObjects(sprites, false);
+    const isect = isects[0];
 
     const timeDown = Date.now();
 
@@ -123,19 +123,19 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
       () => 0,
       () => {
         const now = Date.now();
-        if ( now - timeDown > 300 ) {
+        if (now - timeDown > 300) {
           return;
         }
 
-        if ( isect != null ) {
+        if (isect != null) {
           const sprite = isect.object as THREE.Sprite;
           const boneNode = sprite.parent!;
 
-          transformControls.attach( boneNode );
+          transformControls.attach(boneNode);
         } else {
           transformControls.detach();
         }
-      }
+      },
     );
   }
 }

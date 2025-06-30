@@ -18,7 +18,6 @@ import type { GLTF, GLTFParser } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import type { GLTF as GLTFSchema } from '@gltf-transform/core';
 import type { Inspector } from './Inspector';
 
-
 export interface HighlighterRuleContext {
   inspector: Inspector;
   gltf: GLTF;
@@ -27,42 +26,42 @@ export interface HighlighterRuleContext {
 }
 
 export type HighlighterRuleFunction
-  = ( matches: Record<string, string>, context: HighlighterRuleContext ) => () => void;
+  = (matches: Record<string, string>, context: HighlighterRuleContext) => () => void;
 
 export class Highlighter {
   private _inspector: Inspector;
   private _rules: [ string, HighlighterRuleFunction ][];
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this._inspector = inspector;
     this._rules = [
-      [ '/nodes/:index', highlightGLTFNode ],
-      [ '/meshes/:index', highlightGLTFMesh ],
-      [ '/meshes/:meshIndex/primitives/:primIndex', highlightGLTFPrimitive ],
-      [ '/meshes/:meshIndex/primitives/:primIndex/targets/:targetIndex', highlightGLTFPrimitiveTarget ],
-      [ '/meshes/:meshIndex/primitives/:primIndex/extras/targetNames/:targetIndex', highlightGLTFPrimitiveTarget ],
-      [ '/meshes/:meshIndex/extras/targetNames/:targetIndex', highlightGLTFMeshTarget ],
-      [ '/skins/:index', highlightGLTFSkin ],
-      [ '/skins/:skinIndex/joints/:jointIndex', highlightGLTFSkinJoint ],
-      [ '/materials/:index', highlightGLTFMaterial ],
-      [ '/extensions/VRM/materialProperties/:index', highlightGLTFMaterial ],
-      [ '/extensions/VRM/humanoid/humanBones/:index', highlightVRM0HumanBone ],
-      [ '/extensions/VRM/firstPerson/firstPersonBoneOffset', highlightVRMLookAtOffset ],
-      [ '/extensions/VRM/firstPerson/meshAnnotations', highlightVRMFirstPersonMeshAnnotation ],
-      [ '/extensions/VRM/blendShapeMaster/blendShapeGroups/:index', highlightVRM0BlendShapeGroup ],
-      [ '/extensions/VRM/secondaryAnimation/boneGroups/:index', highlightVRM0SecondaryAnimationBoneGroup ],
-      [ '/extensions/VRMC_vrm/humanoid/humanBones/:boneName', highlightVRM1HumanBone ],
-      [ '/extensions/VRMC_vrm/expressions/preset/:expressionName', highlightVRM1Expression ],
-      [ '/extensions/VRMC_vrm/expressions/custom/:expressionName', highlightVRM1Expression ],
-      [ '/extensions/VRMC_vrm/firstPerson/meshAnnotations', highlightVRMFirstPersonMeshAnnotation ],
-      [ '/extensions/VRMC_vrm/lookAt/offsetFromHeadBone', highlightVRMLookAtOffset ],
-      [ '/extensions/VRMC_springBone/springs/:index', highlightVRM1SpringBoneSpring ],
+      ['/nodes/:index', highlightGLTFNode],
+      ['/meshes/:index', highlightGLTFMesh],
+      ['/meshes/:meshIndex/primitives/:primIndex', highlightGLTFPrimitive],
+      ['/meshes/:meshIndex/primitives/:primIndex/targets/:targetIndex', highlightGLTFPrimitiveTarget],
+      ['/meshes/:meshIndex/primitives/:primIndex/extras/targetNames/:targetIndex', highlightGLTFPrimitiveTarget],
+      ['/meshes/:meshIndex/extras/targetNames/:targetIndex', highlightGLTFMeshTarget],
+      ['/skins/:index', highlightGLTFSkin],
+      ['/skins/:skinIndex/joints/:jointIndex', highlightGLTFSkinJoint],
+      ['/materials/:index', highlightGLTFMaterial],
+      ['/extensions/VRM/materialProperties/:index', highlightGLTFMaterial],
+      ['/extensions/VRM/humanoid/humanBones/:index', highlightVRM0HumanBone],
+      ['/extensions/VRM/firstPerson/firstPersonBoneOffset', highlightVRMLookAtOffset],
+      ['/extensions/VRM/firstPerson/meshAnnotations', highlightVRMFirstPersonMeshAnnotation],
+      ['/extensions/VRM/blendShapeMaster/blendShapeGroups/:index', highlightVRM0BlendShapeGroup],
+      ['/extensions/VRM/secondaryAnimation/boneGroups/:index', highlightVRM0SecondaryAnimationBoneGroup],
+      ['/extensions/VRMC_vrm/humanoid/humanBones/:boneName', highlightVRM1HumanBone],
+      ['/extensions/VRMC_vrm/expressions/preset/:expressionName', highlightVRM1Expression],
+      ['/extensions/VRMC_vrm/expressions/custom/:expressionName', highlightVRM1Expression],
+      ['/extensions/VRMC_vrm/firstPerson/meshAnnotations', highlightVRMFirstPersonMeshAnnotation],
+      ['/extensions/VRMC_vrm/lookAt/offsetFromHeadBone', highlightVRMLookAtOffset],
+      ['/extensions/VRMC_springBone/springs/:index', highlightVRM1SpringBoneSpring],
     ];
   }
 
-  public highlight( path: string ): ( () => void ) | undefined {
+  public highlight(path: string): (() => void) | undefined {
     const inspector = this._inspector;
-    const pathSplit = path.split( '/' );
+    const pathSplit = path.split('/');
 
     const gltf = inspector.model!.gltf;
     const parser = gltf.parser;
@@ -72,27 +71,27 @@ export class Highlighter {
 
     let matches: Record<string, string> = {};
 
-    const rule = this._rules.find( ( [ rulePath ] ) => {
-      const rulePathSplit = rulePath.split( '/' );
-      if ( pathSplit.length !== rulePathSplit.length ) { return false; }
+    const rule = this._rules.find(([rulePath]) => {
+      const rulePathSplit = rulePath.split('/');
+      if (pathSplit.length !== rulePathSplit.length) { return false; }
 
       matches = {};
 
-      return pathSplit.every( ( content, i ) => {
-        const ruleContent = rulePathSplit[ i ];
+      return pathSplit.every((content, i) => {
+        const ruleContent = rulePathSplit[i];
 
-        if ( ruleContent.startsWith( ':' ) ) {
-          const key = ruleContent.substring( 1 );
-          matches[ key ] = content;
+        if (ruleContent.startsWith(':')) {
+          const key = ruleContent.substring(1);
+          matches[key] = content;
           return true;
         } else {
           return content === ruleContent;
         }
-      } );
-    } );
+      });
+    });
 
-    if ( rule != null ) {
-      return rule[ 1 ]( matches, context );
+    if (rule != null) {
+      return rule[1](matches, context);
     }
   }
 }

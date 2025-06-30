@@ -10,25 +10,25 @@ export class InspectorPostProcessingPlugin implements InspectorPlugin {
   public readonly bloomPass: UnrealBloomPass;
   public readonly toneMappingPass: ShaderPass;
 
-  public constructor( inspector: Inspector ) {
+  public constructor(inspector: Inspector) {
     this.inspector = inspector;
 
     this.bloomPass = new UnrealBloomPass(
-      new THREE.Vector2( 4, 4 ),
+      new THREE.Vector2(4, 4),
       1.0, // strength
       0.5, // radius
       1.0, // threshold
     );
     this.bloomPass.enabled = false;
 
-    this.toneMappingPass = new ShaderPass( ACESFilmicToneMappingShader );
+    this.toneMappingPass = new ShaderPass(ACESFilmicToneMappingShader);
     this.toneMappingPass.enabled = false;
   }
 
   public handleAfterSetup(): void {
     const composer = this.inspector.composer!;
 
-    composer.addPass( this.bloomPass );
-    composer.addPass( this.toneMappingPass );
+    composer.addPass(this.bloomPass);
+    composer.addPass(this.toneMappingPass);
   }
 }
