@@ -36,7 +36,7 @@ jobs:
         uses: ./.github/actions/init
 
       - name: Lint
-        run: yarn lint
+        run: yarn lint-ci
 
   pages:
     if: ${{ github.ref == 'refs/heads/release' }}
