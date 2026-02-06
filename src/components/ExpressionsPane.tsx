@@ -1,4 +1,4 @@
-import { BlendShapeRow } from './BlendShapeRow';
+import { ExpressionRow } from './ExpressionRow';
 import { Hr } from './Hr';
 import { InspectorContext } from '../InspectorContext';
 import { Pane, PaneParams } from './Pane';
@@ -54,7 +54,7 @@ export function ExpressionsPane(params: PaneParams) {
           ? (
               <>
                 { presets.map((name) => (
-                  <BlendShapeRow
+                  <ExpressionRow
                     key={name}
                     name={name}
                     isAvailable={expressionManager?.getExpression(name) != null}
@@ -62,7 +62,7 @@ export function ExpressionsPane(params: PaneParams) {
                 )) }
                 <Hr />
                 { customNames?.map((name) => (
-                  <BlendShapeRow
+                  <ExpressionRow
                     key={name}
                     name={name}
                     isAvailable={true}

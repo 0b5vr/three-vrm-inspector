@@ -1,7 +1,7 @@
 import { AboutPane } from './AboutPane';
 import { AnimationsPane } from './AnimationsPane';
 import { ExportBufferViewPane } from './ExportBufferViewPane';
-import { ExpressionsPane } from './BlendShapePane';
+import { ExpressionsPane } from './ExpressionsPane';
 import { HelpersPane } from './HelpersPane';
 import { JSEditorPane } from './JSEditorPane';
 import { JSONPane } from './JSONPane';

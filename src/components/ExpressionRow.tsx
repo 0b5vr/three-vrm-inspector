@@ -2,7 +2,7 @@ import { InspectorContext } from '../InspectorContext';
 import { RangeRow } from './RangeRow';
 import { useCallback, useContext } from 'react';
 
-export function BlendShapeRow({ name, isAvailable }: {
+export function ExpressionRow({ name, isAvailable }: {
   name: string;
   isAvailable: boolean;
 }) {
