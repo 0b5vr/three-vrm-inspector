@@ -1,15 +1,11 @@
-import './codemirror-themes/monokai-sharp.css';
-import 'codemirror/addon/comment/comment';
-import 'codemirror/keymap/sublime';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/mode/javascript/javascript';
 import * as THREE from 'three';
 import { InspectorContext } from '../InspectorContext';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
-import { Controlled as ReactCodeMirror } from 'react-codemirror2';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import CodeMirror from 'codemirror';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import ReactCodeMirror, { EditorView, KeyBinding, keymap } from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 
 const defaultCode = `// Press Ctrl+S or Ctrl+R to apply
 // The api will be changed without notice! Use at your own risk
@@ -46,61 +42,50 @@ export default ( { inspector, THREE } ) => {
 export function JSEditorPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
   const [code, setCode] = useState(defaultCode);
-  const [hasEdited, setHasEdited] = useState(false);
+  const refHasEdit = useRef(false);
   const refLastUnmount = useRef<(() => void) | null>(null);
 
   // -- event handlers -----------------------------------------------------------------------------
   useEffect(() => {
     // prevent terrible consequence
     window.addEventListener('beforeunload', (event) => {
-      if (hasEdited) {
-        const confirmationMessage = 'You will lose all of your changes on the editor!';
-        event.returnValue = confirmationMessage;
-        return confirmationMessage;
+      if (refHasEdit.current) {
+        event.preventDefault();
+        event.returnValue = '';
       }
     });
-  }, [hasEdited]);
+  }, []);
 
-  const handleCompile = useCallback(
-    (code: string) => {
-      refLastUnmount.current?.();
+  const handleRun = useCallback((editor: EditorView) => {
+    refLastUnmount.current?.();
 
-      const blob = new Blob([code], { type: 'text/javascript' });
-      const url = URL.createObjectURL(blob);
+    const code = editor.state.doc.toString();
+    const blob = new Blob([code], { type: 'text/javascript' });
+    const url = URL.createObjectURL(blob);
 
-      import(url).then((mod) => {
-        refLastUnmount.current = mod.default({ inspector, THREE });
-        URL.revokeObjectURL(url);
-      });
+    import(url).then((mod) => {
+      refLastUnmount.current = mod.default({ inspector, THREE });
+      URL.revokeObjectURL(url);
+    });
+
+    return true;
+  }, [inspector]);
+
+  const customKeymap: KeyBinding[] = useMemo(() => [
+    {
+      key: 'Mod-s',
+      run: handleRun,
     },
-    [inspector],
-  );
-
-  const handleEditorDidMount = useCallback(
-    (editor: CodeMirror.Editor) => {
-      editor.addKeyMap({
-        'Ctrl-S': () => {
-          handleCompile(editor.getValue());
-        },
-        'Ctrl-R': () => {
-          handleCompile(editor.getValue());
-        },
-      });
+    {
+      key: 'Mod-r',
+      run: handleRun,
     },
-    [handleCompile],
-  );
-
-  const handleBeforeChange = useCallback(
-    (editor: CodeMirror.Editor, data: CodeMirror.EditorChange, value: string) => {
-      setCode(value);
-      setHasEdited(true);
-    },
-    [],
-  );
+  ], [handleRun]);
 
   const handleChange = useCallback(
-    () => {
-      // do nothing
+    (code: string) => {
+      setCode(code);
+      refHasEdit.current = true;
     },
     [],
   );
@@ -113,16 +98,14 @@ export function JSEditorPane(params: PaneParams) {
       >
         <ReactCodeMirror
           value={code}
-          options={{
-            mode: 'text/javascript',
-            keyMap: 'sublime',
-            theme: 'monokai-sharp',
-            lineNumbers: true,
-          }}
-          editorDidMount={handleEditorDidMount}
-          onBeforeChange={handleBeforeChange}
+          extensions={[
+            javascript(),
+            keymap.of(customKeymap),
+          ]}
+          theme={vscodeDark}
           onChange={handleChange}
           className="h-full leading-tight"
+          height="100%"
         />
       </PaneRoot>
     </Pane>

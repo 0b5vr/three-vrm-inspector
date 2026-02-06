@@ -10,14 +10,14 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "lint-fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
-    "postinstall": "patch-package"
+    "lint-fix": "eslint \"src/**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@codemirror/lang-javascript": "^6.2.4",
     "@eslint/js": "^9.30.0",
     "@gltf-transform/core": "^1.2.4",
     "@pixiv/three-vrm": "3.3.1",
@@ -32,17 +32,16 @@
     "@types/react-dom": "^19.1.2",
     "@types/three": "^0.169.0",
     "@types/webxr": "^0.5.20",
+    "@uiw/codemirror-theme-vscode": "^4.25.4",
+    "@uiw/react-codemirror": "^4.25.4",
     "@vitejs/plugin-react": "^4.4.1",
     "camera-controls": "^1.25.3",
-    "codemirror": "^5.65.1",
     "eslint": "^9.30.0",
     "eslint-plugin-react": "^7.37.5",
     "eventemitter3": "^4.0.7",
     "globals": "^16.2.0",
     "gltf-validator": "^2.0.0-dev.3.3",
     "jotai": "^2.10.2",
-    "patch-package": "^6.4.7",
-    "react-codemirror2": "^7.2.1",
     "rimraf": "^3.0.2",
     "tailwindcss": "^4.1.18",
     "three": "^0.169.0",
