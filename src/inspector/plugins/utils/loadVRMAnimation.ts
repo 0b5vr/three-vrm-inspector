@@ -1,9 +1,16 @@
-import * as THREE from 'three';
+import type { VRM } from '@pixiv/three-vrm';
+import {
+  createVRMAnimationClip,
+  type VRMAnimation,
+  VRMAnimationLoaderPlugin,
+} from '@pixiv/three-vrm-animation';
+import type * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { VRM } from '@pixiv/three-vrm';
-import { VRMAnimation, VRMAnimationLoaderPlugin, createVRMAnimationClip } from '@pixiv/three-vrm-animation';
 
-export async function loadVRMAniamtion(name: string, vrm: VRM): Promise<THREE.AnimationClip> {
+export async function loadVRMAniamtion(
+  name: string,
+  vrm: VRM,
+): Promise<THREE.AnimationClip> {
   const loader = new GLTFLoader();
   loader.register((parser) => new VRMAnimationLoaderPlugin(parser));
   const gltf = await loader.loadAsync(name);

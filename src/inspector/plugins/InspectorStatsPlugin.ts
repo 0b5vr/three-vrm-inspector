@@ -1,16 +1,16 @@
+import type { VRM } from '@pixiv/three-vrm';
 import * as THREE from 'three';
-import { EventEmittable } from '../../utils/EventEmittable';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { Inspector } from '../Inspector';
-import { InspectorModel } from '../InspectorModel';
-import { InspectorPlugin } from './InspectorPlugin';
-import { VRM } from '@pixiv/three-vrm';
+import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { applyMixins } from '../../utils/applyMixins';
+import { EventEmittable } from '../../utils/EventEmittable';
+import type { Inspector } from '../Inspector';
+import type { InspectorModel } from '../InspectorModel';
+import type { InspectorPlugin } from './InspectorPlugin';
 
 const _v3A = new THREE.Vector3();
 
 export interface InspectorStatsPluginStats {
-  dimension: [ number, number, number ];
+  dimension: [number, number, number];
   vertices: number;
   polygons: number;
   meshes: number;
@@ -21,9 +21,10 @@ export interface InspectorStatsPluginStats {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
-export interface InspectorStatsPlugin extends EventEmittable<{
-  update: { stats: InspectorStatsPluginStats | null };
-}> {}
+export interface InspectorStatsPlugin
+  extends EventEmittable<{
+    update: { stats: InspectorStatsPluginStats | null };
+  }> {}
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class InspectorStatsPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
@@ -63,7 +64,8 @@ export class InspectorStatsPlugin implements InspectorPlugin {
       nPolygons += (geometry.index?.count ?? buffer.count) / 3;
     };
 
-    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> = await gltf.parser.getDependencies('mesh');
+    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> =
+      await gltf.parser.getDependencies('mesh');
     meshes.forEach((meshOrGroup) => {
       nMeshes++;
 
@@ -84,8 +86,10 @@ export class InspectorStatsPlugin implements InspectorPlugin {
       nVertices += buffer.count;
     }
 
-    const textures: Array<THREE.Material> = await gltf.parser.getDependencies('texture');
-    const materials: Array<THREE.Material> = await gltf.parser.getDependencies('material');
+    const textures: Array<THREE.Material> =
+      await gltf.parser.getDependencies('texture');
+    const materials: Array<THREE.Material> =
+      await gltf.parser.getDependencies('material');
 
     const nJoints = vrm?.springBoneManager?.joints?.size ?? 0;
 

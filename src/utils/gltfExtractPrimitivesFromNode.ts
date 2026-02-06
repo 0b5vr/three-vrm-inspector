@@ -1,6 +1,6 @@
 // yoinked from @pixiv/three-vrm
 
-import * as THREE from 'three';
+import type * as THREE from 'three';
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 function extractPrimitivesInternal(
@@ -96,7 +96,10 @@ export async function gltfExtractPrimitivesFromNode(
   gltf: GLTF,
   nodeIndex: number,
 ): Promise<THREE.Mesh[] | null> {
-  const node: THREE.Object3D = await gltf.parser.getDependency('node', nodeIndex);
+  const node: THREE.Object3D = await gltf.parser.getDependency(
+    'node',
+    nodeIndex,
+  );
   return extractPrimitivesInternal(gltf, nodeIndex, node);
 }
 

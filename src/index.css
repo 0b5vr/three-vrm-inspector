@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900');
-@import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400');
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400");
 
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Roboto', sans-serif;
-  --font-mono: 'Roboto Mono', monospace;
+  --font-sans: "Roboto", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
 }
 
 body {
@@ -15,8 +15,4 @@ body {
 
 * {
   box-sizing: border-box;
-}
-
-.CodeMirror {
-  height: 100% !important;
 }

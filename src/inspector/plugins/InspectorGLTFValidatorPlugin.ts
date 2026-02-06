@@ -1,7 +1,7 @@
-import { ValidationReport } from './ValidationReport';
 import { validateBytes } from 'gltf-validator';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
+import type { ValidationReport } from './ValidationReport';
 
 export class InspectorGLTFValidatorPlugin implements InspectorPlugin {
   public static get VALIDATOR_MAX_ISSUES(): number {
@@ -26,12 +26,15 @@ export class InspectorGLTFValidatorPlugin implements InspectorPlugin {
     maxIssues: number = InspectorGLTFValidatorPlugin.VALIDATOR_MAX_ISSUES,
   ): Promise<ValidationReport | null> {
     const buffer = this.inspector.model?.buffer;
-    if (!buffer) { return null; }
+    if (!buffer) {
+      return null;
+    }
 
-    const validationReport = await validateBytes(
-      new Uint8Array(buffer),
-      { maxIssues },
-    ).catch((error) => console.error('Validation failed: ', error));
+    const validationReport = (await validateBytes(new Uint8Array(buffer), {
+      maxIssues,
+    }).catch((error) =>
+      console.error('Validation failed: ', error),
+    )) as ValidationReport | null;
 
     this.__validationReport = validationReport;
 

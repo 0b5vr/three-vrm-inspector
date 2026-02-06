@@ -1,8 +1,8 @@
-import { NameValueEntry } from './NameValueEntry';
-import { Pane, PaneParams } from './Pane';
-import { PaneRoot } from './PaneRoot';
-import { statsAtom } from '../stores/atoms/statsAtom';
 import { useAtomValue } from 'jotai';
+import { statsAtom } from '../stores/atoms/statsAtom';
+import { NameValueEntry } from './NameValueEntry';
+import { Pane, type PaneParams } from './Pane';
+import { PaneRoot } from './PaneRoot';
 
 // == element ======================================================================================
 export function StatsPane(params: PaneParams) {

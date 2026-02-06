@@ -1,9 +1,9 @@
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { InspectorContext } from '../InspectorContext';
 import { HelpersPaneCheckbox } from './HelpersPaneCheckbox';
 import { Hr } from './Hr';
-import { InspectorContext } from '../InspectorContext';
-import { Pane, PaneParams } from './Pane';
+import { Pane, type PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
-import { useCallback, useContext, useEffect, useState } from 'react';
 
 export function HelpersPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
@@ -57,35 +57,35 @@ export function HelpersPane(params: PaneParams) {
 
   const handleChangeGrid = useCallback((checked: boolean) => {
     setCheckedGrid(checked);
-  }, [inspector]);
+  }, []);
 
   const handleChangeAxes = useCallback((checked: boolean) => {
     setCheckedAxes(checked);
-  }, [inspector]);
+  }, []);
 
   const handleChangeHumanoid = useCallback((checked: boolean) => {
     setCheckedHumanoid(checked);
-  }, [inspector]);
+  }, []);
 
   const handleChangeHumanoidTransform = useCallback((checked: boolean) => {
     setCheckedHumanoidTransform(checked);
-  }, [inspector]);
+  }, []);
 
   const handleChangeLookAt = useCallback((checked: boolean) => {
     setCheckedLookAt(checked);
-  }, [inspector]);
+  }, []);
 
   const handleChangeLookAtBall = useCallback((checked: boolean) => {
     setCheckedLookAtBall(checked);
-  }, [inspector]);
+  }, []);
 
   const handleChangeSpringBones = useCallback((checked: boolean) => {
     setCheckedSpringBones(checked);
-  }, [inspector]);
+  }, []);
 
   const handleChangeSpringBoneColliders = useCallback((checked: boolean) => {
     setCheckedSpringBoneColliders(checked);
-  }, [inspector]);
+  }, []);
 
   useEffect(() => {
     inspector.helpersPlugin.gridHelper.visible = checkedGrid;
@@ -112,23 +112,27 @@ export function HelpersPane(params: PaneParams) {
   }, [inspector, checkedLookAtBall]);
 
   useEffect(() => {
-    inspector.helpersPlugin.springBoneJointHelperRoot.visible = checkedSpringBones;
+    inspector.helpersPlugin.springBoneJointHelperRoot.visible =
+      checkedSpringBones;
   }, [inspector, checkedSpringBones]);
 
   useEffect(() => {
-    inspector.helpersPlugin.springBoneColliderHelperRoot.visible = checkedSpringBoneColliders;
+    inspector.helpersPlugin.springBoneColliderHelperRoot.visible =
+      checkedSpringBoneColliders;
   }, [inspector, checkedSpringBoneColliders]);
 
   return (
     <Pane {...params}>
       <PaneRoot>
         <button
+          type="button"
           className="ml-1 px-1 bg-gray-800 border border-gray-500"
           onClick={handleClickEnableAll}
         >
           Enable All
         </button>
         <button
+          type="button"
           className="ml-1 px-1 bg-gray-800 border border-gray-500"
           onClick={handleClickDisableAll}
         >

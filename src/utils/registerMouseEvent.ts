@@ -7,7 +7,9 @@ export function registerMouseEvent(
   let movementSum = { x: 0.0, y: 0.0 };
 
   const update = (): void => {
-    if (isDone) { return; }
+    if (isDone) {
+      return;
+    }
     requestAnimationFrame(update);
 
     if (moveEvent) {

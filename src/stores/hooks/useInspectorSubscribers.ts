@@ -1,8 +1,8 @@
-import { Inspector } from '../../inspector/Inspector';
+import { useSetAtom } from 'jotai';
+import { useEffect } from 'react';
+import type { Inspector } from '../../inspector/Inspector';
 import { statsAtom } from '../atoms/statsAtom';
 import { textureInfosAtom } from '../atoms/textureInfosAtom';
-import { useEffect } from 'react';
-import { useSetAtom } from 'jotai';
 import { webglMemoryInfoAtom } from '../atoms/webglMemoryInfoAtom';
 
 function useStatsSubscriber(inspector: Inspector): void {
@@ -12,7 +12,7 @@ function useStatsSubscriber(inspector: Inspector): void {
     inspector.statsPlugin.on('update', ({ stats }) => {
       setStats(stats);
     });
-  }, [inspector]);
+  }, [inspector, setStats]);
 }
 
 function useTextureInfosSubscriber(inspector: Inspector): void {
@@ -22,7 +22,7 @@ function useTextureInfosSubscriber(inspector: Inspector): void {
     inspector.texturesPlugin.on('updateTextureInfos', ({ textureInfos }) => {
       setTextureInfos(textureInfos);
     });
-  }, [inspector]);
+  }, [inspector, setTextureInfos]);
 }
 
 function useWebGLMemoryInfoSubscriber(inspector: Inspector): void {
@@ -32,7 +32,7 @@ function useWebGLMemoryInfoSubscriber(inspector: Inspector): void {
     inspector.webglMemoryPlugin.on('update', ({ webGLMemoryInfo }) => {
       setWebGLMemoryInfo(webGLMemoryInfo);
     });
-  }, [inspector]);
+  }, [inspector, setWebGLMemoryInfo]);
 }
 
 export function useInspectorSubscribers(inspector: Inspector): void {

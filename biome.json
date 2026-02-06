@@ -20,8 +20,15 @@
       "correctness": {
         "useHookAtTopLevel": "off"
       },
+      "suspicious": {
+        "noUnsafeDeclarationMerging": "off"
+      },
       "style": {
         "noNonNullAssertion": "info"
+      },
+      "a11y": {
+        "noStaticElementInteractions": "warn",
+        "useKeyWithClickEvents": "warn"
       }
     }
   },

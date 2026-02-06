@@ -1,10 +1,10 @@
+import type { VRMExpressionPresetName } from '@pixiv/three-vrm';
+import { useContext } from 'react';
+import { InspectorContext } from '../InspectorContext';
 import { ExpressionRow } from './ExpressionRow';
 import { Hr } from './Hr';
-import { InspectorContext } from '../InspectorContext';
-import { Pane, PaneParams } from './Pane';
+import { Pane, type PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
-import { VRMExpressionPresetName } from '@pixiv/three-vrm';
-import { useContext } from 'react';
 
 // == constants ====================================================================================
 const presets: VRMExpressionPresetName[] = [
@@ -50,28 +50,26 @@ export function ExpressionsPane(params: PaneParams) {
   return (
     <Pane {...params}>
       <PaneRoot>
-        { expressionManager
-          ? (
-              <>
-                { presets.map((name) => (
-                  <ExpressionRow
-                    key={name}
-                    name={name}
-                    isAvailable={expressionManager?.getExpression(name) != null}
-                  />
-                )) }
-                <Hr />
-                { customNames?.map((name) => (
-                  <ExpressionRow
-                    key={name}
-                    name={name}
-                    isAvailable={true}
-                  />
-                )) }
-                { !hasUnknowns && <span className="text-gray-500">(No custom expressions)</span> }
-              </>
-            )
-          : 'No Expressions / BlendShapeProxy detected.' }
+        {expressionManager ? (
+          <>
+            {presets.map((name) => (
+              <ExpressionRow
+                key={name}
+                name={name}
+                isAvailable={expressionManager?.getExpression(name) != null}
+              />
+            ))}
+            <Hr />
+            {customNames?.map((name) => (
+              <ExpressionRow key={name} name={name} isAvailable={true} />
+            ))}
+            {!hasUnknowns && (
+              <span className="text-gray-500">(No custom expressions)</span>
+            )}
+          </>
+        ) : (
+          'No Expressions / BlendShapeProxy detected.'
+        )}
       </PaneRoot>
     </Pane>
   );

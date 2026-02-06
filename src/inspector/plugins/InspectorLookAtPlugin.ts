@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { InspectorModel } from '../InspectorModel';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import type { Inspector } from '../Inspector';
+import type { InspectorModel } from '../InspectorModel';
 import type { InspectorPlugin } from './InspectorPlugin';
 
 const _v3A = new THREE.Vector3();
@@ -63,7 +63,9 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
 
   public handleAfterLoad(model: InspectorModel): void {
     const { vrm } = model;
-    if (vrm == null) { return; }
+    if (vrm == null) {
+      return;
+    }
 
     const head = vrm.humanoid?.getNormalizedBoneNode('head');
     if (head != null) {
@@ -78,14 +80,18 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
 
   private _enableLookAtTarget(): void {
     const lookAt = this.inspector.model?.vrm?.lookAt;
-    if (!lookAt) { return; }
+    if (!lookAt) {
+      return;
+    }
 
     lookAt.target = this._lookAtTarget;
   }
 
   private _disableLookAtTarget(): void {
     const lookAt = this.inspector.model?.vrm?.lookAt;
-    if (!lookAt) { return; }
+    if (!lookAt) {
+      return;
+    }
 
     lookAt.target = undefined;
     lookAt.applier.lookAt(_eulerA.set(0.0, 0.0, 0.0));

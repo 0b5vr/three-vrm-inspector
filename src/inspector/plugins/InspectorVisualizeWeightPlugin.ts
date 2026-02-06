@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { Inspector } from '../Inspector';
-import { InspectorPlugin } from './InspectorPlugin';
-import { MeshVisualizeWeightMaterial } from '../utils/MeshVisualizeWeightMaterial';
+import type { Inspector } from '../Inspector';
 import { highlightMeshes } from '../utils/highlightMeshes';
+import { MeshVisualizeWeightMaterial } from '../utils/MeshVisualizeWeightMaterial';
+import type { InspectorPlugin } from './InspectorPlugin';
 
 export class InspectorVisualizeWeightPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
@@ -14,7 +14,9 @@ export class InspectorVisualizeWeightPlugin implements InspectorPlugin {
   }
 
   public visualize(mesh: THREE.Mesh, jointIndex: number): () => void {
-    if (!(mesh instanceof THREE.SkinnedMesh)) { return () => 0; }
+    if (!(mesh instanceof THREE.SkinnedMesh)) {
+      return () => 0;
+    }
 
     const map = this.boneIndexMap!.get(mesh.skeleton)!;
     const newJointIndex = map.get(jointIndex)!;

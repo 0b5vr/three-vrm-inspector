@@ -1,21 +1,24 @@
-import { Hr } from './Hr';
-import { InspectorContext } from '../InspectorContext';
-import { InspectorTexturesPluginInfo } from '../inspector/plugins/InspectorTexturesPlugin';
-import { Pane, PaneParams } from './Pane';
-import { PaneRoot } from './PaneRoot';
-import { bytesToDisplayBytes } from './utils/bytesToDisplayBytes';
-import { textureInfosAtom } from '../stores/atoms/textureInfosAtom';
 import { useAtomValue } from 'jotai';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { InspectorContext } from '../InspectorContext';
+import type { InspectorTexturesPluginInfo } from '../inspector/plugins/InspectorTexturesPlugin';
+import { textureInfosAtom } from '../stores/atoms/textureInfosAtom';
+import { Hr } from './Hr';
+import { Pane, type PaneParams } from './Pane';
+import { PaneRoot } from './PaneRoot';
+import { bytesToDisplayBytes } from './utils/bytesToDisplayBytes';
 
 // == microcomponents ==============================================================================
-function Texture({ textureInfo }: {
+function Texture({
+  textureInfo,
+}: {
   textureInfo: InspectorTexturesPluginInfo;
 }) {
   const description = useMemo(() => {
-    const displayBytes = textureInfo.byteLength != null
-      ? bytesToDisplayBytes(textureInfo.byteLength)
-      : 'size unknown';
+    const displayBytes =
+      textureInfo.byteLength != null
+        ? bytesToDisplayBytes(textureInfo.byteLength)
+        : 'size unknown';
     return `${textureInfo.width}x${textureInfo.height}, ${displayBytes}`;
   }, [textureInfo]);
 
@@ -36,62 +39,67 @@ function Texture({ textureInfo }: {
 
   return (
     <div className="flex gap-2">
-      <img src={url} className="w-16 h-16" />
-      <div className="flex-grow flex flex-col justify-center">
-        <div className="text-sm">{ textureInfo.name }</div>
-        <div className="text-xs text-gray-400">{ textureInfo.mimeType }</div>
-        <div className="text-xs text-gray-400">{ description }</div>
+      <img src={url} alt={textureInfo.name} className="w-16 h-16" />
+      <div className="grow flex flex-col justify-center">
+        <div className="text-sm">{textureInfo.name}</div>
+        <div className="text-xs text-gray-400">{textureInfo.mimeType}</div>
+        <div className="text-xs text-gray-400">{description}</div>
       </div>
     </div>
   );
 }
 
-function TexturesInfo({ textureInfos }: {
+function TexturesInfo({
+  textureInfos,
+}: {
   textureInfos: InspectorTexturesPluginInfo[];
 }) {
-  const count = useMemo(() => (
-    textureInfos?.length ?? 0
-  ), [textureInfos]);
+  const count = useMemo(() => textureInfos?.length ?? 0, [textureInfos]);
 
-  const totalBytes = useMemo(() => (
-    textureInfos?.reduce((total, textureInfo) => (
-      total + (textureInfo.byteLength ?? 0)
-    ), 0) ?? 0
-  ), [textureInfos]);
+  const totalBytes = useMemo(
+    () =>
+      textureInfos?.reduce(
+        (total, textureInfo) => total + (textureInfo.byteLength ?? 0),
+        0,
+      ) ?? 0,
+    [textureInfos],
+  );
 
-  const totalPixels = useMemo(() => (
-    textureInfos?.reduce((total, textureInfo) => (
-      total + textureInfo.width * textureInfo.height
-    ), 0) ?? 0
-  ), [textureInfos]);
-  const totalPixelsDisplay = useMemo(() => (
-    `${totalPixels.toLocaleString()} pixels (≈ ${Math.sqrt(totalPixels).toFixed(0).toLocaleString()}^2)`
-  ), [totalPixels]);
+  const totalPixels = useMemo(
+    () =>
+      textureInfos?.reduce(
+        (total, textureInfo) => total + textureInfo.width * textureInfo.height,
+        0,
+      ) ?? 0,
+    [textureInfos],
+  );
+  const totalPixelsDisplay = useMemo(
+    () =>
+      `${totalPixels.toLocaleString()} pixels (≈ ${Math.sqrt(totalPixels).toFixed(0).toLocaleString()}^2)`,
+    [totalPixels],
+  );
 
   return (
     <>
       <div>
         Textures count:
-        { count }
+        {count}
       </div>
       <div>
         Total size:
-        { bytesToDisplayBytes(totalBytes) }
+        {bytesToDisplayBytes(totalBytes)}
       </div>
       <div>
         Total pixels:
-        { totalPixelsDisplay }
+        {totalPixelsDisplay}
       </div>
 
       <Hr />
 
       <div className="flex flex-col gap-1">
-        { textureInfos.map((textureInfo, i) => (
-          <Texture
-            key={i}
-            textureInfo={textureInfo}
-          />
-        )) }
+        {textureInfos.map((textureInfo) => (
+          <Texture key={textureInfo.name} textureInfo={textureInfo} />
+        ))}
       </div>
     </>
   );
@@ -108,12 +116,15 @@ function LoadButtonStuff() {
   return (
     <div className="flex flex-col gap-2 items-center justify-center h-full">
       <button
+        type="button"
         className="px-2 py-1 bg-gray-700 rounded"
         onClick={onClick}
       >
         Load texture infos
       </button>
-      <span className="text-xs text-gray-300">(Might consume extra VRAMs, idk why)</span>
+      <span className="text-xs text-gray-300">
+        (Might consume extra VRAMs, idk why)
+      </span>
     </div>
   );
 }
@@ -124,9 +135,7 @@ export function TexturesPane(params: PaneParams) {
 
   return (
     <Pane {...params}>
-      <PaneRoot
-        className="w-80 h-96 overflow-y-scroll resize"
-      >
+      <PaneRoot className="w-80 h-96 overflow-y-scroll resize">
         {textureInfos != null && <TexturesInfo textureInfos={textureInfos} />}
         {textureInfos == null && <LoadButtonStuff />}
       </PaneRoot>

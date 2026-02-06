@@ -1,5 +1,5 @@
-import { Inspector } from '../Inspector';
-import { InspectorModel } from '../InspectorModel';
+import type { Inspector } from '../Inspector';
+import type { InspectorModel } from '../InspectorModel';
 
 export interface InspectorPlugin {
   inspector: Inspector;

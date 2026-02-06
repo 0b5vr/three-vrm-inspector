@@ -1,10 +1,10 @@
+import { useCallback, useContext, useState } from 'react';
+import { InspectorContext } from '../InspectorContext';
 import { CheckboxRow } from './CheckboxRow';
 import { Hr } from './Hr';
-import { InspectorContext } from '../InspectorContext';
-import { Pane, PaneParams } from './Pane';
+import { Pane, type PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { RangeRow } from './RangeRow';
-import { useCallback, useContext, useState } from 'react';
 
 // == element ======================================================================================
 export function PostProcessingPane(params: PaneParams) {
@@ -12,33 +12,52 @@ export function PostProcessingPane(params: PaneParams) {
 
   const [isBloomEnabled, setBloomEnabled] = useState(false);
 
-  const onChangeBloomEnabled = useCallback((value: boolean) => {
-    inspector.postProcessingPlugin.bloomPass.enabled = value;
-    setBloomEnabled(value);
-  }, [inspector]);
+  const onChangeBloomEnabled = useCallback(
+    (value: boolean) => {
+      inspector.postProcessingPlugin.bloomPass.enabled = value;
+      setBloomEnabled(value);
+    },
+    [inspector],
+  );
 
-  const onChangeBloomStrength = useCallback((value: number) => {
-    inspector.postProcessingPlugin.bloomPass.strength = 4.0 * value;
-  }, [inspector]);
+  const onChangeBloomStrength = useCallback(
+    (value: number) => {
+      inspector.postProcessingPlugin.bloomPass.strength = 4.0 * value;
+    },
+    [inspector],
+  );
 
-  const onChangeBloomRadius = useCallback((value: number) => {
-    inspector.postProcessingPlugin.bloomPass.radius = value;
-  }, [inspector]);
+  const onChangeBloomRadius = useCallback(
+    (value: number) => {
+      inspector.postProcessingPlugin.bloomPass.radius = value;
+    },
+    [inspector],
+  );
 
-  const onChangeBloomThreshold = useCallback((value: number) => {
-    inspector.postProcessingPlugin.bloomPass.threshold = 4.0 * value;
-  }, [inspector]);
+  const onChangeBloomThreshold = useCallback(
+    (value: number) => {
+      inspector.postProcessingPlugin.bloomPass.threshold = 4.0 * value;
+    },
+    [inspector],
+  );
 
   const [isToneMappingEnabled, setToneMappingEnabled] = useState(false);
 
-  const onChangeToneMappingEnabled = useCallback((value: boolean) => {
-    inspector.postProcessingPlugin.toneMappingPass.enabled = value;
-    setToneMappingEnabled(value);
-  }, [inspector]);
+  const onChangeToneMappingEnabled = useCallback(
+    (value: boolean) => {
+      inspector.postProcessingPlugin.toneMappingPass.enabled = value;
+      setToneMappingEnabled(value);
+    },
+    [inspector],
+  );
 
-  const onChangeToneMappingExposure = useCallback((value: number) => {
-    inspector.postProcessingPlugin.toneMappingPass.uniforms.exposure.value = 2.0 * value;
-  }, [inspector]);
+  const onChangeToneMappingExposure = useCallback(
+    (value: number) => {
+      inspector.postProcessingPlugin.toneMappingPass.uniforms.exposure.value =
+        2.0 * value;
+    },
+    [inspector],
+  );
 
   return (
     <Pane {...params}>

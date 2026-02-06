@@ -1,9 +1,10 @@
+import type React from 'react';
+import { useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import { Meta0Content } from './Meta0Content';
 import { Meta1Content } from './Meta1Content';
-import { Pane, PaneParams } from './Pane';
+import { Pane, type PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
-import React, { useContext } from 'react';
 
 export function MetaPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
@@ -20,9 +21,7 @@ export function MetaPane(params: PaneParams) {
 
   return (
     <Pane {...params}>
-      <PaneRoot>
-        { content }
-      </PaneRoot>
+      <PaneRoot>{content}</PaneRoot>
     </Pane>
   );
 }

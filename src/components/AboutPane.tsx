@@ -1,5 +1,5 @@
 import { Link } from './Link';
-import { Pane, PaneParams } from './Pane';
+import { Pane, type PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 
 export function AboutPane(params: PaneParams) {
@@ -10,7 +10,10 @@ export function AboutPane(params: PaneParams) {
         <div>Three.js based VRM inspector</div>
         <div>
           Source:
-          <Link widthClass="w-min" href="https://github.com/0b5vr/three-vrm-inspector" />
+          <Link
+            widthClass="w-min"
+            href="https://github.com/0b5vr/three-vrm-inspector"
+          />
         </div>
       </PaneRoot>
     </Pane>

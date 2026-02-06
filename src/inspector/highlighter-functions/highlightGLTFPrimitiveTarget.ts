@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { HighlighterRuleFunction } from '../Highlighter';
+import type * as THREE from 'three';
+import type { HighlighterRuleFunction } from '../Highlighter';
 
 export const highlightGLTFPrimitiveTarget: HighlighterRuleFunction = (
   { meshIndex, primIndex, targetIndex },
@@ -10,22 +10,24 @@ export const highlightGLTFPrimitiveTarget: HighlighterRuleFunction = (
   const targetIndexNum = parseInt(targetIndex, 10);
   let callback: (() => void) | undefined;
 
-  parser.getDependency('mesh', meshIndexNum).then((groupOrMesh: THREE.Mesh | THREE.Group) => {
-    if (groupOrMesh.children.length !== 0) {
-      groupOrMesh = groupOrMesh.children[primIndexNum] as THREE.Mesh;
-    }
-    const mesh = groupOrMesh as THREE.Mesh;
-
-    if (mesh.morphTargetInfluences) {
-      mesh.morphTargetInfluences[targetIndexNum] = 1.0;
-    }
-
-    callback = () => {
-      if (mesh.morphTargetInfluences) {
-        mesh.morphTargetInfluences[targetIndexNum] = 0.0;
+  parser
+    .getDependency('mesh', meshIndexNum)
+    .then((groupOrMesh: THREE.Mesh | THREE.Group) => {
+      if (groupOrMesh.children.length !== 0) {
+        groupOrMesh = groupOrMesh.children[primIndexNum] as THREE.Mesh;
       }
-    };
-  });
+      const mesh = groupOrMesh as THREE.Mesh;
+
+      if (mesh.morphTargetInfluences) {
+        mesh.morphTargetInfluences[targetIndexNum] = 1.0;
+      }
+
+      callback = () => {
+        if (mesh.morphTargetInfluences) {
+          mesh.morphTargetInfluences[targetIndexNum] = 0.0;
+        }
+      };
+    });
 
   return () => {
     callback?.();

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
-import { registerMouseEvent } from '../../utils/registerMouseEvent';
 import imageGrabPurple from '../../assets/grab-purple.png';
+import { registerMouseEvent } from '../../utils/registerMouseEvent';
 import type { Inspector } from '../Inspector';
 import type { InspectorModel } from '../InspectorModel';
 import type { InspectorPlugin } from './InspectorPlugin';
@@ -24,7 +24,11 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
   public set active(value: boolean) {
     this._active = value;
 
-    this._sprites?.forEach((sprite) => sprite.visible = value);
+    if (this._sprites != null) {
+      for (const sprite of this._sprites) {
+        sprite.visible = value;
+      }
+    }
     if (value === false) {
       this._transformControls?.detach();
     }
@@ -66,13 +70,17 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
     });
 
     if (canvas != null) {
-      canvas?.addEventListener('mousedown', (event) => this.handleMouseDown(event));
+      canvas?.addEventListener('mousedown', (event) =>
+        this.handleMouseDown(event),
+      );
     }
   }
 
   public handleAfterLoad(model: InspectorModel): void {
     const humanoid = model.vrm?.humanoid;
-    if (humanoid == null) { return; }
+    if (humanoid == null) {
+      return;
+    }
 
     this._sprites = [];
 
@@ -95,22 +103,30 @@ export class InspectorHumanoidTransformPlugin implements InspectorPlugin {
   }
 
   public handleMouseDown(event: MouseEvent): void {
-    if (!this._active) { return; }
+    if (!this._active) {
+      return;
+    }
 
     const { camera, canvas } = this.inspector;
-    if (canvas == null) { return; }
+    if (canvas == null) {
+      return;
+    }
 
     const sprites = this._sprites;
-    if (sprites == null) { return; }
+    if (sprites == null) {
+      return;
+    }
 
     const transformControls = this._transformControls;
-    if (transformControls == null) { return; }
+    if (transformControls == null) {
+      return;
+    }
 
     const rect = canvas.getBoundingClientRect();
 
     _v2A.set(
-      (event.clientX - rect.left) / rect.width * 2.0 - 1.0,
-      -(event.clientY - rect.top) / rect.height * 2.0 + 1.0,
+      ((event.clientX - rect.left) / rect.width) * 2.0 - 1.0,
+      (-(event.clientY - rect.top) / rect.height) * 2.0 + 1.0,
     );
 
     this._raycaster.setFromCamera(_v2A, camera);

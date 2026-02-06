@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { HighlighterRuleFunction } from '../Highlighter';
 import { gltfExtractPrimitivesFromNode } from '../../utils/gltfExtractPrimitivesFromNode';
+import type { HighlighterRuleFunction } from '../Highlighter';
 import { highlightMeshes } from '../utils/highlightMeshes';
 
 function createBoxFromMeshes(meshes: THREE.Mesh[]): THREE.Box3 {
@@ -36,13 +36,20 @@ export const highlightGLTFMesh: HighlighterRuleFunction = (
     }
   });
 
-  const promisePrimitives = Promise.all(nodesUsingMesh.map((nodeIndex) => {
-    return gltfExtractPrimitivesFromNode(gltf, nodeIndex) as Promise<THREE.Mesh[]>;
-  })).then((result) => result.flat());
+  const promisePrimitives = Promise.all(
+    nodesUsingMesh.map((nodeIndex) => {
+      return gltfExtractPrimitivesFromNode(gltf, nodeIndex) as Promise<
+        THREE.Mesh[]
+      >;
+    }),
+  ).then((result) => result.flat());
 
   promisePrimitives.then((primitives: THREE.Mesh[]) => {
     const callbackMeshes = highlightMeshes(primitives);
-    const callbackBox = highlightBox(createBoxFromMeshes(primitives), inspector.scene);
+    const callbackBox = highlightBox(
+      createBoxFromMeshes(primitives),
+      inspector.scene,
+    );
 
     callback = () => {
       callbackMeshes();

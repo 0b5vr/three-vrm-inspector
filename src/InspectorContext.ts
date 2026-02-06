@@ -1,11 +1,11 @@
+import React from 'react';
 import * as THREE from 'three';
+import vrm1ConstraintTwistSampleVrm from './assets/models/VRM1_Constraint_Twist_Sample.vrm?url';
 import { Highlighter } from './inspector/Highlighter';
 import { Inspector } from './inspector/Inspector';
 import { MaterialDebugger } from './inspector/MaterialDebugger';
-import React from 'react';
-import vrm1ConstraintTwistSampleVrm from './assets/models/VRM1_Constraint_Twist_Sample.vrm?url';
 
-function handleError(error: any): void {
+function handleError(error: unknown): void {
   console.error(error);
 }
 

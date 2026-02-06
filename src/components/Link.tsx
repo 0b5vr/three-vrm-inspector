@@ -1,11 +1,13 @@
-import React from 'react';
-
-// == component ====================================================================================
-export function Link({ href, widthClass }: {
+export function Link({
+  href,
+  widthClass,
+}: {
   href?: string;
   widthClass?: string;
 }) {
-  if (href == null) { return null; }
+  if (href == null) {
+    return null;
+  }
 
   return (
     <a
@@ -14,7 +16,7 @@ export function Link({ href, widthClass }: {
       rel="noreferrer"
       className={`font-bold truncate inline-block align-top underline text-sky-500 ${widthClass ?? 'w-64'}`}
     >
-      { href }
+      {href}
     </a>
   );
 }

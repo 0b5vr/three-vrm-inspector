@@ -4,5 +4,5 @@ declare module 'gltf-validator' {
     options?: {
       maxIssues?: number;
     },
-  ): Promise<any>;
+  ): Promise<unknown>;
 }

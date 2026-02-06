@@ -1,16 +1,17 @@
+import type { GLTF } from '@gltf-transform/core';
+import { useContext, useEffect, useState } from 'react';
 import { InspectorContext } from '../InspectorContext';
 import { JSONValue } from './JSONValue';
-import { Pane, PaneParams } from './Pane';
+import { Pane, type PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
-import { useContext, useEffect, useState } from 'react';
 
 function JSONPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
-  const [root, setRoot] = useState<any>(undefined);
+  const [root, setRoot] = useState<GLTF.IGLTF | null>(null);
 
   useEffect(() => {
     const handleLoad = (): void => {
-      setRoot(inspector.model?.originalGLTFJSON);
+      setRoot(inspector.model?.originalGLTFJSON ?? null);
     };
 
     inspector.on('load', handleLoad);

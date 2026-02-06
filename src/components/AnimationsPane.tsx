@@ -1,8 +1,3 @@
-import { InspectorAnimationPluginAnimation } from '../inspector/plugins/InspectorAnimationPlugin';
-import { InspectorContext } from '../InspectorContext';
-import { NameValueEntry } from './NameValueEntry';
-import { Pane, PaneParams } from './Pane';
-import { PaneRoot } from './PaneRoot';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import dancingFbx from '../assets/motions/dancing.fbx?url';
 import gangnamStyleFbx from '../assets/motions/gangnam-style.fbx?url';
@@ -11,6 +6,11 @@ import runningFbx from '../assets/motions/running.fbx?url';
 import standingClapFbx from '../assets/motions/standing-clap.fbx?url';
 import testVrma from '../assets/motions/test.vrma?url';
 import walkingFbx from '../assets/motions/walking.fbx?url';
+import { InspectorContext } from '../InspectorContext';
+import type { InspectorAnimationPluginAnimation } from '../inspector/plugins/InspectorAnimationPlugin';
+import { NameValueEntry } from './NameValueEntry';
+import { Pane, type PaneParams } from './Pane';
+import { PaneRoot } from './PaneRoot';
 
 // == animations ===================================================================================
 const animations: InspectorAnimationPluginAnimation[] = [
@@ -28,11 +28,13 @@ export function AnimationsPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   // listen to animation change
-  const [currentAnimation, setCurrentAnimation]
-    = useState<InspectorAnimationPluginAnimation | null>(null);
+  const [currentAnimation, setCurrentAnimation] =
+    useState<InspectorAnimationPluginAnimation | null>(null);
 
   useEffect(() => {
-    const observer = (animation: InspectorAnimationPluginAnimation | null): void => {
+    const observer = (
+      animation: InspectorAnimationPluginAnimation | null,
+    ): void => {
       setCurrentAnimation(animation);
     };
 
@@ -46,7 +48,13 @@ export function AnimationsPane(params: PaneParams) {
   const [timeDisplay, setTimeDisplay] = useState('0.000 / 0.000');
 
   useEffect(() => {
-    const observer = ({ time, duration }: { time: number; duration: number }): void => {
+    const observer = ({
+      time,
+      duration,
+    }: {
+      time: number;
+      duration: number;
+    }): void => {
       setTimeDisplay(`${time.toFixed(3)} / ${duration.toFixed(3)}`);
     };
 
@@ -72,62 +80,64 @@ export function AnimationsPane(params: PaneParams) {
   );
 
   // handle click play
-  const handleClickPlay = useCallback(
-    () => {
-      inspector.animationPlugin.play();
-    },
-    [inspector],
-  );
+  const handleClickPlay = useCallback(() => {
+    inspector.animationPlugin.play();
+  }, [inspector]);
 
   // handle click pause
-  const handleClickPause = useCallback(
-    () => {
-      inspector.animationPlugin.pause();
-    },
-    [inspector],
-  );
+  const handleClickPause = useCallback(() => {
+    inspector.animationPlugin.pause();
+  }, [inspector]);
 
   // handle click rewind
-  const handleClickRewind = useCallback(
-    () => {
-      inspector.animationPlugin.rewind();
-    },
-    [inspector],
-  );
+  const handleClickRewind = useCallback(() => {
+    inspector.animationPlugin.rewind();
+  }, [inspector]);
 
   // element
   return (
     <Pane {...params}>
       <PaneRoot>
-        <select className="bg-gray-800 border border-gray-500 w-full" onChange={handleSelectChange}>
-          <option key={-1} value={-1}>(No animation)</option>
-          {
-            animations.map(({ name }, i) => (
-              <option key={i} value={i}>{ name }</option>
-            ))
-          }
+        <select
+          className="bg-gray-800 border border-gray-500 w-full"
+          onChange={handleSelectChange}
+        >
+          <option key={-1} value={-1}>
+            (No animation)
+          </option>
+          {animations.map(({ name }, i) => (
+            <option key={name} value={i}>
+              {name}
+            </option>
+          ))}
         </select>
         <br />
         <button
+          type="button"
           className="px-1 bg-gray-800 border border-gray-500"
           onClick={handleClickPlay}
         >
           Play
         </button>
         <button
+          type="button"
           className="ml-1 px-1 bg-gray-800 border border-gray-500"
           onClick={handleClickPause}
         >
           Pause
         </button>
         <button
+          type="button"
           className="ml-1 px-1 bg-gray-800 border border-gray-500"
           onClick={handleClickRewind}
         >
           Rewind
         </button>
         <br />
-        <NameValueEntry name="Animation" value={currentAnimation?.name ?? '(not playing)'} />
+        <NameValueEntry
+          name="Animation"
+          value={currentAnimation?.name ?? '(not playing)'}
+        />
         <NameValueEntry name="Time" value={timeDisplay} />
       </PaneRoot>
     </Pane>

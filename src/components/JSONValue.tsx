@@ -1,8 +1,14 @@
+import type React from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { InspectorContext } from '../InspectorContext';
-import React, { useCallback, useContext, useState } from 'react';
 
 // == microcomponents ==============================================================================
-function Bracket({ children, onClick, onMouseEnter, onMouseLeave }: {
+function Bracket({
+  children,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+}: {
   children: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   onMouseEnter?: React.MouseEventHandler<HTMLSpanElement>;
@@ -15,15 +21,13 @@ function Bracket({ children, onClick, onMouseEnter, onMouseLeave }: {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      { children }
+      {children}
     </span>
   );
 }
 
 function Children({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ marginLeft: '1.13em' }}>{ children }</div>
-  );
+  return <div style={{ marginLeft: '1.13em' }}>{children}</div>;
 }
 
 // == element ======================================================================================
@@ -37,8 +41,9 @@ export function JSONValue({ name, value, fullPath = '' }: JSONValueProps) {
   const { highlighter } = useContext(InspectorContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isHovering, setIsHovering] = useState<boolean>(false);
-  const [leaveCallback, setLeaveCallback]
-    = useState<[(() => void) | undefined]>([undefined]);
+  const [leaveCallback, setLeaveCallback] = useState<
+    [(() => void) | undefined]
+  >([undefined]);
 
   const handleClick = useCallback(
     (event: React.MouseEvent) => {
@@ -46,32 +51,23 @@ export function JSONValue({ name, value, fullPath = '' }: JSONValueProps) {
 
       setIsOpen(!isOpen);
     },
-    [setIsOpen, isOpen],
+    [isOpen],
   );
 
-  const handleMouseEnter = useCallback(
-    () => {
-      setIsHovering(true);
-      setLeaveCallback([highlighter.highlight(fullPath)]);
-    },
-    [setIsHovering, setLeaveCallback, highlighter, fullPath],
-  );
+  const handleMouseEnter = useCallback(() => {
+    setIsHovering(true);
+    setLeaveCallback([highlighter.highlight(fullPath)]);
+  }, [highlighter, fullPath]);
 
-  const handleMouseLeave = useCallback(
-    () => {
-      setIsHovering(false);
-      leaveCallback[0]?.();
-    },
-    [setIsHovering, leaveCallback],
-  );
+  const handleMouseLeave = useCallback(() => {
+    setIsHovering(false);
+    leaveCallback[0]?.();
+  }, [leaveCallback]);
 
-  const handleClickCopy = useCallback(
-    () => {
-      const text = JSON.stringify(value, null, 2);
-      navigator.clipboard.writeText(text);
-    },
-    [value],
-  );
+  const handleClickCopy = useCallback(() => {
+    const text = JSON.stringify(value, null, 2);
+    navigator.clipboard.writeText(text);
+  }, [value]);
 
   const isArray = Array.isArray(value);
   const isNull = value == null;
@@ -93,84 +89,82 @@ export function JSONValue({ name, value, fullPath = '' }: JSONValueProps) {
         className={`cursor-pointer ${isHovering && 'text-sky-500'}`}
         {...interactableProps}
       >
-        { name ? `${name}: ` : '' }
+        {name ? `${name}: ` : ''}
       </span>
 
-      { isArray && (
+      {isArray && (
         <>
           <Bracket {...interactableProps}>[</Bracket>
 
-          { isOpen && (
+          {isOpen && (
             <Children>
-              { value.map((e: any, i: number) => (
-                <div key={i}>
+              {value.map((e: any, i: number) => (
+                <div key={e}>
                   <JSONValue
                     name={i.toString() + (e?.name ? ` (${e.name})` : '')}
                     value={e}
                     fullPath={`${fullPath}/${i}`}
                   />
                 </div>
-              )) }
+              ))}
             </Children>
-          ) }
+          )}
 
           <Bracket {...interactableProps}>
-            { ` ${isOpen ? '' : value.length} ]` }
+            {` ${isOpen ? '' : value.length} ]`}
           </Bracket>
         </>
-      ) }
+      )}
 
-      { isObject && (
+      {isObject && (
         <>
-          <Bracket {...interactableProps}>{ '{' }</Bracket>
+          <Bracket {...interactableProps}>{'{'}</Bracket>
 
-          { isOpen && (
+          {isOpen && (
             <Children>
-              { Object.keys(value).map((key, i) => (
-                <div key={i}>
+              {Object.keys(value).map((key) => (
+                <div key={key}>
                   <JSONValue
                     name={key}
                     value={value[key]}
                     fullPath={`${fullPath}/${key}`}
                   />
                 </div>
-              )) }
+              ))}
             </Children>
-          ) }
+          )}
 
           <Bracket {...interactableProps}>
-            { ` ${isOpen ? '' : Object.keys(value).join(', ')} }` }
+            {` ${isOpen ? '' : Object.keys(value).join(', ')} }`}
           </Bracket>
         </>
-      ) }
+      )}
 
-      { isNull && (
-        <>
-          <span className="text-pink-500" {...interactableProps}>{ value }</span>
-        </>
-      ) }
+      {isNull && (
+        <span className="text-pink-500" {...interactableProps}>
+          {value}
+        </span>
+      )}
 
-      { isNumber && (
-        <>
-          <span className="text-indigo-400" {...interactableProps}>{ value }</span>
-        </>
-      ) }
+      {isNumber && (
+        <span className="text-indigo-400" {...interactableProps}>
+          {value}
+        </span>
+      )}
 
-      { isBoolean && (
-        <>
-          <span className="text-indigo-400" {...interactableProps}>{ String(value) }</span>
-        </>
-      ) }
+      {isBoolean && (
+        <span className="text-indigo-400" {...interactableProps}>
+          {String(value)}
+        </span>
+      )}
 
-      { isString && (
-        <>
-          <span className="text-yellow-300" {...interactableProps}>
-            &quot;
-            { value }
-            &quot;
-          </span>
-        </>
-      ) }
+      {isString && (
+        <span className="text-yellow-300" {...interactableProps}>
+          &quot;
+          {value}
+          &quot;
+        </span>
+      )}
 
       <button
         className={`pl-1 ${isHovering ? 'opacity-40' : 'opacity-0'} hover:opacity-100`}

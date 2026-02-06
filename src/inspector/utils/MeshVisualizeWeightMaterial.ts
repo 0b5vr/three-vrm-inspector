@@ -15,7 +15,7 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
     this._skinIndexVisualize = index;
   }
 
-  private _uniforms?: { [ uniform: string ]: THREE.IUniform };
+  private _uniforms?: { [uniform: string]: THREE.IUniform };
 
   public constructor(parameters: THREE.MeshNormalMaterialParameters) {
     super(parameters);

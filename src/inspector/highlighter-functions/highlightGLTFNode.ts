@@ -1,8 +1,11 @@
-import * as THREE from 'three';
-import { HighlighterRuleFunction } from '../Highlighter';
+import type * as THREE from 'three';
+import type { HighlighterRuleFunction } from '../Highlighter';
 import { highlightNodes } from '../utils/highlightNodes';
 
-export const highlightGLTFNode: HighlighterRuleFunction = ({ index }, { parser }) => {
+export const highlightGLTFNode: HighlighterRuleFunction = (
+  { index },
+  { parser },
+) => {
   const indexNum = parseInt(index, 10);
   let callback: (() => void) | undefined;
 

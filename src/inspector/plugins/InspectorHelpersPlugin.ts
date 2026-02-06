@@ -1,5 +1,10 @@
+import type {
+  VRMHumanoidHelper,
+  VRMLookAtHelper,
+  VRMSpringBoneColliderHelper,
+  VRMSpringBoneJointHelper,
+} from '@pixiv/three-vrm';
 import * as THREE from 'three';
-import { VRMHumanoidHelper, VRMLookAtHelper, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
 

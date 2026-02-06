@@ -1,18 +1,19 @@
+import type React from 'react';
 import { Link } from './Link';
-import React from 'react';
 
-export function NameValueEntry({ name, value, href }: {
+export function NameValueEntry({
+  name,
+  value,
+  href,
+}: {
   name: string;
   value?: React.ReactNode;
   href?: string | undefined;
 }) {
   return (
     <div>
-      { name }
-      :
-      { ' ' }
-      { value != null && <span className="font-bold">{ value }</span> }
-      { href && <Link href={href} /> }
+      {name}: {value != null && <span className="font-bold">{value}</span>}
+      {href && <Link href={href} />}
     </div>
   );
 }

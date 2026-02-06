@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import type * as THREE from 'three';
 
 /**
  * `mesh.material` can be either `Material` or `Material[]`.

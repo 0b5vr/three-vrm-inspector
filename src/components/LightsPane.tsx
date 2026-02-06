@@ -1,28 +1,31 @@
+import { useCallback, useContext } from 'react';
 import { InspectorContext } from '../InspectorContext';
-import { Pane, PaneParams } from './Pane';
+import { Pane, type PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { RangeRow } from './RangeRow';
-import { useCallback, useContext } from 'react';
 
 export function LightsPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
-  const handleChangeAzimuth = useCallback((value: number) => {
-    inspector.lightsPlugin.directionalLightAzimuth = 2.0 * Math.PI * value;
-  }, [inspector]);
+  const handleChangeAzimuth = useCallback(
+    (value: number) => {
+      inspector.lightsPlugin.directionalLightAzimuth = 2.0 * Math.PI * value;
+    },
+    [inspector],
+  );
 
-  const handleChangeAltitude = useCallback((value: number) => {
-    inspector.lightsPlugin.directionalLightAltitude = Math.PI * (value - 0.5);
-  }, [inspector]);
+  const handleChangeAltitude = useCallback(
+    (value: number) => {
+      inspector.lightsPlugin.directionalLightAltitude = Math.PI * (value - 0.5);
+    },
+    [inspector],
+  );
 
   return (
     <Pane {...params}>
       <PaneRoot>
         <div>Directional Light</div>
-        <RangeRow
-          label="Azimuth"
-          onChange={handleChangeAzimuth}
-        />
+        <RangeRow label="Azimuth" onChange={handleChangeAzimuth} />
         <RangeRow
           label="Altitude"
           defaultValue={0.5}

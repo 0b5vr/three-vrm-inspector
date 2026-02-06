@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { EventEmittable } from '../../utils/EventEmittable';
 import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
-import { Inspector } from '../Inspector';
-import { InspectorPlugin } from './InspectorPlugin';
 import { applyMixins } from '../../utils/applyMixins';
+import { EventEmittable } from '../../utils/EventEmittable';
+import type { Inspector } from '../Inspector';
+import type { InspectorPlugin } from './InspectorPlugin';
 
 const _v2A = new THREE.Vector2();
 
@@ -75,7 +75,8 @@ interface InspectorTexturesPluginEvents {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
-export interface InspectorTexturesPlugin extends EventEmittable<InspectorTexturesPluginEvents> {}
+export interface InspectorTexturesPlugin
+  extends EventEmittable<InspectorTexturesPluginEvents> {}
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class InspectorTexturesPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
@@ -96,7 +97,9 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
 
   public loadTextureInfos(): void {
     const parser = this.inspector.model?.gltf?.parser;
-    if (!parser) { return; }
+    if (!parser) {
+      return;
+    }
 
     parser.getDependencies('texture').then((textures: THREE.Texture[]) => {
       this.__texturesToDeleteAfterUnload.push(...textures);
@@ -104,15 +107,15 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
       const textureInfos = textures.map((texture, iTexture) => {
         const image = texture.image;
 
-        const iImage: number | undefined
-          = parser.json.textures[iTexture].extensions?.['KHR_texture_basisu']?.source
-            ?? parser.json.textures[iTexture].source;
-        const iBufferView: number | undefined = iImage != null
-          ? parser.json.images[iImage].bufferView
-          : undefined;
-        const byteLength: number | undefined = iBufferView != null
-          ? parser.json.bufferViews[iBufferView].byteLength
-          : undefined;
+        const iImage: number | undefined =
+          parser.json.textures[iTexture].extensions?.['KHR_texture_basisu']
+            ?.source ?? parser.json.textures[iTexture].source;
+        const iBufferView: number | undefined =
+          iImage != null ? parser.json.images[iImage].bufferView : undefined;
+        const byteLength: number | undefined =
+          iBufferView != null
+            ? parser.json.bufferViews[iBufferView].byteLength
+            : undefined;
 
         const promiseBlob = textureToBlob(
           this.inspector.renderer!,

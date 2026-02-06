@@ -1,7 +1,7 @@
+import { type MToonMaterial, MToonMaterialDebugMode } from '@pixiv/three-vrm';
 import * as THREE from 'three';
-import { Inspector } from './Inspector';
-import { MToonMaterial, MToonMaterialDebugMode } from '@pixiv/three-vrm';
 import imageUVGrid from '../assets/uv-grid.png';
+import type { Inspector } from './Inspector';
 
 export enum MaterialDebuggerMode {
   None,
@@ -39,7 +39,10 @@ function createMaterialUVGrid(): THREE.Material {
 }
 
 // == helpers ======================================================================================
-function setMToonDebugMode(material: THREE.Material, mode: MToonMaterialDebugMode): void {
+function setMToonDebugMode(
+  material: THREE.Material,
+  mode: MToonMaterialDebugMode,
+): void {
   if ('isMToonMaterial' in material) {
     const mToon = material as MToonMaterial;
     mToon.debugMode = mode;
@@ -47,7 +50,9 @@ function setMToonDebugMode(material: THREE.Material, mode: MToonMaterialDebugMod
 }
 
 function isMToonOutline(material: THREE.Material): boolean {
-  if (!('isMToonMaterial' in material)) { return false; }
+  if (!('isMToonMaterial' in material)) {
+    return false;
+  }
   const mToon = material as MToonMaterial;
   return mToon.isOutline;
 }
@@ -55,7 +60,10 @@ function isMToonOutline(material: THREE.Material): boolean {
 // == class ========================================================================================
 export class MaterialDebugger {
   private _currentMode = MaterialDebuggerMode.None;
-  private _vrmMaterialsByMesh = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
+  private _vrmMaterialsByMesh = new Map<
+    THREE.Mesh,
+    THREE.Material | THREE.Material[]
+  >();
   private _inspector: Inspector;
 
   public constructor(inspector: Inspector) {
@@ -82,7 +90,10 @@ export class MaterialDebugger {
   }
 
   private _applyModeMToon(mode: MToonMaterialDebugMode): void {
-    for (const [mesh, materialOrMaterials] of this._vrmMaterialsByMesh.entries()) {
+    for (const [
+      mesh,
+      materialOrMaterials,
+    ] of this._vrmMaterialsByMesh.entries()) {
       if (Array.isArray(materialOrMaterials)) {
         materialOrMaterials.forEach((material, iMaterial) => {
           setMToonDebugMode(material, mode);
@@ -96,13 +107,17 @@ export class MaterialDebugger {
   }
 
   private _applyModeUVGrid(): void {
-    for (const [mesh, materialOrMaterials] of this._vrmMaterialsByMesh.entries()) {
+    for (const [
+      mesh,
+      materialOrMaterials,
+    ] of this._vrmMaterialsByMesh.entries()) {
       if (Array.isArray(materialOrMaterials)) {
         materialOrMaterials.forEach((material, iMaterial) => {
           if (isMToonOutline(material)) {
             (mesh.material as THREE.Material[])[iMaterial] = invisibleMaterial;
           } else {
-            (mesh.material as THREE.Material[])[iMaterial] = createMaterialUVGrid();
+            (mesh.material as THREE.Material[])[iMaterial] =
+              createMaterialUVGrid();
           }
         });
       } else {
@@ -116,7 +131,8 @@ export class MaterialDebugger {
   }
 
   private async _handleLoad(): Promise<void> {
-    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> = await this._inspector.model!.gltf!.parser.getDependencies('mesh');
+    const meshes: Array<THREE.Group | THREE.Mesh | THREE.SkinnedMesh> =
+      await this._inspector.model!.gltf!.parser.getDependencies('mesh');
     meshes.forEach((meshOrGroup) => {
       if (meshOrGroup instanceof THREE.Mesh) {
         this._addManagedMesh(meshOrGroup);

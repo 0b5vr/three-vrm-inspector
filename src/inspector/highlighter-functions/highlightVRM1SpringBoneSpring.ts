@@ -1,8 +1,11 @@
+import type {
+  VRMSpringBoneJoint,
+  VRMSpringBoneJointHelper,
+} from '@pixiv/three-vrm';
+import type * as V1SpringBoneSchema from '@pixiv/types-vrmc-springbone-1.0';
 import * as THREE from 'three';
-import * as V1SpringBoneSchema from '@pixiv/types-vrmc-springbone-1.0';
 import { Colors } from '../../constants/Colors';
-import { HighlighterRuleFunction } from '../Highlighter';
-import { VRMSpringBoneJoint, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
+import type { HighlighterRuleFunction } from '../Highlighter';
 
 const colorConstant = new THREE.Color(Colors.constant);
 
@@ -19,7 +22,10 @@ export const highlightVRM1SpringBoneSpring: HighlighterRuleFunction = (
   }
 
   const helperRoot = inspector.helpersPlugin.springBoneJointHelperRoot;
-  const jointHelperMap = new Map<VRMSpringBoneJoint, VRMSpringBoneJointHelper>();
+  const jointHelperMap = new Map<
+    VRMSpringBoneJoint,
+    VRMSpringBoneJointHelper
+  >();
   helperRoot.children.forEach((child) => {
     const helper = child as VRMSpringBoneJointHelper;
     jointHelperMap.set(helper.springBone, helper);
@@ -27,15 +33,18 @@ export const highlightVRM1SpringBoneSpring: HighlighterRuleFunction = (
 
   const callbacks: (() => void)[] = [];
 
-  const springBoneDef = json.extensions!.VRMC_springBone as V1SpringBoneSchema.VRMCSpringBone;
+  const springBoneDef = json.extensions!
+    .VRMC_springBone as V1SpringBoneSchema.VRMCSpringBone;
   const springDef = springBoneDef.springs![indexNum];
   const nodeIndices = springDef.joints.map((joint) => joint.node);
 
   const helpers = new Set<VRMSpringBoneJointHelper>();
-  nodeIndices.map((nodeIndex) => {
+  for (const nodeIndex of nodeIndices) {
     parser.getDependency('node', nodeIndex).then((node: THREE.Object3D) => {
       const joint = nodeJointMap.get(node);
-      if (joint == null) { return; }
+      if (joint == null) {
+        return;
+      }
 
       const helper = jointHelperMap.get(joint);
       if (helper == null) {
@@ -55,9 +64,11 @@ export const highlightVRM1SpringBoneSpring: HighlighterRuleFunction = (
         material.color.copy(prevColor);
       });
     });
-  });
+  }
 
   return () => {
-    callbacks.forEach((callback) => callback());
+    for (const callback of callbacks) {
+      callback();
+    }
   };
 };

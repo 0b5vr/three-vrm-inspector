@@ -13,7 +13,9 @@ const highlightWireframeMaterial = new THREE.MeshBasicMaterial({
 
 const highlightSphereGeometry = new THREE.SphereGeometry(0.2);
 
-export function genGizmo(geom: THREE.BufferGeometry = highlightSphereGeometry): THREE.Mesh {
+export function genGizmo(
+  geom: THREE.BufferGeometry = highlightSphereGeometry,
+): THREE.Mesh {
   const mesh = new THREE.Mesh(geom, highlightWireframeMaterial);
   mesh.frustumCulled = false;
   mesh.renderOrder = 10000;

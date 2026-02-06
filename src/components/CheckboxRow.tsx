@@ -1,6 +1,12 @@
-import React, { useCallback } from 'react';
+import type React from 'react';
+import { useCallback } from 'react';
 
-export function CheckboxRow({ label, onChange, defaultChecked, disabled }: {
+export function CheckboxRow({
+  label,
+  onChange,
+  defaultChecked,
+  disabled,
+}: {
   label: string;
   onChange: (value: boolean) => void;
   defaultChecked?: boolean;
@@ -11,7 +17,7 @@ export function CheckboxRow({ label, onChange, defaultChecked, disabled }: {
       const value = event.currentTarget.checked;
       onChange(value);
     },
-    [],
+    [onChange],
   );
 
   return (
@@ -23,9 +29,7 @@ export function CheckboxRow({ label, onChange, defaultChecked, disabled }: {
         defaultChecked={defaultChecked}
         onChange={handleChange}
       />
-      { disabled
-        ? <span className="text-gray-500">{ label }</span>
-        : label}
+      {disabled ? <span className="text-gray-500">{label}</span> : label}
     </div>
   );
 }

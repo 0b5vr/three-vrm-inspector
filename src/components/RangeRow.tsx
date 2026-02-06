@@ -1,6 +1,12 @@
-import React, { useCallback } from 'react';
+import type React from 'react';
+import { useCallback } from 'react';
 
-export function RangeRow({ label, onChange, defaultValue, disabled }: {
+export function RangeRow({
+  label,
+  onChange,
+  defaultValue,
+  disabled,
+}: {
   label: string;
   onChange: (value: number) => void;
   defaultValue?: number;
@@ -11,7 +17,7 @@ export function RangeRow({ label, onChange, defaultValue, disabled }: {
       const value = parseFloat(event.currentTarget.value);
       onChange(value);
     },
-    [],
+    [onChange],
   );
 
   return (
@@ -26,9 +32,7 @@ export function RangeRow({ label, onChange, defaultValue, disabled }: {
         disabled={disabled}
         onChange={handleChange}
       />
-      { disabled
-        ? <span className="text-gray-500">{ label }</span>
-        : label}
+      {disabled ? <span className="text-gray-500">{label}</span> : label}
     </div>
   );
 }

@@ -1,6 +1,6 @@
+import type { VRM } from '@pixiv/three-vrm';
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-import { VRM } from '@pixiv/three-vrm';
 import { mixamoVRMRigMap } from './mixamoVRMRigMap';
 
 /**
@@ -14,7 +14,9 @@ export async function loadMixamoAnimation(
   vrm: VRM,
 ): Promise<THREE.AnimationClip | null> {
   const humanoid = vrm.humanoid;
-  if (humanoid == null) { return null; }
+  if (humanoid == null) {
+    return null;
+  }
 
   const loader = new FBXLoader(); // FBXを読み込むLoader
 
@@ -43,28 +45,34 @@ export async function loadMixamoAnimation(
         const propertyName = trackSplitted[1];
 
         if (track instanceof THREE.QuaternionKeyframeTrack) {
-          const trackValues = track.values.map((v, i) => (
-            vrm.meta?.metaVersion === '0' && i % 2 === 0 ? -v : v
-          ));
-
-          tracks.push(new THREE.QuaternionKeyframeTrack(
-            `${vrmNodeName}.${propertyName}`,
-            track.times as any,
-            trackValues as any,
-          ));
-        } else if (
-          vrmBoneName === 'hips'
-          && track instanceof THREE.VectorKeyframeTrack
-        ) {
-          const trackValues = track.values.map((v, i) => (
-            vrm.meta?.metaVersion === '0' && i % 3 !== 1 ? -v : v) * hipsPositionScale,
+          const trackValues = track.values.map((v, i) =>
+            vrm.meta?.metaVersion === '0' && i % 2 === 0 ? -v : v,
           );
 
-          tracks.push(new THREE.VectorKeyframeTrack(
-            `${vrmNodeName}.${propertyName}`,
-            track.times as any,
-            trackValues as any,
-          ));
+          tracks.push(
+            new THREE.QuaternionKeyframeTrack(
+              `${vrmNodeName}.${propertyName}`,
+              track.times as any,
+              trackValues as any,
+            ),
+          );
+        } else if (
+          vrmBoneName === 'hips' &&
+          track instanceof THREE.VectorKeyframeTrack
+        ) {
+          const trackValues = track.values.map(
+            (v, i) =>
+              (vrm.meta?.metaVersion === '0' && i % 3 !== 1 ? -v : v) *
+              hipsPositionScale,
+          );
+
+          tracks.push(
+            new THREE.VectorKeyframeTrack(
+              `${vrmNodeName}.${propertyName}`,
+              track.times as any,
+              trackValues as any,
+            ),
+          );
         }
       }
     }

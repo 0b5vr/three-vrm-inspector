@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { HighlighterRuleFunction } from '../Highlighter';
+import type * as THREE from 'three';
 import { gltfExtractPrimitivesFromNode } from '../../utils/gltfExtractPrimitivesFromNode';
+import type { HighlighterRuleFunction } from '../Highlighter';
 
 export const highlightGLTFMeshTarget: HighlighterRuleFunction = (
   { meshIndex, targetIndex },
@@ -18,9 +18,13 @@ export const highlightGLTFMeshTarget: HighlighterRuleFunction = (
     }
   });
 
-  const promisePrimitives = Promise.all(nodesUsingMesh.map((nodeIndex) => {
-    return gltfExtractPrimitivesFromNode(gltf, nodeIndex) as Promise<THREE.Mesh[]>;
-  })).then((result) => result.flat());
+  const promisePrimitives = Promise.all(
+    nodesUsingMesh.map((nodeIndex) => {
+      return gltfExtractPrimitivesFromNode(gltf, nodeIndex) as Promise<
+        THREE.Mesh[]
+      >;
+    }),
+  ).then((result) => result.flat());
 
   promisePrimitives.then((primitives) => {
     primitives.forEach((primitive) => {

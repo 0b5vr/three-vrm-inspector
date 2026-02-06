@@ -1,11 +1,11 @@
-import { Hr } from './Hr';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { InspectorContext } from '../InspectorContext';
+import type { ValidationReport } from '../inspector/plugins/ValidationReport';
+import { Hr } from './Hr';
 import { NameValueEntry } from './NameValueEntry';
-import { Pane, PaneParams } from './Pane';
+import { Pane, type PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { ValidationReportIssue } from './ValidationReportIssue';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ValidationReport } from '../inspector/plugins/ValidationReport';
 
 type ValidationIssues = ValidationReport['issues'];
 
@@ -13,15 +13,19 @@ type ValidationIssues = ValidationReport['issues'];
 function useValidator() {
   const { inspector } = useContext(InspectorContext);
   const [isValidating, setIsValidating] = useState(false);
-  const [validationReport, setValidationReport] = useState<ValidationReport | null>(null);
+  const [validationReport, setValidationReport] =
+    useState<ValidationReport | null>(null);
 
   // Validate the model
-  const validate = useCallback(async (maxIssues?: number) => {
-    setIsValidating(true);
-    await inspector.gltfValidatorPlugin.validate(maxIssues);
-    setIsValidating(false);
-    setValidationReport(inspector.gltfValidatorPlugin.validationReport);
-  }, [inspector]);
+  const validate = useCallback(
+    async (maxIssues?: number) => {
+      setIsValidating(true);
+      await inspector.gltfValidatorPlugin.validate(maxIssues);
+      setIsValidating(false);
+      setValidationReport(inspector.gltfValidatorPlugin.validationReport);
+    },
+    [inspector],
+  );
 
   // Reset validation report when a new model is loaded
   useEffect(() => {
@@ -45,20 +49,19 @@ function useValidator() {
 }
 
 // == microcomponents ==============================================================================
-function ReportCount({ count, colorClass }: {
+function ReportCount({
+  count,
+  colorClass,
+}: {
   count: number | undefined;
   colorClass: string;
 }) {
-  return (
-    <span
-      className={count ? colorClass : 'text-gray-500'}
-    >
-      {count}
-    </span>
-  );
+  return <span className={count ? colorClass : 'text-gray-500'}>{count}</span>;
 }
 
-function ValidationIssuesList({ issues }: {
+function ValidationIssuesList({
+  issues,
+}: {
   issues: ValidationIssues | undefined;
 }) {
   if (!issues || issues.messages.length === 0) {
@@ -69,6 +72,7 @@ function ValidationIssuesList({ issues }: {
     <div className="w-full font-mono leading-tight text-xs">
       {issues.messages.map((issue, i) => (
         <ValidationReportIssue
+          // biome-ignore lint/suspicious/noArrayIndexKey: each message does not have unique id
           key={i}
           code={issue.code}
           message={issue.message}
@@ -80,7 +84,10 @@ function ValidationIssuesList({ issues }: {
   );
 }
 
-function TruncatedIssuesNotice({ issues, onSeeMore }: {
+function TruncatedIssuesNotice({
+  issues,
+  onSeeMore,
+}: {
   issues: ValidationReport['issues'] | undefined;
   onSeeMore: () => void;
 }) {
@@ -90,11 +97,7 @@ function TruncatedIssuesNotice({ issues, onSeeMore }: {
 
   return (
     <div className="m-1 font-bold">
-      There are too many issues! Showing only
-      {' '}
-      {issues.messages.length}
-      {' '}
-      entries.
+      There are too many issues! Showing only {issues.messages.length} entries.
       <span
         onClick={onSeeMore}
         className="pl-2 text-sky-500 font-bold cursor-pointer"
@@ -128,47 +131,55 @@ export function ValidationReportPane(params: PaneParams) {
         />
         <NameValueEntry
           name="Errors"
-          value={<ReportCount count={issues?.numErrors} colorClass="text-red-500" />}
+          value={
+            <ReportCount count={issues?.numErrors} colorClass="text-red-500" />
+          }
         />
         <NameValueEntry
           name="Warnings"
-          value={<ReportCount count={issues?.numWarnings} colorClass="text-yellow-300" />}
+          value={
+            <ReportCount
+              count={issues?.numWarnings}
+              colorClass="text-yellow-300"
+            />
+          }
         />
         <NameValueEntry
           name="Infos"
-          value={<ReportCount count={issues?.numInfos} colorClass="text-sky-500" />}
+          value={
+            <ReportCount count={issues?.numInfos} colorClass="text-sky-500" />
+          }
         />
         <NameValueEntry
           name="Hints"
-          value={<ReportCount count={issues?.numHints} colorClass="text-sky-500" />}
+          value={
+            <ReportCount count={issues?.numHints} colorClass="text-sky-500" />
+          }
         />
         <Hr />
-        {isValidating
-          ? (
-              <div className="flex items-center justify-center py-4">
-                <div className="text-gray-500">Validating...</div>
-              </div>
-            )
-          : !validationReport
-              ? (
-                  <div className="flex items-center justify-center py-4">
-                    <button
-                      className="px-2 py-1 bg-gray-700 rounded"
-                      onClick={handleClickValidate}
-                    >
-                      Validate
-                    </button>
-                  </div>
-                )
-              : (
-                  <>
-                    <TruncatedIssuesNotice
-                      issues={issues}
-                      onSeeMore={handleClickSeeMore}
-                    />
-                    <ValidationIssuesList issues={issues} />
-                  </>
-                )}
+        {isValidating ? (
+          <div className="flex items-center justify-center py-4">
+            <div className="text-gray-500">Validating...</div>
+          </div>
+        ) : !validationReport ? (
+          <div className="flex items-center justify-center py-4">
+            <button
+              type="button"
+              className="px-2 py-1 bg-gray-700 rounded"
+              onClick={handleClickValidate}
+            >
+              Validate
+            </button>
+          </div>
+        ) : (
+          <>
+            <TruncatedIssuesNotice
+              issues={issues}
+              onSeeMore={handleClickSeeMore}
+            />
+            <ValidationIssuesList issues={issues} />
+          </>
+        )}
       </PaneRoot>
     </Pane>
   );

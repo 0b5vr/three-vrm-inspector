@@ -1,3 +1,5 @@
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import { AboutPane } from './AboutPane';
 import { AnimationsPane } from './AnimationsPane';
 import { ExportBufferViewPane } from './ExportBufferViewPane';
@@ -15,7 +17,6 @@ import { StatsPane } from './StatsPane';
 import { TexturesPane } from './TexturesPane';
 import { ValidationReportPane } from './ValidationReportPane';
 import { WebGLMemoryPane } from './WebGLMemoryPane';
-import React, { useCallback, useState } from 'react';
 
 // == element ======================================================================================
 function PaneList() {
@@ -40,7 +41,7 @@ function PaneList() {
   ]);
 
   const handleClick = useCallback(
-    (event: React.MouseEvent, paneKey: string) => {
+    (_event: React.MouseEvent, paneKey: string) => {
       const newOrder = order.concat();
       newOrder.splice(order.indexOf(paneKey), 1);
       newOrder.push(paneKey);
@@ -60,8 +61,8 @@ function PaneList() {
     return { left, top };
   };
 
-  const panes: { [ key: string ]: React.ReactNode } = {
-    'jsonTree': (
+  const panes: { [key: string]: React.ReactNode } = {
+    jsonTree: (
       <JSONPane
         key="jsonTree"
         paneKey="jsonTree"
@@ -70,7 +71,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'materialDebugger': (
+    materialDebugger: (
       <MaterialDebuggerPane
         key="materialDebugger"
         paneKey="materialDebugger"
@@ -79,7 +80,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'meta': (
+    meta: (
       <MetaPane
         key="meta"
         paneKey="meta"
@@ -88,7 +89,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'stats': (
+    stats: (
       <StatsPane
         key="stats"
         paneKey="stats"
@@ -97,7 +98,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'textures': (
+    textures: (
       <TexturesPane
         key="textures"
         paneKey="textures"
@@ -106,7 +107,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'webglMemory': (
+    webglMemory: (
       <WebGLMemoryPane
         key="webglMemory"
         paneKey="webglMemory"
@@ -115,7 +116,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'expressions': (
+    expressions: (
       <ExpressionsPane
         key="expressions"
         paneKey="expressions"
@@ -124,7 +125,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'lookAt': (
+    lookAt: (
       <LookAtPane
         key="lookAt"
         paneKey="lookAt"
@@ -133,7 +134,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'validationReport': (
+    validationReport: (
       <ValidationReportPane
         key="validationReport"
         paneKey="validationReport"
@@ -142,7 +143,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'sampleModels': (
+    sampleModels: (
       <SampleModelsPane
         key="sampleModels"
         paneKey="sampleModels"
@@ -151,7 +152,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'helpers': (
+    helpers: (
       <HelpersPane
         key="helpers"
         paneKey="helpers"
@@ -160,7 +161,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'exportBufferView': (
+    exportBufferView: (
       <ExportBufferViewPane
         key="exportBufferView"
         paneKey="exportBufferView"
@@ -169,7 +170,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'lights': (
+    lights: (
       <LightsPane
         key="lights"
         paneKey="lights"
@@ -178,7 +179,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'animations': (
+    animations: (
       <AnimationsPane
         key="animations"
         paneKey="animations"
@@ -187,7 +188,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'postProcessing': (
+    postProcessing: (
       <PostProcessingPane
         key="postProcessing"
         paneKey="postProcessing"
@@ -196,7 +197,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'jsEditor': (
+    jsEditor: (
       <JSEditorPane
         key="jsEditor"
         paneKey="jsEditor"
@@ -205,7 +206,7 @@ function PaneList() {
         initPosition={generateInitPosition()}
       />
     ),
-    'about': (
+    about: (
       <AboutPane
         key="about"
         paneKey="about"
@@ -216,11 +217,7 @@ function PaneList() {
     ),
   };
 
-  return (
-    <>
-      { order.map((paneKey) => panes[paneKey]) }
-    </>
-  );
+  return <>{order.map((paneKey) => panes[paneKey])}</>;
 }
 
 export { PaneList };

@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { HighlighterRuleFunction } from '../Highlighter';
+import type * as THREE from 'three';
+import type { HighlighterRuleFunction } from '../Highlighter';
 import { highlightMeshes } from '../utils/highlightMeshes';
 
 export const highlightGLTFPrimitive: HighlighterRuleFunction = (
@@ -10,14 +10,16 @@ export const highlightGLTFPrimitive: HighlighterRuleFunction = (
   const primIndexNum = parseInt(primIndex, 10);
   let callback: (() => void) | undefined;
 
-  parser.getDependency('mesh', meshIndexNum).then((groupOrMesh: THREE.Mesh | THREE.Group) => {
-    if (groupOrMesh.children.length !== 0) {
-      groupOrMesh = groupOrMesh.children[primIndexNum] as THREE.Mesh;
-    }
-    const mesh = groupOrMesh as THREE.Mesh;
+  parser
+    .getDependency('mesh', meshIndexNum)
+    .then((groupOrMesh: THREE.Mesh | THREE.Group) => {
+      if (groupOrMesh.children.length !== 0) {
+        groupOrMesh = groupOrMesh.children[primIndexNum] as THREE.Mesh;
+      }
+      const mesh = groupOrMesh as THREE.Mesh;
 
-    callback = highlightMeshes([mesh]);
-  });
+      callback = highlightMeshes([mesh]);
+    });
 
   return () => {
     callback?.();

@@ -1,7 +1,10 @@
-import { HighlighterRuleFunction } from '../Highlighter';
+import type { HighlighterRuleFunction } from '../Highlighter';
 import { genGizmo } from '../utils/genGizmo';
 
-export const highlightVRMLookAtOffset: HighlighterRuleFunction = (_, { inspector }) => {
+export const highlightVRMLookAtOffset: HighlighterRuleFunction = (
+  _,
+  { inspector },
+) => {
   const mesh = genGizmo();
   const lookAt = inspector.model!.vrm!.lookAt!;
   lookAt.getLookAtWorldPosition(mesh.position);

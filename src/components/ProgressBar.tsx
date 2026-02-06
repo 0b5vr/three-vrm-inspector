@@ -1,5 +1,5 @@
-import { InspectorContext } from '../InspectorContext';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { InspectorContext } from '../InspectorContext';
 
 export function ProgressBar() {
   const { inspector } = useContext(InspectorContext);
@@ -24,14 +24,16 @@ export function ProgressBar() {
   });
 
   const progressNormalized = useMemo(
-    () => (progress ? (progress.loaded / progress.total) : null),
+    () => (progress ? progress.loaded / progress.total : null),
     [progress],
   );
 
   return (
     <>
       <div className="w-full h-full absolute text-center pointer-events-none">
-        <div>{ progressNormalized ? (100.0 * progressNormalized).toFixed(2) : 'yay' }</div>
+        <div>
+          {progressNormalized ? (100.0 * progressNormalized).toFixed(2) : 'yay'}
+        </div>
       </div>
     </>
   );

@@ -1,7 +1,10 @@
-import { InspectorContext } from '../InspectorContext';
 import { useCallback, useContext } from 'react';
+import { InspectorContext } from '../InspectorContext';
 
-export function SampleModelsPaneButton({ name, url }: {
+export function SampleModelsPaneButton({
+  name,
+  url,
+}: {
   name: string;
   url: string;
 }) {
@@ -9,11 +12,16 @@ export function SampleModelsPaneButton({ name, url }: {
 
   const load = useCallback(() => {
     inspector.loadVRM(url);
-  }, [inspector]);
+  }, [inspector, url]);
 
   return (
-    <button value={name} className="bg-gray-800 border border-gray-500 px-1 py-0 block" onClick={load}>
-      { name }
+    <button
+      type="button"
+      value={name}
+      className="bg-gray-800 border border-gray-500 px-1 py-0 block"
+      onClick={load}
+    >
+      {name}
     </button>
   );
 }

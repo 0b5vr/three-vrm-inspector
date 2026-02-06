@@ -1,11 +1,11 @@
-import * as THREE from 'three';
-import { InspectorModel } from '../InspectorModel';
 import { VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
-import { loadMixamoAnimation } from './utils/loadMixamoAnimation';
-import { loadVRMAniamtion } from './utils/loadVRMAnimation';
+import * as THREE from 'three';
 import { notifyObservers } from '../../utils/notifyObservers';
 import type { Inspector } from '../Inspector';
+import type { InspectorModel } from '../InspectorModel';
 import type { InspectorPlugin } from './InspectorPlugin';
+import { loadMixamoAnimation } from './utils/loadMixamoAnimation';
+import { loadVRMAniamtion } from './utils/loadVRMAnimation';
 
 export interface InspectorAnimationPluginAnimation {
   type: 'vrma' | 'mixamo';
@@ -21,10 +21,7 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
   >;
 
   public animationUpdateObservers: Set<
-    (event: {
-      time: number;
-      duration: number;
-    }) => void
+    (event: { time: number; duration: number }) => void
   >;
 
   private _currentLookAtQuatProxy?: VRMLookAtQuaternionProxy | null;
@@ -41,11 +38,13 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
 
   public handleAfterLoad(model: InspectorModel): void {
     const vrm = model.vrm;
-    if (vrm == null) { return; }
+    if (vrm == null) {
+      return;
+    }
 
     const lookAt = vrm.lookAt;
     if (lookAt != null) {
-      this._currentLookAtQuatProxy = new VRMLookAtQuaternionProxy(lookAt as any);
+      this._currentLookAtQuatProxy = new VRMLookAtQuaternionProxy(lookAt);
       this._currentLookAtQuatProxy.name = 'lookAtQuaternionProxy';
       vrm.scene.add(this._currentLookAtQuatProxy);
     }
@@ -72,7 +71,9 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     }
   }
 
-  public async loadAnimation(animation: InspectorAnimationPluginAnimation): Promise<void> {
+  public async loadAnimation(
+    animation: InspectorAnimationPluginAnimation,
+  ): Promise<void> {
     if (animation.type === 'vrma') {
       await this._loadVRMAnimation(animation.url);
     } else if (animation.type === 'mixamo') {
@@ -85,10 +86,14 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
 
   public clearAnimation(): void {
     const vrm = this.inspector.model?.vrm;
-    if (!vrm) { return; }
+    if (!vrm) {
+      return;
+    }
 
     const action = this._currentAnimationAction;
-    if (!action) { return; }
+    if (!action) {
+      return;
+    }
 
     action.stop();
     this._currentAnimationAction = null;
@@ -101,31 +106,41 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
 
   public play(): void {
     const action = this._currentAnimationAction;
-    if (!action) { return; }
+    if (!action) {
+      return;
+    }
 
     action.paused = false;
   }
 
   public pause(): void {
     const action = this._currentAnimationAction;
-    if (!action) { return; }
+    if (!action) {
+      return;
+    }
 
     action.paused = true;
   }
 
   public rewind(): void {
     const action = this._currentAnimationAction;
-    if (!action) { return; }
+    if (!action) {
+      return;
+    }
 
     action.time = 0;
   }
 
   private async _loadVRMAnimation(url: string): Promise<void> {
     const vrm = this.inspector.model?.vrm;
-    if (!vrm) { return; }
+    if (!vrm) {
+      return;
+    }
 
     const mixer = this._currentAnimationMixer;
-    if (!mixer) { return; }
+    if (!mixer) {
+      return;
+    }
 
     if (this._currentAnimationAction != null) {
       this.clearAnimation();
@@ -139,10 +154,14 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
 
   private async _loadMixamoAnimation(url: string): Promise<void> {
     const vrm = this.inspector.model?.vrm;
-    if (!vrm) { return; }
+    if (!vrm) {
+      return;
+    }
 
     const mixer = this._currentAnimationMixer;
-    if (!mixer) { return; }
+    if (!mixer) {
+      return;
+    }
 
     if (this._currentAnimationAction != null) {
       this.clearAnimation();
@@ -160,15 +179,17 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
 
   private _resetTargets(): void {
     const vrm = this.inspector.model?.vrm;
-    if (!vrm) { return; }
+    if (!vrm) {
+      return;
+    }
 
     vrm.humanoid.resetNormalizedPose();
 
     const expressionsMap = vrm.expressionManager?.expressionMap;
     if (expressionsMap) {
-      Object.keys(expressionsMap).map((key) => {
+      for (const key of Object.keys(expressionsMap)) {
         vrm.expressionManager?.setValue(key, 0.0);
-      });
+      }
     }
 
     this._currentLookAtQuatProxy?.quaternion.set(0, 0, 0, 1);

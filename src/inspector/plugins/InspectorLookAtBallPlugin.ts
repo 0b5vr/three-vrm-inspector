@@ -19,7 +19,11 @@ export class InspectorLookAtBallPlugin implements InspectorPlugin {
 
     this.ballInside = new THREE.Mesh(
       new THREE.SphereGeometry(0.01),
-      new THREE.MeshBasicMaterial({ color: 0x440088, depthTest: false, depthWrite: false }),
+      new THREE.MeshBasicMaterial({
+        color: 0x440088,
+        depthTest: false,
+        depthWrite: false,
+      }),
     );
     this.ballInside.renderOrder = 10001;
     this.root.add(this.ballInside);

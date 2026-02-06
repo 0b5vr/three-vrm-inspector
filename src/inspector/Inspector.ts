@@ -1,9 +1,33 @@
 import 'webgl-memory';
+import { WebIO } from '@gltf-transform/core';
+import {
+  type VRM,
+  VRMHumanoidLoaderPlugin,
+  VRMLoaderPlugin,
+  VRMLookAtLoaderPlugin,
+  VRMSpringBoneLoaderPlugin,
+  VRMUtils,
+} from '@pixiv/three-vrm';
+import CameraControls from 'camera-controls';
 import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import {
+  type GLTF,
+  GLTFLoader,
+} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import cubemapXn from '../assets/cubemap/xn.jpg';
+import cubemapXp from '../assets/cubemap/xp.jpg';
+import cubemapYn from '../assets/cubemap/yn.jpg';
+import cubemapYp from '../assets/cubemap/yp.jpg';
+import cubemapZn from '../assets/cubemap/zn.jpg';
+import cubemapZp from '../assets/cubemap/zp.jpg';
+import { applyMixins } from '../utils/applyMixins';
 import { EventEmittable } from '../utils/EventEmittable';
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
+import type { InspectorModel } from './InspectorModel';
 import { InspectorAnimationPlugin } from './plugins/InspectorAnimationPlugin';
 import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControlsPlugin';
 import { InspectorGLTFValidatorPlugin } from './plugins/InspectorGLTFValidatorPlugin';
@@ -12,31 +36,16 @@ import { InspectorHumanoidTransformPlugin } from './plugins/InspectorHumanoidTra
 import { InspectorLightsPlugin } from './plugins/InspectorLightsPlugin';
 import { InspectorLookAtBallPlugin } from './plugins/InspectorLookAtBallPlugin';
 import { InspectorLookAtPlugin } from './plugins/InspectorLookAtPlugin';
-import { InspectorModel } from './InspectorModel';
+import type { InspectorPlugin } from './plugins/InspectorPlugin';
 import { InspectorPostProcessingPlugin } from './plugins/InspectorPostProcessingPlugin';
 import { InspectorStatsPlugin } from './plugins/InspectorStatsPlugin';
 import { InspectorTexturesPlugin } from './plugins/InspectorTexturesPlugin';
 import { InspectorVisualizeWeightPlugin } from './plugins/InspectorVisualizeWeightPlugin';
 import { InspectorWebGLMemoryPlugin } from './plugins/InspectorWebGLMemoryPlugin';
-import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { VRM, VRMHumanoidLoaderPlugin, VRMLoaderPlugin, VRMLookAtLoaderPlugin, VRMSpringBoneLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
-import { WebIO } from '@gltf-transform/core';
-import { applyMixins } from '../utils/applyMixins';
-import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
 import { removeUnnecessaryJoints } from './utils/removeUnnecessaryJoints';
-import CameraControls from 'camera-controls';
-import cubemapXn from '../assets/cubemap/xn.jpg';
-import cubemapXp from '../assets/cubemap/xp.jpg';
-import cubemapYn from '../assets/cubemap/yn.jpg';
-import cubemapYp from '../assets/cubemap/yp.jpg';
-import cubemapZn from '../assets/cubemap/zn.jpg';
-import cubemapZp from '../assets/cubemap/zp.jpg';
-import type { InspectorPlugin } from './plugins/InspectorPlugin';
 
 CameraControls.install({ THREE });
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class Inspector {
   public readonly animationPlugin: InspectorAnimationPlugin;
   public readonly cameraControlsPlugin: InspectorCameraControlsPlugin;
@@ -66,13 +75,27 @@ export class Inspector {
   private _ongoingRequestEnvMap?: Promise<THREE.CubeTexture>;
   private _plugins: InspectorPlugin[];
 
-  public get scene(): THREE.Scene { return this._scene; }
-  public get camera(): THREE.PerspectiveCamera { return this._camera; }
-  public get renderer(): THREE.WebGLRenderer | undefined { return this._renderer; }
-  public get composer(): EffectComposer | undefined { return this._composer; }
-  public get model(): InspectorModel | null { return this._model ?? null; }
-  public get canvas(): HTMLCanvasElement | undefined { return this._canvas; }
-  public get layerMode(): 'firstPerson' | 'thirdPerson' { return this._layerMode; }
+  public get scene(): THREE.Scene {
+    return this._scene;
+  }
+  public get camera(): THREE.PerspectiveCamera {
+    return this._camera;
+  }
+  public get renderer(): THREE.WebGLRenderer | undefined {
+    return this._renderer;
+  }
+  public get composer(): EffectComposer | undefined {
+    return this._composer;
+  }
+  public get model(): InspectorModel | null {
+    return this._model ?? null;
+  }
+  public get canvas(): HTMLCanvasElement | undefined {
+    return this._canvas;
+  }
+  public get layerMode(): 'firstPerson' | 'thirdPerson' {
+    return this._layerMode;
+  }
 
   public set layerMode(mode: 'firstPerson' | 'thirdPerson') {
     this._layerMode = mode;
@@ -105,18 +128,21 @@ export class Inspector {
     this._loader = new GLTFLoader();
     this._loader.setDRACOLoader(this._dracoLoader);
     this._loader.setKTX2Loader(this._ktx2Loader);
-    this._loader.register((parser) => new VRMLoaderPlugin(parser, {
-      humanoidPlugin: new VRMHumanoidLoaderPlugin(parser, {
-        helperRoot: this.helpersPlugin.humanoidHelperRoot,
-      }),
-      lookAtPlugin: new VRMLookAtLoaderPlugin(parser, {
-        helperRoot: this.helpersPlugin.lookAtHelperRoot,
-      }),
-      springBonePlugin: new VRMSpringBoneLoaderPlugin(parser, {
-        jointHelperRoot: this.helpersPlugin.springBoneJointHelperRoot,
-        colliderHelperRoot: this.helpersPlugin.springBoneColliderHelperRoot,
-      }),
-    }));
+    this._loader.register(
+      (parser) =>
+        new VRMLoaderPlugin(parser, {
+          humanoidPlugin: new VRMHumanoidLoaderPlugin(parser, {
+            helperRoot: this.helpersPlugin.humanoidHelperRoot,
+          }),
+          lookAtPlugin: new VRMLookAtLoaderPlugin(parser, {
+            helperRoot: this.helpersPlugin.lookAtHelperRoot,
+          }),
+          springBonePlugin: new VRMSpringBoneLoaderPlugin(parser, {
+            jointHelperRoot: this.helpersPlugin.springBoneJointHelperRoot,
+            colliderHelperRoot: this.helpersPlugin.springBoneColliderHelperRoot,
+          }),
+        }),
+    );
 
     // plugins
     this.animationPlugin = new InspectorAnimationPlugin(this);
@@ -158,7 +184,9 @@ export class Inspector {
     }
 
     // plugins
-    this._plugins.forEach((plugin) => plugin.handleAfterUnload?.());
+    for (const plugin of this._plugins) {
+      plugin.handleAfterUnload?.();
+    }
 
     this._model = null;
   }
@@ -175,14 +203,23 @@ export class Inspector {
       this._loader.crossOrigin = 'anonymous';
       this._loader.load(
         url,
-        (gltf) => { resolve(gltf); },
-        (progress) => { this._emit('progress', progress); },
-        (error) => { this._emit('error', error); reject(error); },
+        (gltf) => {
+          resolve(gltf);
+        },
+        (progress) => {
+          this._emit('progress', progress);
+        },
+        (error) => {
+          this._emit('error', error);
+          reject(error);
+        },
       );
     });
 
     VRMUtils.removeUnnecessaryVertices(gltf.scene);
-    this.visualizeWeightPlugin.boneIndexMap = removeUnnecessaryJoints(gltf.scene);
+    this.visualizeWeightPlugin.boneIndexMap = removeUnnecessaryJoints(
+      gltf.scene,
+    );
 
     let vrm: VRM | null = gltf.userData.vrm ?? null;
 
@@ -192,7 +229,9 @@ export class Inspector {
     }
 
     if (vrm == null) {
-      console.warn('Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF');
+      console.warn(
+        'Failed to load the model as a VRM. Fallback to treat the model as a mere GLTF',
+      );
     }
 
     const scene = (vrm?.scene ?? gltf.scene) as THREE.Group;
@@ -209,7 +248,9 @@ export class Inspector {
     this._model = model;
 
     // plugins
-    this._plugins.forEach((plugin) => plugin.handleAfterLoad?.(model));
+    for (const plugin of this._plugins) {
+      plugin.handleAfterLoad?.(model);
+    }
 
     if (vrm) {
       // setup first person
@@ -221,7 +262,8 @@ export class Inspector {
         if ('isMesh' in object) {
           forEachMeshMaterials(object as THREE.Mesh, async (material) => {
             if ('isMeshStandardMaterial' in material) {
-              (material as THREE.MeshStandardMaterial).envMap = await this._requestEnvMap();
+              (material as THREE.MeshStandardMaterial).envMap =
+                await this._requestEnvMap();
             }
           });
         }
@@ -240,7 +282,9 @@ export class Inspector {
 
   public async exportBufferView(index: number): Promise<void> {
     const gltf = this._model?.gltf;
-    if (gltf == null) { return; }
+    if (gltf == null) {
+      return;
+    }
 
     const bufferView = await gltf.parser.getDependency('bufferView', index);
     const blob = new Blob([bufferView]);
@@ -294,7 +338,9 @@ export class Inspector {
     window.addEventListener('resize', this._handleResize);
 
     // plugins
-    this._plugins.forEach((plugin) => plugin.handleAfterSetup?.());
+    for (const plugin of this._plugins) {
+      plugin.handleAfterSetup?.();
+    }
   }
 
   public registerDnD(target: HTMLElement): () => void {
@@ -307,14 +353,20 @@ export class Inspector {
 
       // read given file then convert it to blob url
       const file = event.dataTransfer!.files?.[0];
-      if (!file) { return; }
+      if (!file) {
+        return;
+      }
 
       const blob = new Blob([file], { type: 'application/octet-stream' });
       const url = URL.createObjectURL(blob);
 
       if (file.name.endsWith('.vrma')) {
         // if the file extension is .vrma load as VRM Animation
-        await this.animationPlugin.loadAnimation({ type: 'vrma', url, name: 'Custom Animation (VRMA)' });
+        await this.animationPlugin.loadAnimation({
+          type: 'vrma',
+          url,
+          name: 'Custom Animation (VRMA)',
+        });
       } else {
         // otherwise load as VRM (or glTF)
         await this.loadVRM(url);
@@ -333,10 +385,14 @@ export class Inspector {
   }
 
   public update(delta: number): void {
-    if (this._model?.vrm) { this._model.vrm.update(delta); }
+    if (this._model?.vrm) {
+      this._model.vrm.update(delta);
+    }
 
     // plugins
-    this._plugins.forEach((plugin) => plugin.handleBeforeRender?.(delta));
+    for (const plugin of this._plugins) {
+      plugin.handleBeforeRender?.(delta);
+    }
 
     if (this._composer) {
       this._composer.render(delta);
@@ -372,7 +428,9 @@ export class Inspector {
   private _updateLayerMode(): void {
     const firstPerson = this._model?.vrm?.firstPerson;
 
-    if (!firstPerson) { return; }
+    if (!firstPerson) {
+      return;
+    }
 
     if (this._layerMode === 'firstPerson') {
       this._camera.layers.enable(firstPerson.firstPersonOnlyLayer);

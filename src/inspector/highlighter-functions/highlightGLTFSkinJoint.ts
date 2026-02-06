@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { HighlighterRuleFunction } from '../Highlighter';
+import type * as THREE from 'three';
 import { gltfExtractPrimitivesFromNode } from '../../utils/gltfExtractPrimitivesFromNode';
+import type { HighlighterRuleFunction } from '../Highlighter';
 import { highlightNodes } from '../utils/highlightNodes';
 
 export const highlightGLTFSkinJoint: HighlighterRuleFunction = (
@@ -24,17 +24,25 @@ export const highlightGLTFSkinJoint: HighlighterRuleFunction = (
     }
   });
 
-  const promisePrimitives = Promise.all(nodesUsingSkin.map((nodeIndex) => {
-    return gltfExtractPrimitivesFromNode(gltf, nodeIndex) as Promise<THREE.Mesh[]>;
-  })).then((result) => result.flat());
+  const promisePrimitives = Promise.all(
+    nodesUsingSkin.map((nodeIndex) => {
+      return gltfExtractPrimitivesFromNode(gltf, nodeIndex) as Promise<
+        THREE.Mesh[]
+      >;
+    }),
+  ).then((result) => result.flat());
 
   promisePrimitives.then((primitives) => {
     primitives.forEach((primitive) => {
-      callbacks.push(inspector.visualizeWeightPlugin.visualize(primitive, jointIndexNum));
+      callbacks.push(
+        inspector.visualizeWeightPlugin.visualize(primitive, jointIndexNum),
+      );
     });
   });
 
   return () => {
-    callbacks.forEach((c) => c());
+    for (const callback of callbacks) {
+      callback();
+    }
   };
 };

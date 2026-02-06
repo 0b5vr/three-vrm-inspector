@@ -1,5 +1,5 @@
-import { registerMouseEvent } from '../utils/registerMouseEvent';
 import { useCallback, useState } from 'react';
+import { registerMouseEvent } from '../utils/registerMouseEvent';
 import { useDoubleClick } from '../utils/useDoubleClick';
 
 // == params =======================================================================================
@@ -15,10 +15,12 @@ export interface PaneParams {
 
 // == element ======================================================================================
 function Pane(params: PaneParams) {
-  const [position, setPosition] = useState(params.initPosition ?? {
-    left: 0,
-    top: 0,
-  });
+  const [position, setPosition] = useState(
+    params.initPosition ?? {
+      left: 0,
+      top: 0,
+    },
+  );
   const [isOpening, setOpening] = useState(params.initOpening ?? false);
   const whenDoubleClick = useDoubleClick();
 
@@ -26,7 +28,7 @@ function Pane(params: PaneParams) {
     (event: React.MouseEvent) => {
       params.onClick?.(event, params.paneKey);
     },
-    [params.onClick, params.paneKey],
+    [params.onClick, params.paneKey, params],
   );
 
   const handleMouseDownTitleBar = useCallback(
@@ -36,23 +38,21 @@ function Pane(params: PaneParams) {
       let left = position.left;
       let top = position.top;
 
-      registerMouseEvent(
-        (event, movementSum) => {
-          event.preventDefault();
-          event.stopPropagation();
+      registerMouseEvent((event, movementSum) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-          left += movementSum.x;
-          top += movementSum.y;
+        left += movementSum.x;
+        top += movementSum.y;
 
-          setPosition({ left, top });
-        },
-      );
+        setPosition({ left, top });
+      });
 
       whenDoubleClick(() => {
         setOpening(!isOpening);
       });
     },
-    [isOpening, position],
+    [isOpening, position, whenDoubleClick],
   );
 
   const handleMouseDownExpand = useCallback(
@@ -63,7 +63,7 @@ function Pane(params: PaneParams) {
       params.onClick?.(event, params.paneKey);
       setOpening(!isOpening);
     },
-    [isOpening, params.onClick, params.paneKey],
+    [isOpening, params.onClick, params.paneKey, params],
   );
 
   return (
@@ -85,11 +85,11 @@ function Pane(params: PaneParams) {
           className="inline-block w-5 h-5 text-center cursor-pointer hover:text-sky-500"
           onMouseDown={handleMouseDownExpand}
         >
-          { isOpening ? '-' : '+' }
+          {isOpening ? '-' : '+'}
         </div>
-        { params.title }
+        {params.title}
       </div>
-      { isOpening && (params.children ?? null) }
+      {isOpening && (params.children ?? null)}
     </div>
   );
 }
