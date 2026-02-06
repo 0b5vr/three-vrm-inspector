@@ -4,7 +4,7 @@ import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { useContext, useEffect, useState } from 'react';
 
-const JSONPane = (params: PaneParams): JSX.Element => {
+function JSONPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
   const [root, setRoot] = useState<any>(undefined);
 
@@ -30,6 +30,6 @@ const JSONPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}
 
 export { JSONPane };

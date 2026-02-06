@@ -5,7 +5,7 @@ import { useCallback, useContext } from 'react';
 import { useInspectorSubscribers } from '../stores/hooks/useInspectorSubscribers';
 
 // == element ======================================================================================
-const OutOfContextApp = (): JSX.Element => {
+function OutOfContextApp() {
   const { inspector } = useContext(InspectorContext);
   useInspectorSubscribers(inspector);
 
@@ -24,10 +24,12 @@ const OutOfContextApp = (): JSX.Element => {
       </div>
     </>
   );
-};
+}
 
-export const App = (): JSX.Element => (
-  <>
-    <OutOfContextApp />
-  </>
-);
+export function App() {
+  return (
+    <>
+      <OutOfContextApp />
+    </>
+  );
+}

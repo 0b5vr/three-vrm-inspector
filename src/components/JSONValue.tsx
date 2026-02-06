@@ -2,24 +2,29 @@ import { InspectorContext } from '../InspectorContext';
 import React, { useCallback, useContext, useState } from 'react';
 
 // == microcomponents ==============================================================================
-const Bracket: React.FC<{
+function Bracket({ children, onClick, onMouseEnter, onMouseLeave }: {
+  children: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   onMouseEnter?: React.MouseEventHandler<HTMLSpanElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLSpanElement>;
-}> = ({ children, onClick, onMouseEnter, onMouseLeave }) => (
-  <span
-    className="select-none cursor-pointer"
-    onClick={onClick}
-    onMouseEnter={onMouseEnter}
-    onMouseLeave={onMouseLeave}
-  >
-    { children }
-  </span>
-);
+}) {
+  return (
+    <span
+      className="select-none cursor-pointer"
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      { children }
+    </span>
+  );
+}
 
-const Children: React.FC = ({ children }) => (
-  <div style={{ marginLeft: '1.13em' }}>{ children }</div>
-);
+function Children({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ marginLeft: '1.13em' }}>{ children }</div>
+  );
+}
 
 // == element ======================================================================================
 export interface JSONValueProps {
@@ -28,7 +33,7 @@ export interface JSONValueProps {
   fullPath?: string;
 }
 
-export const JSONValue = ({ name, value, fullPath = '' }: JSONValueProps): JSX.Element => {
+export function JSONValue({ name, value, fullPath = '' }: JSONValueProps) {
   const { highlighter } = useContext(InspectorContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isHovering, setIsHovering] = useState<boolean>(false);
@@ -176,4 +181,4 @@ export const JSONValue = ({ name, value, fullPath = '' }: JSONValueProps): JSX.E
       </button>
     </div>
   );
-};
+}

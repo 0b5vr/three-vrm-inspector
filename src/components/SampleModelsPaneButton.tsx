@@ -1,10 +1,10 @@
 import { InspectorContext } from '../InspectorContext';
 import { useCallback, useContext } from 'react';
 
-export const SampleModelsPaneButton = ({ name, url }: {
+export function SampleModelsPaneButton({ name, url }: {
   name: string;
   url: string;
-}): JSX.Element => {
+}) {
   const { inspector } = useContext(InspectorContext);
 
   const load = useCallback(() => {
@@ -16,4 +16,4 @@ export const SampleModelsPaneButton = ({ name, url }: {
       { name }
     </button>
   );
-};
+}

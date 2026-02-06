@@ -5,7 +5,7 @@ import { statsAtom } from '../stores/atoms/statsAtom';
 import { useAtomValue } from 'jotai';
 
 // == element ======================================================================================
-export const StatsPane = (params: PaneParams): JSX.Element => {
+export function StatsPane(params: PaneParams) {
   const stats = useAtomValue(statsAtom);
 
   const dim = stats?.dimension.map((v) => v.toFixed(3));
@@ -25,4 +25,4 @@ export const StatsPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

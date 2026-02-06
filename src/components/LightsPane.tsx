@@ -4,7 +4,7 @@ import { PaneRoot } from './PaneRoot';
 import { RangeRow } from './RangeRow';
 import { useCallback, useContext } from 'react';
 
-export const LightsPane = (params: PaneParams): JSX.Element => {
+export function LightsPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   const handleChangeAzimuth = useCallback((value: number) => {
@@ -31,4 +31,4 @@ export const LightsPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

@@ -14,7 +14,7 @@ export interface PaneParams {
 }
 
 // == element ======================================================================================
-const Pane: React.FC<PaneParams> = (params) => {
+function Pane(params: PaneParams) {
   const [position, setPosition] = useState(params.initPosition ?? {
     left: 0,
     top: 0,
@@ -92,6 +92,6 @@ const Pane: React.FC<PaneParams> = (params) => {
       { isOpening && (params.children ?? null) }
     </div>
   );
-};
+}
 
 export { Pane };

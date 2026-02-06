@@ -13,7 +13,7 @@ const models = [
 ];
 
 // == element ======================================================================================
-export const SampleModelsPane = (params: PaneParams): JSX.Element => {
+export function SampleModelsPane(params: PaneParams) {
   return (
     <Pane {...params}>
       <PaneRoot>
@@ -27,4 +27,4 @@ export const SampleModelsPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

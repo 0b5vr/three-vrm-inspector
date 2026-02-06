@@ -4,12 +4,12 @@ import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { useCallback, useContext, useState } from 'react';
 
-export const LookAtPane = (params: PaneParams): JSX.Element => {
+export function LookAtPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   const [checkedEnableLookAt, setCheckedEnableLookAt] = useState(false);
 
-  const handleChangeEnableLookAt = useCallback((checked) => {
+  const handleChangeEnableLookAt = useCallback((checked: boolean) => {
     setCheckedEnableLookAt(checked);
     inspector.lookAtPlugin.enableLookAt = checked;
   }, [inspector]);
@@ -25,4 +25,4 @@ export const LookAtPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

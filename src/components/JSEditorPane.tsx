@@ -43,11 +43,11 @@ export default ( { inspector, THREE } ) => {
 }
 `;
 
-export const JSEditorPane = (params: PaneParams): JSX.Element => {
+export function JSEditorPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
   const [code, setCode] = useState(defaultCode);
   const [hasEdited, setHasEdited] = useState(false);
-  const refLastUnmount = useRef<() => void>();
+  const refLastUnmount = useRef<(() => void) | null>(null);
 
   // -- event handlers -----------------------------------------------------------------------------
   useEffect(() => {
@@ -62,7 +62,7 @@ export const JSEditorPane = (params: PaneParams): JSX.Element => {
   }, [hasEdited]);
 
   const handleCompile = useCallback(
-    (code) => {
+    (code: string) => {
       refLastUnmount.current?.();
 
       const blob = new Blob([code], { type: 'text/javascript' });
@@ -127,4 +127,4 @@ export const JSEditorPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

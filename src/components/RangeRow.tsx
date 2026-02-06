@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 
-export const RangeRow = ({ label, onChange, defaultValue, disabled }: {
+export function RangeRow({ label, onChange, defaultValue, disabled }: {
   label: string;
   onChange: (value: number) => void;
   defaultValue?: number;
   disabled?: boolean;
-}): JSX.Element => {
+}) {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = parseFloat(event.currentTarget.value);
@@ -31,4 +31,4 @@ export const RangeRow = ({ label, onChange, defaultValue, disabled }: {
         : label}
     </div>
   );
-};
+}

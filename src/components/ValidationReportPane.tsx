@@ -45,20 +45,22 @@ function useValidator() {
 }
 
 // == microcomponents ==============================================================================
-const ReportCount: React.FC<{
+function ReportCount({ count, colorClass }: {
   count: number | undefined;
   colorClass: string;
-}> = ({ count, colorClass }) => (
-  <span
-    className={count ? colorClass : 'text-gray-500'}
-  >
-    {count}
-  </span>
-);
+}) {
+  return (
+    <span
+      className={count ? colorClass : 'text-gray-500'}
+    >
+      {count}
+    </span>
+  );
+}
 
-const ValidationIssuesList: React.FC<{
+function ValidationIssuesList({ issues }: {
   issues: ValidationIssues | undefined;
-}> = ({ issues }) => {
+}) {
   if (!issues || issues.messages.length === 0) {
     return null;
   }
@@ -76,12 +78,12 @@ const ValidationIssuesList: React.FC<{
       ))}
     </div>
   );
-};
+}
 
-const TruncatedIssuesNotice: React.FC<{
+function TruncatedIssuesNotice({ issues, onSeeMore }: {
   issues: ValidationReport['issues'] | undefined;
   onSeeMore: () => void;
-}> = ({ issues, onSeeMore }) => {
+}) {
   if (!issues?.truncated) {
     return null;
   }
@@ -101,10 +103,10 @@ const TruncatedIssuesNotice: React.FC<{
       </span>
     </div>
   );
-};
+}
 
 // == element ======================================================================================
-export const ValidationReportPane = (params: PaneParams): JSX.Element => {
+export function ValidationReportPane(params: PaneParams) {
   const { validate, validationReport, isValidating } = useValidator();
   const issues = validationReport?.issues;
 
@@ -170,4 +172,4 @@ export const ValidationReportPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

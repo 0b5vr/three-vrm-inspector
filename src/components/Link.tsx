@@ -1,10 +1,10 @@
 import React from 'react';
 
 // == component ====================================================================================
-export const Link: React.FC<{
+export function Link({ href, widthClass }: {
   href?: string;
   widthClass?: string;
-}> = ({ href, widthClass }) => {
+}) {
   if (href == null) { return null; }
 
   return (
@@ -17,4 +17,4 @@ export const Link: React.FC<{
       { href }
     </a>
   );
-};
+}

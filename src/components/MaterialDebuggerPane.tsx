@@ -4,7 +4,7 @@ import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { useCallback, useContext } from 'react';
 
-export const MaterialDebuggerPane = (params: PaneParams): JSX.Element => {
+export function MaterialDebuggerPane(params: PaneParams) {
   const { materialDebugger } = useContext(InspectorContext);
 
   const handleSelectChange = useCallback(
@@ -29,4 +29,4 @@ export const MaterialDebuggerPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

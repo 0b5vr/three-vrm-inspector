@@ -1,7 +1,7 @@
 import { InspectorContext } from '../InspectorContext';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-export const ProgressBar = (): JSX.Element => {
+export function ProgressBar() {
   const { inspector } = useContext(InspectorContext);
   const [progress, setProgress] = useState<ProgressEvent | null>(null);
 
@@ -35,4 +35,4 @@ export const ProgressBar = (): JSX.Element => {
       </div>
     </>
   );
-};
+}

@@ -2,10 +2,10 @@ import { InspectorContext } from '../InspectorContext';
 import { RangeRow } from './RangeRow';
 import { useCallback, useContext } from 'react';
 
-export const BlendShapeRow = ({ name, isAvailable }: {
+export function BlendShapeRow({ name, isAvailable }: {
   name: string;
   isAvailable: boolean;
-}): JSX.Element => {
+}) {
   const { inspector } = useContext(InspectorContext);
 
   const handleChange = useCallback(
@@ -22,4 +22,4 @@ export const BlendShapeRow = ({ name, isAvailable }: {
       onChange={handleChange}
     />
   );
-};
+}

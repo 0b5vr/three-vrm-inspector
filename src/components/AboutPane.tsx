@@ -2,7 +2,7 @@ import { Link } from './Link';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 
-export const AboutPane = (params: PaneParams): JSX.Element => {
+export function AboutPane(params: PaneParams) {
   return (
     <Pane {...params}>
       <PaneRoot>
@@ -15,4 +15,4 @@ export const AboutPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

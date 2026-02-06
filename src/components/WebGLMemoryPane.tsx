@@ -7,7 +7,7 @@ import { useAtomValue } from 'jotai';
 import { webglMemoryInfoAtom } from '../stores/atoms/webglMemoryInfoAtom';
 
 // == element ======================================================================================
-export const WebGLMemoryPane = (params: PaneParams): JSX.Element => {
+export function WebGLMemoryPane(params: PaneParams) {
   const info = useAtomValue(webglMemoryInfoAtom);
 
   return (
@@ -32,4 +32,4 @@ export const WebGLMemoryPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

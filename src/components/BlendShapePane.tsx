@@ -30,7 +30,7 @@ const presets: VRMExpressionPresetName[] = [
 const presetSet: Set<string> = new Set(presets);
 
 // == element ======================================================================================
-export const ExpressionsPane = (params: PaneParams): JSX.Element => {
+export function ExpressionsPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   const expressionManager = inspector.model?.vrm?.expressionManager;
@@ -75,4 +75,4 @@ export const ExpressionsPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

@@ -1,13 +1,16 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 
-export const HelpersPaneCheckbox = ({ callback, label, checked }: {
+export function HelpersPaneCheckbox({ callback, label, checked }: {
   callback: (checked: boolean) => void;
   label: string;
   checked: boolean;
-}): JSX.Element => {
-  const handleChange = useCallback(({ target }) => {
-    callback(target.checked);
-  }, [callback]);
+}) {
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      callback(event.target.checked);
+    },
+    [callback],
+  );
 
   return (
     <div>
@@ -21,4 +24,4 @@ export const HelpersPaneCheckbox = ({ callback, label, checked }: {
       </label>
     </div>
   );
-};
+}

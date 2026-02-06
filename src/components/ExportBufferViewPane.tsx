@@ -3,7 +3,7 @@ import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import React, { useCallback, useContext, useRef } from 'react';
 
-export const ExportBufferViewPane = (params: PaneParams): JSX.Element => {
+export function ExportBufferViewPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   const refInput = useRef<HTMLInputElement | null>(null);
@@ -28,4 +28,4 @@ export const ExportBufferViewPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

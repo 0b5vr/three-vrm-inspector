@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 
-export const CheckboxRow = ({ label, onChange, defaultChecked, disabled }: {
+export function CheckboxRow({ label, onChange, defaultChecked, disabled }: {
   label: string;
   onChange: (value: boolean) => void;
   defaultChecked?: boolean;
   disabled?: boolean;
-}): JSX.Element => {
+}) {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.currentTarget.checked;
@@ -28,4 +28,4 @@ export const CheckboxRow = ({ label, onChange, defaultChecked, disabled }: {
         : label}
     </div>
   );
-};
+}

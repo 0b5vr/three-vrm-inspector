@@ -24,7 +24,7 @@ const animations: InspectorAnimationPluginAnimation[] = [
 ];
 
 // == element ======================================================================================
-export const AnimationsPane = (params: PaneParams): JSX.Element => {
+export function AnimationsPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   // listen to animation change
@@ -132,4 +132,4 @@ export const AnimationsPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

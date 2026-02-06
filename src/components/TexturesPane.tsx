@@ -9,9 +9,9 @@ import { useAtomValue } from 'jotai';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
 // == microcomponents ==============================================================================
-const Texture = ({ textureInfo }: {
+function Texture({ textureInfo }: {
   textureInfo: InspectorTexturesPluginInfo;
-}): JSX.Element => {
+}) {
   const description = useMemo(() => {
     const displayBytes = textureInfo.byteLength != null
       ? bytesToDisplayBytes(textureInfo.byteLength)
@@ -44,11 +44,11 @@ const Texture = ({ textureInfo }: {
       </div>
     </div>
   );
-};
+}
 
-const TexturesInfo = ({ textureInfos }: {
+function TexturesInfo({ textureInfos }: {
   textureInfos: InspectorTexturesPluginInfo[];
-}): JSX.Element => {
+}) {
   const count = useMemo(() => (
     textureInfos?.length ?? 0
   ), [textureInfos]);
@@ -95,9 +95,9 @@ const TexturesInfo = ({ textureInfos }: {
       </div>
     </>
   );
-};
+}
 
-const LoadButtonStuff = (): JSX.Element => {
+function LoadButtonStuff() {
   const { inspector } = useContext(InspectorContext);
   const texturesPlugin = inspector.texturesPlugin;
 
@@ -116,10 +116,10 @@ const LoadButtonStuff = (): JSX.Element => {
       <span className="text-xs text-gray-300">(Might consume extra VRAMs, idk why)</span>
     </div>
   );
-};
+}
 
 // == element ======================================================================================
-export const TexturesPane = (params: PaneParams): JSX.Element => {
+export function TexturesPane(params: PaneParams) {
   const textureInfos = useAtomValue(textureInfosAtom);
 
   return (
@@ -132,4 +132,4 @@ export const TexturesPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

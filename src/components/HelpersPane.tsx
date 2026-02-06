@@ -5,7 +5,7 @@ import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
-export const HelpersPane = (params: PaneParams): JSX.Element => {
+export function HelpersPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   const [checkedGrid, setCheckedGrid] = useState(
@@ -55,35 +55,35 @@ export const HelpersPane = (params: PaneParams): JSX.Element => {
     setCheckedSpringBoneColliders(false);
   }, []);
 
-  const handleChangeGrid = useCallback((checked) => {
+  const handleChangeGrid = useCallback((checked: boolean) => {
     setCheckedGrid(checked);
   }, [inspector]);
 
-  const handleChangeAxes = useCallback((checked) => {
+  const handleChangeAxes = useCallback((checked: boolean) => {
     setCheckedAxes(checked);
   }, [inspector]);
 
-  const handleChangeHumanoid = useCallback((checked) => {
+  const handleChangeHumanoid = useCallback((checked: boolean) => {
     setCheckedHumanoid(checked);
   }, [inspector]);
 
-  const handleChangeHumanoidTransform = useCallback((checked) => {
+  const handleChangeHumanoidTransform = useCallback((checked: boolean) => {
     setCheckedHumanoidTransform(checked);
   }, [inspector]);
 
-  const handleChangeLookAt = useCallback((checked) => {
+  const handleChangeLookAt = useCallback((checked: boolean) => {
     setCheckedLookAt(checked);
   }, [inspector]);
 
-  const handleChangeLookAtBall = useCallback((checked) => {
+  const handleChangeLookAtBall = useCallback((checked: boolean) => {
     setCheckedLookAtBall(checked);
   }, [inspector]);
 
-  const handleChangeSpringBones = useCallback((checked) => {
+  const handleChangeSpringBones = useCallback((checked: boolean) => {
     setCheckedSpringBones(checked);
   }, [inspector]);
 
-  const handleChangeSpringBoneColliders = useCallback((checked) => {
+  const handleChangeSpringBoneColliders = useCallback((checked: boolean) => {
     setCheckedSpringBoneColliders(checked);
   }, [inspector]);
 
@@ -180,4 +180,4 @@ export const HelpersPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

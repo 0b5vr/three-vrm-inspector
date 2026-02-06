@@ -3,14 +3,14 @@ import { Meta0Content } from './Meta0Content';
 import { Meta1Content } from './Meta1Content';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 
-export const MetaPane = (params: PaneParams): JSX.Element => {
+export function MetaPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   const meta = inspector.model?.vrm?.meta;
 
-  let content: JSX.Element = <>No meta detected.</>;
+  let content: React.ReactNode = <>No meta detected.</>;
 
   if (meta?.metaVersion === '1') {
     content = <Meta1Content meta={meta} />;
@@ -25,4 +25,4 @@ export const MetaPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

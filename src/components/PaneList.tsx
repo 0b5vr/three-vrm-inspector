@@ -18,7 +18,7 @@ import { WebGLMemoryPane } from './WebGLMemoryPane';
 import React, { useCallback, useState } from 'react';
 
 // == element ======================================================================================
-const PaneList = (): JSX.Element => {
+function PaneList() {
   const [order, setOrder] = useState([
     'jsonTree',
     'materialDebugger',
@@ -60,7 +60,7 @@ const PaneList = (): JSX.Element => {
     return { left, top };
   };
 
-  const panes: { [ key: string ]: JSX.Element } = {
+  const panes: { [ key: string ]: React.ReactNode } = {
     'jsonTree': (
       <JSONPane
         key="jsonTree"
@@ -221,6 +221,6 @@ const PaneList = (): JSX.Element => {
       { order.map((paneKey) => panes[paneKey]) }
     </>
   );
-};
+}
 
 export { PaneList };

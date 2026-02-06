@@ -7,7 +7,7 @@ import { RangeRow } from './RangeRow';
 import { useCallback, useContext, useState } from 'react';
 
 // == element ======================================================================================
-export const PostProcessingPane = (params: PaneParams): JSX.Element => {
+export function PostProcessingPane(params: PaneParams) {
   const { inspector } = useContext(InspectorContext);
 
   const [isBloomEnabled, setBloomEnabled] = useState(false);
@@ -83,4 +83,4 @@ export const PostProcessingPane = (params: PaneParams): JSX.Element => {
       </PaneRoot>
     </Pane>
   );
-};
+}

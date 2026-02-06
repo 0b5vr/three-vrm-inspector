@@ -2,17 +2,19 @@ import { Colors } from '../constants/Colors';
 import React, { useCallback, useState } from 'react';
 
 // == microcomponents ==============================================================================
-const Message: React.FC = ({ children }) => (
-  <div style={{ marginLeft: '1.13em' }}>{ children }</div>
-);
+function Message({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ marginLeft: '1.13em' }}>{ children }</div>
+  );
+}
 
 // == element ======================================================================================
-export const ValidationReportIssue = (props: {
+export function ValidationReportIssue(props: {
   code: string;
   message: string;
   severity: number;
   pointer?: string;
-}): JSX.Element => {
+}) {
   const [isOpening, setOpening] = useState(false);
 
   const color = props.severity === 0
@@ -36,4 +38,4 @@ export const ValidationReportIssue = (props: {
       { isOpening && <Message>{ props.message }</Message> }
     </div>
   );
-};
+}
