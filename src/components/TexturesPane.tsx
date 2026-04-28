@@ -19,7 +19,7 @@ function Texture({ textureInfo }: {
     return `${textureInfo.width}x${textureInfo.height}, ${displayBytes}`;
   }, [textureInfo]);
 
-  const [url, setUrl] = useState<string>('');
+  const [url, setUrl] = useState<string | undefined>();
   useEffect(() => {
     let url: string | null = null;
     textureInfo.promiseBlob.then((blob) => {
