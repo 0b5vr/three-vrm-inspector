@@ -12,7 +12,7 @@ import standingClapFbx from '../assets/motions/standing-clap.fbx?url';
 import testVrma from '../assets/motions/test.vrma?url';
 import walkingFbx from '../assets/motions/walking.fbx?url';
 
-// == animations ===================================================================================
+// == preset animations ============================================================================
 const animations: InspectorAnimationPluginAnimation[] = [
   { name: 'Test (VRMA)', url: testVrma, type: 'vrma' },
   { name: 'Walking (Mixamo)', url: walkingFbx, type: 'mixamo' },
@@ -22,6 +22,15 @@ const animations: InspectorAnimationPluginAnimation[] = [
   { name: 'Standing Clap (Mixamo)', url: standingClapFbx, type: 'mixamo' },
   { name: 'Gangnam Style (Mixamo)', url: gangnamStyleFbx, type: 'mixamo' },
 ];
+
+// == functions ====================================================================================
+function getAnimationName(animation: InspectorAnimationPluginAnimation): string {
+  if (animation.type === 'gltf') {
+    return animation.clip.name;
+  } else {
+    return animation.name;
+  }
+}
 
 // == element ======================================================================================
 export function AnimationsPane(params: PaneParams) {
@@ -102,8 +111,8 @@ export function AnimationsPane(params: PaneParams) {
         <select className="bg-gray-800 border border-gray-500 w-full" onChange={handleSelectChange}>
           <option key={-1} value={-1}>(No animation)</option>
           {
-            animations.map(({ name }, i) => (
-              <option key={i} value={i}>{ name }</option>
+            animations.map((animation, i) => (
+              <option key={i} value={i}>{ getAnimationName(animation) }</option>
             ))
           }
         </select>
@@ -127,7 +136,7 @@ export function AnimationsPane(params: PaneParams) {
           Rewind
         </button>
         <br />
-        <NameValueEntry name="Animation" value={currentAnimation?.name ?? '(not playing)'} />
+        <NameValueEntry name="Animation" value={currentAnimation ? getAnimationName(currentAnimation) : '(not playing)'} />
         <NameValueEntry name="Time" value={timeDisplay} />
       </PaneRoot>
     </Pane>

@@ -1,3 +1,4 @@
+import { highlightGLTFAnimation } from './highlighter-functions/highlightGLTFAnimation';
 import { highlightGLTFMaterial } from './highlighter-functions/highlightGLTFMaterial';
 import { highlightGLTFMesh } from './highlighter-functions/highlightGLTFMesh';
 import { highlightGLTFMeshTarget } from './highlighter-functions/highlightGLTFMeshTarget';
@@ -35,6 +36,7 @@ export class Highlighter {
   public constructor(inspector: Inspector) {
     this._inspector = inspector;
     this._rules = [
+      ['/animations/:index', highlightGLTFAnimation],
       ['/nodes/:index', highlightGLTFNode],
       ['/meshes/:index', highlightGLTFMesh],
       ['/meshes/:meshIndex/primitives/:primIndex', highlightGLTFPrimitive],

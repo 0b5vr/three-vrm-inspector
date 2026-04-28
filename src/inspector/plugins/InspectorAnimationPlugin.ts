@@ -7,11 +7,27 @@ import { notifyObservers } from '../../utils/notifyObservers';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
 
-export interface InspectorAnimationPluginAnimation {
-  type: 'vrma' | 'mixamo';
+export interface InspectorAnimationPluginGLTFAnimation {
+  type: 'gltf';
+  clip: THREE.AnimationClip;
+}
+
+export interface InspectorAnimationPluginVRMAnimation {
+  type: 'vrma';
   url: string;
   name: string;
 }
+
+export interface InspectorAnimationPluginMixamoAnimation {
+  type: 'mixamo';
+  url: string;
+  name: string;
+}
+
+export type InspectorAnimationPluginAnimation =
+  | InspectorAnimationPluginVRMAnimation
+  | InspectorAnimationPluginMixamoAnimation
+  | InspectorAnimationPluginGLTFAnimation;
 
 export class InspectorAnimationPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
@@ -31,6 +47,14 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
   private _currentAnimationMixer?: THREE.AnimationMixer | null;
   private _currentAnimationAction?: THREE.AnimationAction | null;
   private _currentAnimation?: InspectorAnimationPluginAnimation | null;
+
+  public get currentAnimation(): InspectorAnimationPluginAnimation | null | undefined {
+    return this._currentAnimation;
+  }
+
+  public get gltfAnimations(): THREE.AnimationClip[] | undefined {
+    return this.inspector.model?.gltf.animations;
+  }
 
   public constructor(inspector: Inspector) {
     this.inspector = inspector;
@@ -52,7 +76,7 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
 
     this._currentAnimationMixer = new THREE.AnimationMixer(vrm.scene);
 
-    if (this._currentAnimation != null) {
+    if (this._currentAnimation != null && this._currentAnimation.type !== 'gltf') {
       this.loadAnimation(this._currentAnimation);
     }
   }
@@ -73,7 +97,9 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
   }
 
   public async loadAnimation(animation: InspectorAnimationPluginAnimation): Promise<void> {
-    if (animation.type === 'vrma') {
+    if (animation.type === 'gltf') {
+      this._loadGLTFAnimation(animation.clip);
+    } else if (animation.type === 'vrma') {
       await this._loadVRMAnimation(animation.url);
     } else if (animation.type === 'mixamo') {
       await this._loadMixamoAnimation(animation.url);
@@ -120,6 +146,20 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
     action.time = 0;
   }
 
+  private _loadGLTFAnimation(clip: THREE.AnimationClip): void {
+    const mixer = this._currentAnimationMixer;
+    if (!mixer) { return; }
+
+    if (this._currentAnimationAction != null) {
+      this.clearAnimation();
+    } else {
+      this._resetTargets();
+    }
+
+    this._currentAnimationAction = mixer.clipAction(clip);
+    this._currentAnimationAction.play();
+  }
+
   private async _loadVRMAnimation(url: string): Promise<void> {
     const vrm = this.inspector.model?.vrm;
     if (!vrm) { return; }
@@ -129,6 +169,8 @@ export class InspectorAnimationPlugin implements InspectorPlugin {
 
     if (this._currentAnimationAction != null) {
       this.clearAnimation();
+    } else {
+      this._resetTargets();
     }
 
     const clip = await loadVRMAniamtion(url, vrm);
