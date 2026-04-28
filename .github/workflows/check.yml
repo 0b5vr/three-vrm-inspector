@@ -18,10 +18,10 @@ jobs:
         uses: ./.github/actions/init
 
       - name: Build
-        run: yarn build
+        run: pnpm build
 
       - name: Upload Builds
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
 
@@ -36,7 +36,7 @@ jobs:
         uses: ./.github/actions/init
 
       - name: Lint
-        run: yarn lint
+        run: pnpm lint
 
   pages:
     if: ${{ github.ref == 'refs/heads/release' }}
@@ -55,4 +55,4 @@ jobs:
 
     steps:
       - name: Deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

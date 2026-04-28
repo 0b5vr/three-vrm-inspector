@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "all": "yarn clean && yarn build",
+    "all": "pnpm clean && pnpm build",
     "dev": "vite",
     "clean": "rimraf dist",
     "build": "tsc && vite build",
