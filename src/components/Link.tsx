@@ -1,6 +1,3 @@
-import React from 'react';
-
-// == component ====================================================================================
 export function Link({ href, widthClass }: {
   href?: string;
   widthClass?: string;

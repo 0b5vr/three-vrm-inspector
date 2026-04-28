@@ -16,4 +16,4 @@ export const highlightGLTFAnimation: HighlighterRuleFunction = (
   });
 
   return () => plugin.clearAnimation();
-}
+};

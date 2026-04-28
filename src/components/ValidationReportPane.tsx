@@ -4,7 +4,7 @@ import { NameValueEntry } from './NameValueEntry';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { ValidationReportIssue } from './ValidationReportIssue';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { ValidationReport } from '../inspector/plugins/ValidationReport';
 
 type ValidationIssues = ValidationReport['issues'];

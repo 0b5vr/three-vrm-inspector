@@ -24,10 +24,10 @@ export interface InspectorAnimationPluginMixamoAnimation {
   name: string;
 }
 
-export type InspectorAnimationPluginAnimation =
-  | InspectorAnimationPluginVRMAnimation
-  | InspectorAnimationPluginMixamoAnimation
-  | InspectorAnimationPluginGLTFAnimation;
+export type InspectorAnimationPluginAnimation
+  = | InspectorAnimationPluginVRMAnimation
+    | InspectorAnimationPluginMixamoAnimation
+    | InspectorAnimationPluginGLTFAnimation;
 
 export class InspectorAnimationPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
