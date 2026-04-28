@@ -41,7 +41,7 @@
     "eslint": "^9.30.0",
     "eslint-plugin-react": "^7.37.5",
     "eventemitter3": "^4.0.7",
-    "globals": "^16.2.0",
+    "globals": "^17.5.0",
     "gltf-validator": "^2.0.0-dev.3.3",
     "jotai": "^2.10.2",
     "rimraf": "^6.1.3",
