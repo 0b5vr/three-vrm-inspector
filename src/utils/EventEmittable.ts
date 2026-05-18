@@ -7,7 +7,7 @@ export class EventEmittable<TEvents extends { [ type: string ]: any }> {
 
   public on<TType extends keyof TEvents & string>(
     type: TType,
-    listener: EventListener<TEvents[ TType ]>,
+    listener: EventListener<TEvents[TType]>,
   ): void {
     this._eventListeners = this._eventListeners || new Map();
     let array = this._eventListeners.get(type);
@@ -21,7 +21,7 @@ export class EventEmittable<TEvents extends { [ type: string ]: any }> {
 
   public off<TType extends keyof TEvents & string>(
     type: TType,
-    listener: EventListener<TEvents[ TType ]>,
+    listener: EventListener<TEvents[TType]>,
   ): void {
     this._eventListeners = this._eventListeners || new Map();
     let array = this._eventListeners.get(type);
@@ -37,7 +37,7 @@ export class EventEmittable<TEvents extends { [ type: string ]: any }> {
   }
 
   protected _emit<TType extends keyof TEvents>(
-    ...[type, event]: TEvents[ TType ] extends void ? [ TType ] : [ TType, TEvents[ TType ] ]
+    ...[type, event]: TEvents[TType] extends void ? [TType] : [TType, TEvents[TType]]
   ): void {
     this._eventListeners = this._eventListeners || new Map();
     this._eventListeners.get(type)?.forEach((listener) => listener(event));
