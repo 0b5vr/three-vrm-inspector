@@ -165,11 +165,13 @@ export class Inspector {
 
   public async loadVRM(url: string): Promise<InspectorModel | null> {
     const buffer = await fetch(url).then((res) => res.arrayBuffer());
+    const bufferArray = new Uint8Array(buffer);
 
     this.unloadVRM();
 
     const webIO = new WebIO({ credentials: 'include' });
-    const originalGLTFJSON = webIO.binaryToJSON(buffer).json;
+    const originalGLTFJSONDoc = await webIO.binaryToJSON(bufferArray);
+    const originalGLTFJSON = originalGLTFJSONDoc.json;
 
     const gltf = await new Promise<GLTF>((resolve, reject) => {
       this._loader.crossOrigin = 'anonymous';
