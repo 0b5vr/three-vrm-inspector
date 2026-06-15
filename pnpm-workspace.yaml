@@ -1,1 +1,7 @@
+allowBuilds:
+  esbuild: true
+
 minimumReleaseAge: 10080
+
+minimumReleaseAgeExclude:
+  - '@pixiv/*'
