@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react';
 
-export function RangeRow({ label, onChange, defaultValue, disabled }: {
+export function RangeRow({ label, onChange, defaultValue, value, disabled }: {
   label: string;
   onChange: (value: number) => void;
   defaultValue?: number;
+  value?: number;
   disabled?: boolean;
 }) {
   const handleChange = useCallback(
@@ -22,7 +23,9 @@ export function RangeRow({ label, onChange, defaultValue, disabled }: {
         min="0"
         max="1"
         step="0.001"
-        defaultValue={defaultValue ?? 0.0}
+        {...(value == null
+          ? { defaultValue: defaultValue ?? 0.0 }
+          : { value })}
         disabled={disabled}
         onChange={handleChange}
       />
