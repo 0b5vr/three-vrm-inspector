@@ -1,12 +1,22 @@
 import * as THREE from 'three';
+import { EventEmittable } from '../../utils/EventEmittable';
 import { InspectorModel } from '../InspectorModel';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+import { applyMixins } from '../../utils/applyMixins';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
 
 const _v3A = new THREE.Vector3();
 const _eulerA = new THREE.Euler();
 
+export type InspectorLookAtTargetPosition = [ number, number, number ];
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
+export interface InspectorLookAtPlugin extends EventEmittable<{
+  changeTargetPosition: { targetPosition: InspectorLookAtTargetPosition };
+}> {}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class InspectorLookAtPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
@@ -31,6 +41,15 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
     } else {
       this._disableLookAtTarget();
     }
+  }
+
+  public get targetPosition(): InspectorLookAtTargetPosition {
+    return this._lookAtTarget.position.toArray();
+  }
+
+  public set targetPosition(value: InspectorLookAtTargetPosition) {
+    this._lookAtTarget.position.fromArray(value);
+    this._emitChangeTargetPosition();
   }
 
   public constructor(inspector: Inspector) {
@@ -59,6 +78,10 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
         cameraControls.enabled = !event.value;
       }
     });
+
+    this._transformControls.addEventListener('objectChange', () => {
+      this._emitChangeTargetPosition();
+    });
   }
 
   public handleAfterLoad(model: InspectorModel): void {
@@ -69,11 +92,16 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
     if (head != null) {
       head.getWorldPosition(_v3A);
       this._lookAtTarget.position.set(0.0, 0.0, 5.0).add(_v3A);
+      this._emitChangeTargetPosition();
     }
 
     if (this._enableLookAt) {
       this._enableLookAtTarget();
     }
+  }
+
+  private _emitChangeTargetPosition(): void {
+    this._emit('changeTargetPosition', { targetPosition: this.targetPosition });
   }
 
   private _enableLookAtTarget(): void {
@@ -91,3 +119,5 @@ export class InspectorLookAtPlugin implements InspectorPlugin {
     lookAt.applier.lookAt(_eulerA.set(0.0, 0.0, 0.0));
   }
 }
+
+applyMixins(InspectorLookAtPlugin, [EventEmittable]);
