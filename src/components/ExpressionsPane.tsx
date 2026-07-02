@@ -49,7 +49,7 @@ export function ExpressionsPane(params: PaneParams) {
 
   return (
     <Pane {...params}>
-      <PaneRoot>
+      <PaneRoot className="h-80 overflow-y-scroll resize-y pr-1">
         { expressionManager
           ? (
               <>
