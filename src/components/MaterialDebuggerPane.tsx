@@ -25,6 +25,7 @@ export function MaterialDebuggerPane(params: PaneParams) {
           <option value={MaterialDebuggerMode.MToonLitShadeRate}>MToon LitShadeRate</option>
           <option value={MaterialDebuggerMode.MToonUV}>MToon UV</option>
           <option value={MaterialDebuggerMode.UVGrid}>UV Grid</option>
+          <option value={MaterialDebuggerMode.RenderQueue}>Render Queue</option>
         </select>
       </PaneRoot>
     </Pane>
