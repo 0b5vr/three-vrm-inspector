@@ -1,5 +1,5 @@
 import { InspectorContext } from '../InspectorContext';
-import { MaterialDebuggerMode } from '../inspector/MaterialDebugger';
+import { MaterialDebuggerMode } from '../inspector/MaterialDebugger/MaterialDebugger';
 import { Pane, PaneParams } from './Pane';
 import { PaneRoot } from './PaneRoot';
 import { useCallback, useContext } from 'react';
@@ -25,7 +25,7 @@ export function MaterialDebuggerPane(params: PaneParams) {
           <option value={MaterialDebuggerMode.MToonLitShadeRate}>MToon LitShadeRate</option>
           <option value={MaterialDebuggerMode.MToonUV}>MToon UV</option>
           <option value={MaterialDebuggerMode.UVGrid}>UV Grid</option>
-          <option value={MaterialDebuggerMode.RenderQueue}>Render Queue</option>
+          <option value={MaterialDebuggerMode.RenderQueue}>Render Queue</option>src/inspector/plugins
         </select>
       </PaneRoot>
     </Pane>
