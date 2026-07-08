@@ -4,6 +4,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { EventEmittable } from '../utils/EventEmittable';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { InspectorAnimationPlugin } from './plugins/InspectorAnimationPlugin';
 import { InspectorCameraControlsPlugin } from './plugins/InspectorCameraControlsPlugin';
 import { InspectorGLTFValidatorPlugin } from './plugins/InspectorGLTFValidatorPlugin';
@@ -104,6 +105,7 @@ export class Inspector {
 
     this._loader = new GLTFLoader();
     this._loader.setDRACOLoader(this._dracoLoader);
+    this._loader.setMeshoptDecoder(MeshoptDecoder);
     this._loader.setKTX2Loader(this._ktx2Loader);
     this._loader.register((parser) => new VRMLoaderPlugin(parser, {
       humanoidPlugin: new VRMHumanoidLoaderPlugin(parser, {
