@@ -19,12 +19,14 @@ const materialDebugger = new MaterialDebugger(inspector);
 
 console.info(inspector);
 
-const clock = new THREE.Clock();
+const timer = new THREE.Timer();
+timer.connect(document);
 
 function update(): void {
   requestAnimationFrame(update);
 
-  const delta = clock.getDelta();
+  timer.update();
+  const delta = timer.getDelta();
   inspector.update(delta);
 }
 update();
