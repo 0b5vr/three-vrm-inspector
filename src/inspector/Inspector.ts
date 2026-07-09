@@ -25,7 +25,7 @@ import { VRM, VRMHumanoidLoaderPlugin, VRMLoaderPlugin, VRMLookAtLoaderPlugin, V
 import { WebIO } from '@gltf-transform/core';
 import { applyMixins } from '../utils/applyMixins';
 import { forEachMeshMaterials } from '../utils/forEachMeshMaterials';
-import { removeUnnecessaryJoints } from './utils/removeUnnecessaryJoints';
+import { setSkinIndexOriginal } from './utils/setSkinIndexOriginal';
 import CameraControls from 'camera-controls';
 import cubemapXn from '../assets/cubemap/xn.jpg';
 import cubemapXp from '../assets/cubemap/xp.jpg';
@@ -186,7 +186,8 @@ export class Inspector {
     });
 
     VRMUtils.removeUnnecessaryVertices(gltf.scene);
-    this.visualizeWeightPlugin.boneIndexMap = removeUnnecessaryJoints(gltf.scene);
+    setSkinIndexOriginal(gltf.scene);
+    VRMUtils.combineSkeletons(gltf.scene);
 
     let vrm: VRM | null = gltf.userData.vrm ?? null;
 

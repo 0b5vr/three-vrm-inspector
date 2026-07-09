@@ -7,8 +7,6 @@ import { highlightMeshes } from '../utils/highlightMeshes';
 export class InspectorVisualizeWeightPlugin implements InspectorPlugin {
   public readonly inspector: Inspector;
 
-  public boneIndexMap?: Map<THREE.Skeleton, Map<number, number>>;
-
   public constructor(inspector: Inspector) {
     this.inspector = inspector;
   }
@@ -16,15 +14,12 @@ export class InspectorVisualizeWeightPlugin implements InspectorPlugin {
   public visualize(mesh: THREE.Mesh, jointIndex: number): () => void {
     if (!(mesh instanceof THREE.SkinnedMesh)) { return () => 0; }
 
-    const map = this.boneIndexMap!.get(mesh.skeleton)!;
-    const newJointIndex = map.get(jointIndex)!;
-
     const visualizeWeightMaterial = new MeshVisualizeWeightMaterial({
       transparent: true,
       depthTest: false,
       depthWrite: false,
     });
-    visualizeWeightMaterial.skinIndexVisualize = newJointIndex;
+    visualizeWeightMaterial.skinIndexVisualize = jointIndex;
 
     const undo = highlightMeshes([mesh], visualizeWeightMaterial);
 

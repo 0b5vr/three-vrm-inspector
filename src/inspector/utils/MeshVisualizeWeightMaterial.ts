@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { SKIN_INDEX_ORIGINAL_ATTRIBUTE_NAME } from './setSkinIndexOriginal';
 
 export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
   private _skinIndexVisualize: number;
@@ -31,6 +32,7 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
         '#include <common>',
         `#include <common>
 
+        attribute vec4 ${SKIN_INDEX_ORIGINAL_ATTRIBUTE_NAME};
         varying float vWeightVisualize;
         uniform float skinIndexVisualize;`,
       );
@@ -39,10 +41,10 @@ export class MeshVisualizeWeightMaterial extends THREE.MeshNormalMaterial {
         '#include <begin_vertex>',
         `#ifdef USE_SKINNING
           vWeightVisualize = (
-            skinIndex.x == skinIndexVisualize ? skinWeight.x : 0.0 +
-            skinIndex.y == skinIndexVisualize ? skinWeight.y : 0.0 +
-            skinIndex.z == skinIndexVisualize ? skinWeight.z : 0.0 +
-            skinIndex.w == skinIndexVisualize ? skinWeight.w : 0.0
+            ( ${SKIN_INDEX_ORIGINAL_ATTRIBUTE_NAME}.x == skinIndexVisualize ? skinWeight.x : 0.0 ) +
+            ( ${SKIN_INDEX_ORIGINAL_ATTRIBUTE_NAME}.y == skinIndexVisualize ? skinWeight.y : 0.0 ) +
+            ( ${SKIN_INDEX_ORIGINAL_ATTRIBUTE_NAME}.z == skinIndexVisualize ? skinWeight.z : 0.0 ) +
+            ( ${SKIN_INDEX_ORIGINAL_ATTRIBUTE_NAME}.w == skinIndexVisualize ? skinWeight.w : 0.0 )
           );
         #else
           vWeightVisualize = 0.0;
