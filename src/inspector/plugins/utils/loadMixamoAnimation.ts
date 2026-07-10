@@ -27,6 +27,10 @@ export async function loadMixamoAnimation(
   const hipsPositionScale = vrmHipsY / fbxHipsY;
 
   const clip = THREE.AnimationClip.findByName(asset.animations, 'mixamo.com'); // AnimationClipを抽出する
+  if (clip == null) {
+    console.warn('loadMixamoAnimation: AnimationClip "mixamo.com" not found in the FBX file');
+    return null;
+  }
 
   const tracks: THREE.KeyframeTrack[] = []; // VRM用のKeyframeTrackをこの配列に格納する
 
