@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import * as V1SpringBoneSchema from '@pixiv/types-vrmc-springbone-1.0';
-import { Colors } from '../../constants/Colors';
 import { HighlighterRuleFunction } from '../Highlighter';
 import { VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
 
-const colorConstant = new THREE.Color(Colors.constant);
+const colorConstant = new THREE.Color(1, 0, 1);
 
 export const highlightVRM1SpringBoneSpring: HighlighterRuleFunction = async (
   { index },

@@ -12,6 +12,7 @@ import { highlightVRM0HumanBone } from './highlighter-functions/highlightVRM0Hum
 import { highlightVRM0SecondaryAnimationBoneGroup } from './highlighter-functions/highlightVRM0SecondaryAnimationBoneGroup';
 import { highlightVRM1Expression } from './highlighter-functions/highlightVRM1Expression';
 import { highlightVRM1HumanBone } from './highlighter-functions/highlightVRM1HumanBone';
+import { highlightVRM1SpringBoneCollider, highlightVRM1SpringBoneColliderGroup } from './highlighter-functions/highlightVRM1SpringBoneCollider';
 import { highlightVRM1SpringBoneSpring } from './highlighter-functions/highlightVRM1SpringBoneSpring';
 import { highlightVRMFirstPersonMeshAnnotation } from './highlighter-functions/highlightVRMFirstPersonMeshAnnotation';
 import { highlightVRMLookAtOffset } from './highlighter-functions/highlightVRMLookAtOffset';
@@ -57,6 +58,8 @@ export class Highlighter {
       ['/extensions/VRMC_vrm/expressions/custom/:expressionName', highlightVRM1Expression],
       ['/extensions/VRMC_vrm/firstPerson/meshAnnotations', highlightVRMFirstPersonMeshAnnotation],
       ['/extensions/VRMC_vrm/lookAt/offsetFromHeadBone', highlightVRMLookAtOffset],
+      ['/extensions/VRMC_springBone/colliders/:index', highlightVRM1SpringBoneCollider],
+      ['/extensions/VRMC_springBone/colliderGroups/:index', highlightVRM1SpringBoneColliderGroup],
       ['/extensions/VRMC_springBone/springs/:index', highlightVRM1SpringBoneSpring],
     ];
   }
