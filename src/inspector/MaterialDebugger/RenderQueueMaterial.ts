@@ -22,8 +22,6 @@ function getRenderQueueFillPattern(material: THREE.Material): RenderQueueFillPat
   return RenderQueueFillPattern.Solid;
 }
 
-
-
 function getMaterialRenderQueue(material: THREE.Material, parser: GLTFParser): number {
   const association = parser.associations.get(material);
   if (association == null) {
