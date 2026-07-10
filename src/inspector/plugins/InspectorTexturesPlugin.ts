@@ -7,6 +7,11 @@ import { applyMixins } from '../../utils/applyMixins';
 
 const _v2A = new THREE.Vector2();
 
+interface TextureImage {
+  width: number;
+  height: number;
+}
+
 export interface InspectorTexturesPluginInfo {
   name: string;
   width: number;
@@ -16,7 +21,7 @@ export interface InspectorTexturesPluginInfo {
   iImage: number | undefined;
   iBufferView: number | undefined;
   byteLength: number | undefined;
-  image: ImageBitmap;
+  image: TextureImage;
   texture: THREE.Texture;
   promiseBlob: Promise<Blob>;
 }
@@ -102,7 +107,7 @@ export class InspectorTexturesPlugin implements InspectorPlugin {
       this.__texturesToDeleteAfterUnload.push(...textures);
 
       const textureInfos = textures.map((texture, iTexture) => {
-        const image = texture.image;
+        const image = texture.image as TextureImage;
 
         const iImage: number | undefined
           = parser.json.textures[iTexture].extensions?.['KHR_texture_basisu']?.source
