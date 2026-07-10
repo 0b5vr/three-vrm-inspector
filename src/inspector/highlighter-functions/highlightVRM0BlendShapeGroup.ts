@@ -27,7 +27,7 @@ const expressionNameMap: {
   lookup: 'lookUp',
 };
 
-export const highlightVRM0BlendShapeGroup: HighlighterRuleFunction = (
+export const highlightVRM0BlendShapeGroup: HighlighterRuleFunction = async (
   { index },
   { json, inspector },
 ) => {

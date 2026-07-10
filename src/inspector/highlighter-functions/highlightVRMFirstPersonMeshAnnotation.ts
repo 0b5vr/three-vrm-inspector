@@ -1,7 +1,7 @@
 import { HighlighterRuleFunction } from '../Highlighter';
 
 export const highlightVRMFirstPersonMeshAnnotation: HighlighterRuleFunction
-  = (_, { inspector }) => {
+  = async (_, { inspector }) => {
     inspector.layerMode = 'firstPerson';
 
     return () => {

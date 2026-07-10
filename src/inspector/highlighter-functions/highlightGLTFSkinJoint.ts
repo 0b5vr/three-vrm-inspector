@@ -3,7 +3,7 @@ import { HighlighterRuleFunction } from '../Highlighter';
 import { gltfExtractPrimitivesFromNode } from '../../utils/gltfExtractPrimitivesFromNode';
 import { highlightNodes } from '../utils/highlightNodes';
 
-export const highlightGLTFSkinJoint: HighlighterRuleFunction = (
+export const highlightGLTFSkinJoint: HighlighterRuleFunction = async (
   { skinIndex, jointIndex },
   { inspector, gltf, json, parser },
 ) => {
@@ -12,9 +12,8 @@ export const highlightGLTFSkinJoint: HighlighterRuleFunction = (
   const callbacks: (() => void)[] = [];
 
   const jointNodeIndex = json.skins![skinIndexNum].joints[jointIndexNum];
-  parser.getDependency('node', jointNodeIndex).then((node: THREE.Object3D) => {
-    callbacks.push(highlightNodes([node]));
-  });
+  const node = await parser.getDependency('node', jointNodeIndex) as THREE.Object3D;
+  callbacks.push(highlightNodes([node]));
 
   const schemaNodes = json.nodes;
   const nodesUsingSkin: number[] = [];
@@ -24,14 +23,12 @@ export const highlightGLTFSkinJoint: HighlighterRuleFunction = (
     }
   });
 
-  const promisePrimitives = Promise.all(nodesUsingSkin.map((nodeIndex) => {
+  const primitives = await Promise.all(nodesUsingSkin.map((nodeIndex) => {
     return gltfExtractPrimitivesFromNode(gltf, nodeIndex) as Promise<THREE.Mesh[]>;
   })).then((result) => result.flat());
 
-  promisePrimitives.then((primitives) => {
-    primitives.forEach((primitive) => {
-      callbacks.push(inspector.visualizeWeightPlugin.visualize(primitive, jointIndexNum));
-    });
+  primitives.forEach((primitive) => {
+    callbacks.push(inspector.visualizeWeightPlugin.visualize(primitive, jointIndexNum));
   });
 
   return () => {

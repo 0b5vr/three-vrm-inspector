@@ -2,7 +2,7 @@ import * as V1VRMSchema from '@pixiv/types-vrmc-vrm-1.0';
 import { HighlighterRuleFunction } from '../Highlighter';
 import { highlightNodes } from '../utils/highlightNodes';
 
-export const highlightVRM1HumanBone: HighlighterRuleFunction = (
+export const highlightVRM1HumanBone: HighlighterRuleFunction = async (
   { boneName },
   { inspector },
 ) => {

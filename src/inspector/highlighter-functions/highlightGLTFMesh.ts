@@ -21,12 +21,11 @@ function highlightBox(box: THREE.Box3, scene: THREE.Scene): () => void {
   };
 }
 
-export const highlightGLTFMesh: HighlighterRuleFunction = (
+export const highlightGLTFMesh: HighlighterRuleFunction = async (
   { index },
   { gltf, json, inspector },
 ) => {
   const indexNum = parseInt(index, 10);
-  let callback: (() => void) | undefined;
 
   const schemaNodes = json.nodes;
   const nodesUsingMesh: number[] = [];
@@ -36,19 +35,17 @@ export const highlightGLTFMesh: HighlighterRuleFunction = (
     }
   });
 
-  const promisePrimitives = Promise.all(nodesUsingMesh.map((nodeIndex) => {
+  const primitives = await Promise.all(nodesUsingMesh.map((nodeIndex) => {
     return gltfExtractPrimitivesFromNode(gltf, nodeIndex) as Promise<THREE.Mesh[]>;
   })).then((result) => result.flat());
 
-  promisePrimitives.then((primitives: THREE.Mesh[]) => {
-    const callbackMeshes = highlightMeshes(primitives);
-    const callbackBox = highlightBox(createBoxFromMeshes(primitives), inspector.scene);
+  const callbackMeshes = highlightMeshes(primitives);
+  const callbackBox = highlightBox(createBoxFromMeshes(primitives), inspector.scene);
 
-    callback = () => {
-      callbackMeshes();
-      callbackBox();
-    };
-  });
+  const callback = () => {
+    callbackMeshes();
+    callbackBox();
+  };
 
   return () => {
     callback?.();

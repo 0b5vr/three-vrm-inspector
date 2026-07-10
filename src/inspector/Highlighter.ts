@@ -27,7 +27,7 @@ export interface HighlighterRuleContext {
 }
 
 export type HighlighterRuleFunction
-  = (matches: Record<string, string>, context: HighlighterRuleContext) => () => void;
+  = (matches: Record<string, string>, context: HighlighterRuleContext) => Promise<() => void>;
 
 export class Highlighter {
   private _inspector: Inspector;
@@ -61,7 +61,7 @@ export class Highlighter {
     ];
   }
 
-  public highlight(path: string): (() => void) | undefined {
+  public async highlight(path: string): Promise<(() => void) | undefined> {
     const inspector = this._inspector;
     const pathSplit = path.split('/');
 
@@ -92,8 +92,6 @@ export class Highlighter {
       });
     });
 
-    if (rule != null) {
-      return rule[1](matches, context);
-    }
+    return rule?.[1](matches, context);
   }
 }

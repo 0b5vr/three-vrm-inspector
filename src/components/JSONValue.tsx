@@ -1,5 +1,54 @@
 import { InspectorContext } from '../InspectorContext';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+
+// == hooks ========================================================================================
+function useJSONValueHighlight(fullPath: string) {
+  const { highlighter } = useContext(InspectorContext);
+  const leaveCallbackRef = useRef<(() => void) | undefined>(undefined);
+  const highlightTokenRef = useRef<number>(0);
+
+  const cleanupHighlight = useCallback(
+    () => {
+      highlightTokenRef.current++;
+      leaveCallbackRef.current?.();
+      leaveCallbackRef.current = undefined;
+    },
+    [],
+  );
+
+  const highlight = useCallback(
+    () => {
+      cleanupHighlight();
+
+      const token = ++highlightTokenRef.current;
+      highlighter.highlight(fullPath).then((callback) => {
+        if (highlightTokenRef.current === token) {
+          leaveCallbackRef.current = callback;
+        } else {
+          callback?.();
+        }
+      });
+    },
+    [cleanupHighlight, highlighter, fullPath],
+  );
+
+  const clearHighlight = useCallback(
+    () => {
+      cleanupHighlight();
+    },
+    [cleanupHighlight],
+  );
+
+  useEffect(
+    () => cleanupHighlight,
+    [cleanupHighlight],
+  );
+
+  return {
+    highlight,
+    clearHighlight,
+  };
+}
 
 // == microcomponents ==============================================================================
 function Bracket({ children, onClick, onMouseEnter, onMouseLeave }: {
@@ -34,11 +83,9 @@ export interface JSONValueProps {
 }
 
 export function JSONValue({ name, value, fullPath = '' }: JSONValueProps) {
-  const { highlighter } = useContext(InspectorContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isHovering, setIsHovering] = useState<boolean>(false);
-  const [leaveCallback, setLeaveCallback]
-    = useState<[(() => void) | undefined]>([undefined]);
+  const { highlight, clearHighlight } = useJSONValueHighlight(fullPath);
 
   const handleClick = useCallback(
     (event: React.MouseEvent) => {
@@ -52,17 +99,17 @@ export function JSONValue({ name, value, fullPath = '' }: JSONValueProps) {
   const handleMouseEnter = useCallback(
     () => {
       setIsHovering(true);
-      setLeaveCallback([highlighter.highlight(fullPath)]);
+      highlight();
     },
-    [setIsHovering, setLeaveCallback, highlighter, fullPath],
+    [highlight],
   );
 
   const handleMouseLeave = useCallback(
     () => {
       setIsHovering(false);
-      leaveCallback[0]?.();
+      clearHighlight();
     },
-    [setIsHovering, leaveCallback],
+    [clearHighlight],
   );
 
   const handleClickCopy = useCallback(
@@ -84,7 +131,6 @@ export function JSONValue({ name, value, fullPath = '' }: JSONValueProps) {
     onClick: handleClick,
     onMouseEnter: handleMouseEnter,
     onMouseLeave: handleMouseLeave,
-    isHovering: isHovering,
   };
 
   return (

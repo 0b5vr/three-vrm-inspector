@@ -1,6 +1,6 @@
 import { HighlighterRuleFunction } from '../Highlighter';
 
-export const highlightGLTFAnimation: HighlighterRuleFunction = (
+export const highlightGLTFAnimation: HighlighterRuleFunction = async (
   { index },
   { inspector },
 ) => {
@@ -10,7 +10,7 @@ export const highlightGLTFAnimation: HighlighterRuleFunction = (
   const clip = plugin.gltfAnimations?.[indexNum];
   if (!clip) { return () => {}; }
 
-  plugin.loadAnimation({
+  await plugin.loadAnimation({
     type: 'gltf',
     clip,
   });

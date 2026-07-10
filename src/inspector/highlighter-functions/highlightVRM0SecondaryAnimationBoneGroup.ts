@@ -6,7 +6,7 @@ import { VRMSpringBoneJoint, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
 
 const colorConstant = new THREE.Color(Colors.constant);
 
-export const highlightVRM0SecondaryAnimationBoneGroup: HighlighterRuleFunction = (
+export const highlightVRM0SecondaryAnimationBoneGroup: HighlighterRuleFunction = async (
   { index },
   { json, inspector, parser },
 ) => {
@@ -32,25 +32,24 @@ export const highlightVRM0SecondaryAnimationBoneGroup: HighlighterRuleFunction =
   const callbacks: (() => void)[] = [];
 
   const helpers = new Set<VRMSpringBoneJointHelper>();
-  bones!.forEach((bone) => {
-    parser.getDependency('node', bone).then((node: THREE.Object3D) => {
-      node.traverse((child) => {
-        const joint = nodeJointMap.get(child)!;
-        const helper = jointHelperMap.get(joint)!;
-        helpers.add(helper);
+  await Promise.all(bones!.map(async (bone) => {
+    const node = await parser.getDependency('node', bone) as THREE.Object3D;
+    node.traverse((child) => {
+      const joint = nodeJointMap.get(child)!;
+      const helper = jointHelperMap.get(joint)!;
+      helpers.add(helper);
 
-        // TODO: setColor
-        const line = helper.children[0] as THREE.LineSegments;
-        const material = line.material as THREE.LineBasicMaterial;
-        const prevColor = material.color.clone();
-        material.color.copy(colorConstant);
+      // TODO: setColor
+      const line = helper.children[0] as THREE.LineSegments;
+      const material = line.material as THREE.LineBasicMaterial;
+      const prevColor = material.color.clone();
+      material.color.copy(colorConstant);
 
-        callbacks.push(() => {
-          material.color.copy(prevColor);
-        });
+      callbacks.push(() => {
+        material.color.copy(prevColor);
       });
     });
-  });
+  }));
 
   return () => {
     callbacks.forEach((callback) => callback());

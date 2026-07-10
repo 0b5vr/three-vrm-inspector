@@ -13,7 +13,7 @@ const thumbBoneNameMap: { [key: string]: V1VRMSchema.HumanoidHumanBoneName | und
   rightThumbIntermediate: 'rightThumbProximal',
 };
 
-export const highlightVRM0HumanBone: HighlighterRuleFunction = (
+export const highlightVRM0HumanBone: HighlighterRuleFunction = async (
   { index },
   { inspector, json },
 ) => {

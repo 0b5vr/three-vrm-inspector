@@ -6,7 +6,7 @@ import { VRMSpringBoneJoint, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
 
 const colorConstant = new THREE.Color(Colors.constant);
 
-export const highlightVRM1SpringBoneSpring: HighlighterRuleFunction = (
+export const highlightVRM1SpringBoneSpring: HighlighterRuleFunction = async (
   { index },
   { json, inspector, parser },
 ) => {
@@ -32,30 +32,29 @@ export const highlightVRM1SpringBoneSpring: HighlighterRuleFunction = (
   const nodeIndices = springDef.joints.map((joint) => joint.node);
 
   const helpers = new Set<VRMSpringBoneJointHelper>();
-  nodeIndices.map((nodeIndex) => {
-    parser.getDependency('node', nodeIndex).then((node: THREE.Object3D) => {
-      const joint = nodeJointMap.get(node);
-      if (joint == null) { return; }
+  await Promise.all(nodeIndices.map(async (nodeIndex) => {
+    const node = await parser.getDependency('node', nodeIndex) as THREE.Object3D;
+    const joint = nodeJointMap.get(node);
+    if (joint == null) { return; }
 
-      const helper = jointHelperMap.get(joint);
-      if (helper == null) {
-        // since the last joint does not have actual joint this happens very often
-        return;
-      }
+    const helper = jointHelperMap.get(joint);
+    if (helper == null) {
+      // since the last joint does not have actual joint this happens very often
+      return;
+    }
 
-      helpers.add(helper);
+    helpers.add(helper);
 
-      // TODO: setColor
-      const line = helper.children[0] as THREE.LineSegments;
-      const material = line.material as THREE.LineBasicMaterial;
-      const prevColor = material.color.clone();
-      material.color.copy(colorConstant);
+    // TODO: setColor
+    const line = helper.children[0] as THREE.LineSegments;
+    const material = line.material as THREE.LineBasicMaterial;
+    const prevColor = material.color.clone();
+    material.color.copy(colorConstant);
 
-      callbacks.push(() => {
-        material.color.copy(prevColor);
-      });
+    callbacks.push(() => {
+      material.color.copy(prevColor);
     });
-  });
+  }));
 
   return () => {
     callbacks.forEach((callback) => callback());

@@ -1,6 +1,6 @@
 import { HighlighterRuleFunction } from '../Highlighter';
 
-export const highlightVRM1Expression: HighlighterRuleFunction = (
+export const highlightVRM1Expression: HighlighterRuleFunction = async (
   { expressionName },
   { inspector },
 ) => {
