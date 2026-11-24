@@ -36,19 +36,19 @@
     "@types/webxr": "^0.5.20",
     "@uiw/codemirror-theme-vscode": "^4.25.12",
     "@uiw/react-codemirror": "^4.25.12",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^6.3.0",
     "camera-controls": "^1.25.3",
     "eslint": "^9.30.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.14.0",
     "gltf-validator": "^2.0.0-dev.3.3",
-    "jotai": "^2.10.2",
+    "jotai": "^3.0.2",
     "rimraf": "^6.1.4",
     "tailwindcss": "^4.3.5",
     "three": "^0.185.0",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.73.0",
-    "vite": "^7.3.1",
+    "vite": "^8.3.8",
     "webgl-memory": "^1.0.9"
   }
 }
