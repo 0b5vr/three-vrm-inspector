@@ -32,6 +32,9 @@ export function HelpersPane(params: PaneParams) {
   const [checkedSpringBoneColliders, setCheckedSpringBoneColliders] = useState(
     inspector.helpersPlugin.springBoneColliderHelperRoot.visible,
   );
+  const [checkedSpringBoneLimits, setCheckedSpringBoneLimits] = useState(
+    inspector.helpersPlugin.springBoneLimitHelperRoot.visible,
+  );
 
   const handleClickEnableAll = useCallback(() => {
     setCheckedGrid(true);
@@ -42,6 +45,7 @@ export function HelpersPane(params: PaneParams) {
     setCheckedLookAtBall(true);
     setCheckedSpringBones(true);
     setCheckedSpringBoneColliders(true);
+    setCheckedSpringBoneLimits(true);
   }, []);
 
   const handleClickDisableAll = useCallback(() => {
@@ -53,6 +57,7 @@ export function HelpersPane(params: PaneParams) {
     setCheckedLookAtBall(false);
     setCheckedSpringBones(false);
     setCheckedSpringBoneColliders(false);
+    setCheckedSpringBoneLimits(false);
   }, []);
 
   const handleChangeGrid = useCallback((checked: boolean) => {
@@ -119,6 +124,10 @@ export function HelpersPane(params: PaneParams) {
     inspector.helpersPlugin.springBoneColliderHelperRoot.visible = checkedSpringBoneColliders;
   }, [inspector, checkedSpringBoneColliders]);
 
+  useEffect(() => {
+    inspector.helpersPlugin.springBoneLimitHelperRoot.visible = checkedSpringBoneLimits;
+  }, [inspector, checkedSpringBoneLimits]);
+
   return (
     <Pane {...params}>
       <PaneRoot>
@@ -176,6 +185,11 @@ export function HelpersPane(params: PaneParams) {
           callback={handleChangeSpringBoneColliders}
           label="Spring Bone Colliders"
           checked={checkedSpringBoneColliders}
+        />
+        <HelpersPaneCheckbox
+          callback={setCheckedSpringBoneLimits}
+          label="Spring Bone Limits"
+          checked={checkedSpringBoneLimits}
         />
       </PaneRoot>
     </Pane>

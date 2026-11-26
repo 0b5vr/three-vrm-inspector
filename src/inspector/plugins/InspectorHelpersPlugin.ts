@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { VRMHumanoidHelper, VRMLookAtHelper, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper } from '@pixiv/three-vrm';
+import { VRMHumanoidHelper, VRMLookAtHelper, VRMSpringBoneColliderHelper, VRMSpringBoneJointHelper, VRMUtils } from '@pixiv/three-vrm';
 import type { Inspector } from '../Inspector';
 import type { InspectorPlugin } from './InspectorPlugin';
 
@@ -12,6 +12,7 @@ export class InspectorHelpersPlugin implements InspectorPlugin {
   public readonly lookAtHelperRoot: THREE.Group;
   public readonly springBoneJointHelperRoot: THREE.Group;
   public readonly springBoneColliderHelperRoot: THREE.Group;
+  public readonly springBoneLimitHelperRoot: THREE.Group;
 
   public constructor(inspector: Inspector) {
     this.inspector = inspector;
@@ -41,6 +42,11 @@ export class InspectorHelpersPlugin implements InspectorPlugin {
     this.springBoneColliderHelperRoot.visible = false;
     this.springBoneColliderHelperRoot.renderOrder = 10000;
     inspector.scene.add(this.springBoneColliderHelperRoot);
+
+    this.springBoneLimitHelperRoot = new THREE.Group();
+    this.springBoneLimitHelperRoot.visible = false;
+    this.springBoneLimitHelperRoot.renderOrder = 10000;
+    inspector.scene.add(this.springBoneLimitHelperRoot);
   }
 
   public handleAfterUnload(): void {
@@ -57,6 +63,11 @@ export class InspectorHelpersPlugin implements InspectorPlugin {
     this.springBoneColliderHelperRoot.children.concat().forEach((helper) => {
       this.springBoneColliderHelperRoot.remove(helper);
       (helper as VRMSpringBoneColliderHelper).dispose();
+    });
+
+    this.springBoneLimitHelperRoot.children.concat().forEach((helper) => {
+      this.springBoneLimitHelperRoot.remove(helper);
+      VRMUtils.deepDispose(helper);
     });
 
     this.lookAtHelperRoot.children.concat().forEach((helper) => {

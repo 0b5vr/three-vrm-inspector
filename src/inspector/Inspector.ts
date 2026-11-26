@@ -117,6 +117,7 @@ export class Inspector {
       springBonePlugin: new VRMSpringBoneLoaderPlugin(parser, {
         jointHelperRoot: this.helpersPlugin.springBoneJointHelperRoot,
         colliderHelperRoot: this.helpersPlugin.springBoneColliderHelperRoot,
+        limitHelperRoot: this.helpersPlugin.springBoneLimitHelperRoot,
       }),
     }));
 
